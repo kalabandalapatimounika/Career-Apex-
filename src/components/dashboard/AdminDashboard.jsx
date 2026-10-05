@@ -254,47 +254,67 @@ export const AdminDashboard = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentLeads.map(lead => (
-                    <tr key={lead.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
-                      <td style={{ padding: '0.75rem' }}>
-                        <div
-                          style={{ fontWeight: 600, color: 'var(--primary-600)', cursor: 'pointer' }}
-                          onClick={() => setSelectedLead(lead)}
-                        >
-                          {lead.name}
+                  {recentLeads.length === 0 ? (
+                    <tr>
+                      <td colSpan={5} style={{ padding: '2.5rem 1rem', textAlign: 'center', color: 'var(--slate-400)' }}>
+                        <div style={{ fontWeight: 600, color: 'var(--slate-700)', fontSize: '0.95rem', marginBottom: '0.25rem' }}>
+                          No candidates registered yet
                         </div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>{lead.id} • {lead.mobile}</div>
-                      </td>
-                      <td style={{ padding: '0.75rem' }}>
-                        <div style={{ fontWeight: 500, fontSize: '0.825rem', color: 'var(--slate-800)' }}>{lead.targetRole}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>{lead.college}</div>
-                      </td>
-                      <td style={{ padding: '0.75rem' }}>
-                        <select
-                          className="form-select form-select-sm"
-                          value={lead.stage}
-                          onChange={(e) => updateLeadStage(lead.id, e.target.value)}
-                          style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-sm)', fontWeight: 600 }}
-                        >
-                          {stages.map(s => (
-                            <option key={s.key} value={s.key}>{s.label}</option>
-                          ))}
-                        </select>
-                      </td>
-                      <td style={{ padding: '0.75rem', fontSize: '0.8rem', color: 'var(--slate-600)' }}>
-                        {lead.counselorName}
-                      </td>
-                      <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                        <p style={{ fontSize: '0.8rem', color: 'var(--slate-500)', margin: '0 0 0.75rem 0' }}>
+                          Register inquiries to track student counseling and admissions progress.
+                        </p>
                         <button
-                          className="btn btn-secondary btn-sm"
-                          onClick={() => setSelectedLead(lead)}
-                          style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                          type="button"
+                          className="btn btn-primary btn-sm"
+                          onClick={() => setIsAddModalOpen(true)}
                         >
-                          View 360°
+                          + New Candidate Inquiry
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    recentLeads.map(lead => (
+                      <tr key={lead.id} style={{ borderBottom: '1px solid var(--border-light)' }}>
+                        <td style={{ padding: '0.75rem' }}>
+                          <div
+                            style={{ fontWeight: 600, color: 'var(--primary-600)', cursor: 'pointer' }}
+                            onClick={() => setSelectedLead(lead)}
+                          >
+                            {lead.name}
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--slate-400)' }}>{lead.id} • {lead.mobile}</div>
+                        </td>
+                        <td style={{ padding: '0.75rem' }}>
+                          <div style={{ fontWeight: 500, fontSize: '0.825rem', color: 'var(--slate-800)' }}>{lead.targetRole}</div>
+                          <div style={{ fontSize: '0.75rem', color: 'var(--slate-500)' }}>{lead.college}</div>
+                        </td>
+                        <td style={{ padding: '0.75rem' }}>
+                          <select
+                            className="form-select form-select-sm"
+                            value={lead.stage}
+                            onChange={(e) => updateLeadStage(lead.id, e.target.value)}
+                            style={{ fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: 'var(--radius-sm)', fontWeight: 600 }}
+                          >
+                            {stages.map(s => (
+                              <option key={s.key} value={s.key}>{s.label}</option>
+                            ))}
+                          </select>
+                        </td>
+                        <td style={{ padding: '0.75rem', fontSize: '0.8rem', color: 'var(--slate-600)' }}>
+                          {lead.counselorName}
+                        </td>
+                        <td style={{ padding: '0.75rem', textAlign: 'right' }}>
+                          <button
+                            className="btn btn-secondary btn-sm"
+                            onClick={() => setSelectedLead(lead)}
+                            style={{ padding: '0.25rem 0.6rem', fontSize: '0.75rem' }}
+                          >
+                            View 360°
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

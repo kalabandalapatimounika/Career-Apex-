@@ -14,18 +14,26 @@ export const CRMProvider = ({ children }) => {
     }
   });
 
-  // Leads list
+  // Leads list - Clean state, no mock dummy data
   const [leads, setLeads] = useState(() => {
     try {
       const saved = localStorage.getItem('ca_leads');
-      return (saved && JSON.parse(saved).length > 0) ? JSON.parse(saved) : INITIAL_LEADS;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          // Purge legacy mock data (IDs matching SM-LD-0001 to SM-LD-0036 or CA-1001)
+          const nonMock = parsed.filter(l => l && !l.isMock && !l.id?.startsWith('SM-LD-00') && !l.id?.startsWith('CA-100'));
+          return nonMock;
+        }
+      }
+      return [];
     } catch {
-      return INITIAL_LEADS;
+      return [];
     }
   });
 
   // Active navigation tab ('dashboard', 'customers', 'leads', 'pipeline', 'followups', 'team', 'activities', 'reports', 'settings')
-  const [activeTab, setActiveTab] = useState('pipeline'); // Default to pipeline as user is actively working with it
+  const [activeTab, setActiveTab] = useState('pipeline');
 
   // Active stage filter within Pipeline (Excel)
   const [activePipelineStage, setActivePipelineStage] = useState('all');
@@ -66,7 +74,7 @@ export const CRMProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Persist leads
+  // Persist leads (saves clean list)
   useEffect(() => {
     try {
       localStorage.setItem('ca_leads', JSON.stringify(leads));
@@ -104,18 +112,18 @@ export const CRMProvider = ({ children }) => {
     addToast(`Switched active persona to ${user.name} (${user.role.toUpperCase()})`, 'info');
   };
 
-  // Reset all demo data
+  // Reset/Clear leads database
   const resetDemoData = () => {
-    setLeads(INITIAL_LEADS);
+    setLeads([]);
     setSelectedLeadIds([]);
     localStorage.removeItem('ca_leads');
-    addToast('Demo leads database restored to default state (36 leads).', 'info');
+    addToast('Leads database cleared to clean state.', 'info');
   };
 
   // Add lead
   const addLead = (newLeadData) => {
     const counselor = USERS.find(u => u.id === newLeadData.assignedTo) || USERS[2];
-    const newId = `SM-LD-${String(leads.length + 1).padStart(4, '0')}`;
+    const newId = `CA-${String(leads.length + 1).padStart(4, '0')}`;
     const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
 
     const newLead = {
@@ -126,8 +134,8 @@ export const CRMProvider = ({ children }) => {
       college: newLeadData.college ? newLeadData.college.trim() : 'Not Specified',
       qualification: newLeadData.qualification ? newLeadData.qualification.trim() : 'Graduate',
       passoutYear: Number(newLeadData.passoutYear) || new Date().getFullYear(),
-      skills: newLeadData.skills || 'Full Stack, React, SQL',
-      targetRole: newLeadData.targetRole || 'Software Developer',
+      skills: newLeadData.skills || 'Software Development, System Design',
+      targetRole: newLeadData.targetRole || 'Software Engineer',
       exp: newLeadData.exp || 'Fresher',
       stage: newLeadData.stage || 'New Lead',
       priority: newLeadData.priority || 'Medium',
@@ -142,12 +150,12 @@ export const CRMProvider = ({ children }) => {
       nextFollowup: newLeadData.nextFollowup || '',
       notes: newLeadData.notes || '',
       history: [
-        { date: timestamp, user: currentUser.name, note: `Lead created by ${currentUser.name}.` }
+        { date: timestamp, user: currentUser.name, note: `Candidate inquiry registered by ${currentUser.name}.` }
       ]
     };
 
     setLeads(prev => [newLead, ...prev]);
-    addToast(`Lead ${newLead.name} (${newId}) registered successfully!`, 'success');
+    addToast(`Candidate ${newLead.name} (${newId}) registered successfully!`, 'success');
     return newLead;
   };
 
@@ -253,7 +261,7 @@ export const CRMProvider = ({ children }) => {
     setIsBulkAssignOpen(false);
   };
 
-  // Scoped leads based on user role (Counselors only see assigned leads if not admin/manager)
+  // Scoped leads based on user role
   const scopedLeads = useMemo(() => {
     if (!currentUser) return leads;
     if (currentUser.role === 'admin' || currentUser.role === 'manager') {
