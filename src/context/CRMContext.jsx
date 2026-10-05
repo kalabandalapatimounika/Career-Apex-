@@ -18,14 +18,26 @@ export const CRMProvider = ({ children }) => {
   const [leads, setLeads] = useState(() => {
     try {
       const saved = localStorage.getItem('ca_leads');
-      return saved ? JSON.parse(saved) : INITIAL_LEADS;
+      return (saved && JSON.parse(saved).length > 0) ? JSON.parse(saved) : INITIAL_LEADS;
     } catch {
       return INITIAL_LEADS;
     }
   });
 
-  // Active navigation tab
-  const [activeTab, setActiveTab] = useState('dashboard'); // 'dashboard', 'leads', 'pipeline', 'followups', 'activities'
+  // Active navigation tab ('dashboard', 'customers', 'leads', 'pipeline', 'followups', 'team', 'activities', 'reports', 'settings')
+  const [activeTab, setActiveTab] = useState('pipeline'); // Default to pipeline as user is actively working with it
+
+  // Active stage filter within Pipeline (Excel)
+  const [activePipelineStage, setActivePipelineStage] = useState('all');
+
+  // Sidebar Pipeline submenu collapsed state
+  const [isPipelineMenuCollapsed, setIsPipelineMenuCollapsed] = useState(() => {
+    try {
+      return localStorage.getItem('crm_pipeline_submenu_collapsed') === 'true';
+    } catch {
+      return false;
+    }
+  });
 
   // Mobile drawer state
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -36,6 +48,8 @@ export const CRMProvider = ({ children }) => {
   // Modal open states
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isBulkAssignOpen, setIsBulkAssignOpen] = useState(false);
+  const [isTemplatesModalOpen, setIsTemplatesModalOpen] = useState(false);
+  const [isImportModalOpen, setIsImportModalOpen] = useState(false);
 
   // Selected leads checkboxes for bulk actions
   const [selectedLeadIds, setSelectedLeadIds] = useState([]);
@@ -60,6 +74,15 @@ export const CRMProvider = ({ children }) => {
       console.error('Error saving leads to localStorage:', e);
     }
   }, [leads]);
+
+  // Persist pipeline submenu collapsed state
+  useEffect(() => {
+    try {
+      localStorage.setItem('crm_pipeline_submenu_collapsed', String(isPipelineMenuCollapsed));
+    } catch (e) {
+      console.error('Error saving collapsed state:', e);
+    }
+  }, [isPipelineMenuCollapsed]);
 
   // Toast helper
   const addToast = (message, type = 'success') => {
@@ -86,33 +109,36 @@ export const CRMProvider = ({ children }) => {
     setLeads(INITIAL_LEADS);
     setSelectedLeadIds([]);
     localStorage.removeItem('ca_leads');
-    addToast('Demo leads database restored to default state.', 'info');
+    addToast('Demo leads database restored to default state (36 leads).', 'info');
   };
 
   // Add lead
   const addLead = (newLeadData) => {
     const counselor = USERS.find(u => u.id === newLeadData.assignedTo) || USERS[2];
-    const newId = `CA-${1000 + leads.length + 1}`;
+    const newId = `SM-LD-${String(leads.length + 1).padStart(4, '0')}`;
     const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
 
     const newLead = {
       id: newId,
       name: newLeadData.name.trim(),
-      email: newLeadData.email.trim(),
+      email: newLeadData.email ? newLeadData.email.trim() : '',
       mobile: newLeadData.mobile.trim(),
       college: newLeadData.college ? newLeadData.college.trim() : 'Not Specified',
       qualification: newLeadData.qualification ? newLeadData.qualification.trim() : 'Graduate',
       passoutYear: Number(newLeadData.passoutYear) || new Date().getFullYear(),
-      targetRole: newLeadData.targetRole || 'Software Engineer',
-      courseInterest: newLeadData.courseInterest || 'Career Transition Track',
+      skills: newLeadData.skills || 'Full Stack, React, SQL',
+      targetRole: newLeadData.targetRole || 'Software Developer',
+      exp: newLeadData.exp || 'Fresher',
       stage: newLeadData.stage || 'New Lead',
       priority: newLeadData.priority || 'Medium',
+      status: (newLeadData.stage === 'Enrolled') ? 'Enrolled' : (newLeadData.stage === 'Lost' || newLeadData.stage === 'Not Interested') ? 'Lost' : 'Active',
       assignedTo: counselor.id,
       counselorName: counselor.name,
+      city: newLeadData.city || 'Bangalore',
       source: newLeadData.source || 'Website Inquiry',
-      expectedFee: Number(newLeadData.expectedFee) || 50000,
+      expectedFee: Number(newLeadData.expectedFee) || 60000,
       paidFee: Number(newLeadData.paidFee) || 0,
-      createdDate: new Date().toISOString().slice(0, 10),
+      feeStatus: Number(newLeadData.paidFee) >= Number(newLeadData.expectedFee) ? 'Fully Paid' : Number(newLeadData.paidFee) > 0 ? 'Partially Paid' : 'Pending',
       nextFollowup: newLeadData.nextFollowup || '',
       notes: newLeadData.notes || '',
       history: [
@@ -121,7 +147,7 @@ export const CRMProvider = ({ children }) => {
     };
 
     setLeads(prev => [newLead, ...prev]);
-    addToast(`Lead ${newLead.name} (${newId}) added successfully!`, 'success');
+    addToast(`Lead ${newLead.name} (${newId}) registered successfully!`, 'success');
     return newLead;
   };
 
@@ -136,8 +162,15 @@ export const CRMProvider = ({ children }) => {
         updatedHistory.unshift({
           date: timestamp,
           user: currentUser.name,
-          note: `Status changed from "${lead.stage}" to "${fields.stage}".`
+          note: `Pipeline stage moved from "${lead.stage}" to "${fields.stage}".`
         });
+        if (fields.stage === 'Enrolled') {
+          fields.status = 'Enrolled';
+        } else if (fields.stage === 'Lost' || fields.stage === 'Not Interested') {
+          fields.status = 'Lost';
+        } else {
+          fields.status = 'Active';
+        }
       }
       if (fields.assignedTo && fields.assignedTo !== lead.assignedTo) {
         const newCounselor = USERS.find(u => u.id === fields.assignedTo);
@@ -171,7 +204,7 @@ export const CRMProvider = ({ children }) => {
       return updated;
     }));
 
-    addToast(`Lead updated successfully`, 'success');
+    addToast(`Lead updated`, 'success');
   };
 
   // Quick update lead stage
@@ -215,7 +248,7 @@ export const CRMProvider = ({ children }) => {
       };
     }));
 
-    addToast(`Successfully assigned ${leadIds.length} lead(s) to ${counselor.name}!`, 'success');
+    addToast(`Assigned ${leadIds.length} candidate(s) to ${counselor.name}!`, 'success');
     setSelectedLeadIds([]);
     setIsBulkAssignOpen(false);
   };
@@ -226,7 +259,6 @@ export const CRMProvider = ({ children }) => {
     if (currentUser.role === 'admin' || currentUser.role === 'manager') {
       return leads;
     }
-    // Sales Counselor only sees their own assigned leads
     return leads.filter(l => l.assignedTo === currentUser.id);
   }, [leads, currentUser]);
 
@@ -235,7 +267,7 @@ export const CRMProvider = ({ children }) => {
     const total = scopedLeads.length;
     const enrolled = scopedLeads.filter(l => l.stage === 'Enrolled').length;
     const interested = scopedLeads.filter(l => l.stage === 'Interested' || l.stage === 'Prospect').length;
-    const followupsDue = scopedLeads.filter(l => l.stage === 'Follow-up' || l.nextFollowup).length;
+    const followupsDue = scopedLeads.filter(l => l.nextFollowup && l.stage !== 'Enrolled' && l.stage !== 'Lost').length;
     const totalValue = scopedLeads.reduce((acc, l) => acc + (l.expectedFee || 0), 0);
     const collectedValue = scopedLeads.reduce((acc, l) => acc + (l.paidFee || 0), 0);
     const conversionRate = total > 0 ? ((enrolled / total) * 100).toFixed(1) : 0;
@@ -249,6 +281,15 @@ export const CRMProvider = ({ children }) => {
       collectedValue,
       conversionRate
     };
+  }, [scopedLeads]);
+
+  // Stage counts for Pipeline submenu
+  const pipelineStageCounts = useMemo(() => {
+    const counts = { all: scopedLeads.length };
+    PIPELINE_STAGES.forEach(st => {
+      counts[st.key] = scopedLeads.filter(l => l.stage === st.key).length;
+    });
+    return counts;
   }, [scopedLeads]);
 
   return (
@@ -267,6 +308,11 @@ export const CRMProvider = ({ children }) => {
       metrics,
       activeTab,
       setActiveTab,
+      activePipelineStage,
+      setActivePipelineStage,
+      isPipelineMenuCollapsed,
+      setIsPipelineMenuCollapsed,
+      pipelineStageCounts,
       isMobileMenuOpen,
       setIsMobileMenuOpen,
       selectedLead,
@@ -275,6 +321,10 @@ export const CRMProvider = ({ children }) => {
       setIsAddModalOpen,
       isBulkAssignOpen,
       setIsBulkAssignOpen,
+      isTemplatesModalOpen,
+      setIsTemplatesModalOpen,
+      isImportModalOpen,
+      setIsImportModalOpen,
       selectedLeadIds,
       setSelectedLeadIds,
       toasts,
