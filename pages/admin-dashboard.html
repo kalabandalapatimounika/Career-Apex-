@@ -43,14 +43,14 @@
         </div>
 
         <!-- Placement Fee & Revenue Intelligence Summary Strip -->
-        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid var(--primary-100);">
+        <div class="card dash-fee-strip-container" style="margin-bottom: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid var(--primary-100);">
           <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="display: flex; align-items: center; gap: 0.5rem;">
-              <div style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--primary-600); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+            <div style="display: flex; align-items: center; gap: 0.6rem;">
+              <div style="width: 36px; height: 36px; border-radius: var(--radius-md); background: var(--primary-gradient); color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; box-shadow: 0 4px 10px var(--primary-glow);">
                 <i class="fa-solid fa-indian-rupee-sign"></i>
               </div>
               <div>
-                <h3 style="font-size: 1rem; font-weight: 800; color: var(--slate-900); margin: 0;">Placement Fee & Revenue Realization</h3>
+                <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--slate-900); margin: 0;">Placement Fee & Revenue Realization</h3>
                 <span style="font-size: 0.75rem; color: var(--slate-500);">Live fee tracking, collected cash, and outstanding installment dues</span>
               </div>
             </div>
@@ -60,29 +60,29 @@
           </div>
 
           <div class="dash-fee-strip" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <div class="metric-subcard">
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Total Booked Fee</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: var(--slate-900); margin-top: 0.25rem;" id="dash-fee-booked">₹0</div>
+              <div style="font-size: 1.45rem; font-weight: 800; color: var(--slate-900); margin-top: 0.25rem;" id="dash-fee-booked">₹0</div>
               <span style="font-size: 0.72rem; color: var(--slate-400);">Contracted placement value</span>
             </div>
 
-            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <div class="metric-subcard">
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Realized / Collected</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: var(--success-solid); margin-top: 0.25rem;" id="dash-fee-collected">₹0</div>
+              <div style="font-size: 1.45rem; font-weight: 800; color: var(--success-solid); margin-top: 0.25rem;" id="dash-fee-collected">₹0</div>
               <span style="font-size: 0.72rem; color: var(--success-text);">Inflow to bank / cash</span>
             </div>
 
-            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <div class="metric-subcard">
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Pending Dues</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: var(--warning-solid); margin-top: 0.25rem;" id="dash-fee-pending">₹0</div>
+              <div style="font-size: 1.45rem; font-weight: 800; color: var(--warning-solid); margin-top: 0.25rem;" id="dash-fee-pending">₹0</div>
               <span style="font-size: 0.72rem; color: var(--danger-solid);" id="dash-fee-overdue">0 Overdue Milestones</span>
             </div>
 
-            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+            <div class="metric-subcard">
               <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Realization Rate</span>
-              <div style="font-size: 1.4rem; font-weight: 800; color: #8b5cf6; margin-top: 0.25rem;" id="dash-fee-rate">0.0%</div>
-              <div style="height: 4px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-top: 0.35rem;">
-                <div id="dash-fee-rate-bar" style="height: 100%; width: 0%; background: #8b5cf6;"></div>
+              <div style="font-size: 1.45rem; font-weight: 800; color: #8b5cf6; margin-top: 0.25rem;" id="dash-fee-rate">0.0%</div>
+              <div style="height: 5px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-top: 0.4rem;">
+                <div id="dash-fee-rate-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #6366f1, #8b5cf6); border-radius: 9999px; transition: width 0.5s ease;"></div>
               </div>
             </div>
           </div>
@@ -186,74 +186,98 @@
         <div class="kpi-grid">
           <div class="kpi-card kpi-primary">
             <div class="kpi-info">
-              <span class="kpi-label">Total Leads</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Total Leads</span>
+                <span class="trend-badge trend-up" style="margin-left: 0.4rem;"><i class="fa-solid fa-arrow-trend-up"></i> +12%</span>
+              </div>
               <span class="kpi-value" id="kpi-total-leads">0</span>
               <span class="kpi-subtext" style="color: var(--slate-500); font-size: 0.75rem;">All registered leads</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-users"></i></div>
           </div>
 
           <div class="kpi-card kpi-info">
             <div class="kpi-info">
-              <span class="kpi-label">New Leads</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">New Leads</span>
+                <span class="trend-badge trend-up" style="margin-left: 0.4rem;"><i class="fa-solid fa-arrow-trend-up"></i> +18%</span>
+              </div>
               <span class="kpi-value" id="kpi-new-leads">0</span>
               <span class="kpi-subtext" style="color: var(--info-solid); font-size: 0.75rem;">Awaiting outreach</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-sparkles"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-sparkles"></i></div>
           </div>
 
           <div class="kpi-card kpi-warning">
             <div class="kpi-info">
-              <span class="kpi-label">Contacted</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Contacted</span>
+                <span class="trend-badge trend-up" style="margin-left: 0.4rem;"><i class="fa-solid fa-arrow-trend-up"></i> +9%</span>
+              </div>
               <span class="kpi-value" id="kpi-contacted">0</span>
               <span class="kpi-subtext" style="color: var(--warning-solid); font-size: 0.75rem;">In initial qualification</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-phone"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-phone"></i></div>
           </div>
 
           <div class="kpi-card kpi-purple">
             <div class="kpi-info">
-              <span class="kpi-label">Interested / Warm</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Interested / Warm</span>
+                <span class="trend-badge trend-up" style="margin-left: 0.4rem;"><i class="fa-solid fa-fire"></i> Hot</span>
+              </div>
               <span class="kpi-value" id="kpi-interested">0</span>
               <span class="kpi-subtext" style="color: #9333ea; font-size: 0.75rem;">Expressed clear intent</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-fire"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-fire"></i></div>
           </div>
 
           <div class="kpi-card kpi-primary">
             <div class="kpi-info">
-              <span class="kpi-label">Prospects</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Prospects</span>
+                <span class="trend-badge trend-neutral" style="margin-left: 0.4rem;"><i class="fa-solid fa-bullseye"></i> High Intent</span>
+              </div>
               <span class="kpi-value" id="kpi-prospects">0</span>
               <span class="kpi-subtext" style="color: var(--primary-600); font-size: 0.75rem;">Product demo & budget</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-bullseye"></i></div>
           </div>
 
           <div class="kpi-card kpi-success">
             <div class="kpi-info">
-              <span class="kpi-label">Enrolled</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Enrolled</span>
+                <span class="trend-badge trend-up" style="margin-left: 0.4rem;"><i class="fa-solid fa-trophy"></i> Top</span>
+              </div>
               <span class="kpi-value" id="kpi-converted">0</span>
               <span class="kpi-subtext" style="color: var(--success-solid); font-size: 0.75rem;" id="kpi-conv-rate">0% conversion</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-trophy"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-trophy"></i></div>
           </div>
 
           <div class="kpi-card kpi-danger">
             <div class="kpi-info">
-              <span class="kpi-label">Lost / Dropped</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Lost / Dropped</span>
+                <span class="trend-badge trend-danger" style="margin-left: 0.4rem;"><i class="fa-solid fa-arrow-trend-down"></i> -4%</span>
+              </div>
               <span class="kpi-value" id="kpi-lost">0</span>
               <span class="kpi-subtext" style="color: var(--danger-solid); font-size: 0.75rem;">Lost or not interested</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-circle-xmark"></i></div>
           </div>
 
           <div class="kpi-card kpi-warning">
             <div class="kpi-info">
-              <span class="kpi-label">Today's Follow-ups</span>
+              <div style="display: flex; align-items: center; margin-bottom: 0.35rem;">
+                <span class="kpi-label" style="margin-bottom: 0;">Today's Follow-ups</span>
+                <span class="trend-badge trend-warning" style="margin-left: 0.4rem;"><i class="fa-solid fa-clock"></i> Action</span>
+              </div>
               <span class="kpi-value" id="kpi-today-followups">0</span>
               <span class="kpi-subtext" style="color: var(--danger-solid); font-size: 0.75rem;" id="kpi-overdue-subtext">0 overdue</span>
             </div>
-            <div class="kpi-icon"><i class="fa-solid fa-calendar-day"></i></div>
+            <div class="kpi-icon-box"><i class="fa-solid fa-calendar-day"></i></div>
           </div>
         </div>
 
@@ -301,6 +325,7 @@
                       <th>Calls</th>
                       <th>Enrolled</th>
                       <th>Enroll Rate</th>
+                      <th>Quick Actions</th>
                     </tr>
                   </thead>
                   <tbody id="team-summary-tbody">
@@ -380,14 +405,14 @@
         weeksContainer.innerHTML = progress.weeks.map(w => {
           const isCurr = w.isCurrentWeek;
           return `
-            <div style="background: white; border: ${isCurr ? '2px solid var(--primary-500)' : '1px solid var(--border-light)'}; border-radius: var(--radius-lg); padding: 0.9rem 1rem; position: relative; ${isCurr ? 'box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);' : ''}">
+            <div class="milestone-week-card" style="border: ${isCurr ? '2px solid var(--primary-500)' : '1px solid var(--border-light)'}; border-radius: var(--radius-lg); padding: 0.95rem 1.05rem; position: relative; ${isCurr ? 'box-shadow: 0 6px 18px rgba(59, 130, 246, 0.18);' : ''}">
               <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span style="font-weight: 800; font-size: 0.88rem; color: var(--slate-900);">${w.label}</span>
+                <span style="font-weight: 800; font-size: 0.9rem; color: var(--slate-900);">${w.label}</span>
                 <span style="font-size: 0.7rem; color: var(--slate-500); background: var(--slate-100); padding: 0.15rem 0.45rem; border-radius: 4px;">${w.dateRange}</span>
               </div>
               ${isCurr ? `
-                <div style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #dbeafe; padding: 0.1rem 0.4rem; border-radius: 9999px; margin-bottom: 0.4rem;">
-                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #2563eb; display: inline-block;"></span> Current Week
+                <div style="display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #dbeafe; padding: 0.15rem 0.5rem; border-radius: 9999px; margin-bottom: 0.4rem;">
+                  <span class="pulse-live-dot"></span> Current Active Week
                 </div>
               ` : ''}
               <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem;">
@@ -399,12 +424,12 @@
                 <span style="font-size: 1rem; font-weight: 800; color: var(--success-solid);">${Targets.formatCurrency(w.achieved)}</span>
               </div>
               <div style="margin-bottom: 0.5rem;">
-                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 600; color: var(--slate-600); margin-bottom: 0.2rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 600; color: var(--slate-600); margin-bottom: 0.25rem;">
                   <span>Realization</span>
                   <span>${w.percent}%</span>
                 </div>
                 <div style="height: 6px; background: var(--slate-100); border-radius: 9999px; overflow: hidden;">
-                  <div style="height: 100%; width: ${Math.min(100, w.percent)}%; background: ${w.percent >= 100 ? 'var(--success-solid)' : (w.percent >= 50 ? 'var(--primary-600)' : 'var(--warning-solid)')}; border-radius: 9999px;"></div>
+                  <div style="height: 100%; width: ${Math.min(100, w.percent)}%; background: ${w.percent >= 100 ? 'var(--success-solid)' : (w.percent >= 50 ? 'var(--primary-600)' : 'var(--warning-solid)')}; border-radius: 9999px; transition: width 0.4s ease;"></div>
                 </div>
               </div>
               <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem;">
@@ -459,13 +484,146 @@
               <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(emp.weeks[2].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(emp.weeks[2].target)}</small></span></td>
               <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(emp.weeks[3].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(emp.weeks[3].target)}</small></span></td>
               <td>
-                <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;" onclick="Targets.openUpdateModal('${emp.userId}', renderCompanyRevenueTargets)" title="Update Target for ${Utils.escapeHtml(emp.userName)}">
-                  <i class="fa-solid fa-pen-to-square"></i> Update
-                </button>
+                <div style="display: flex; align-items: center; gap: 0.35rem;">
+                  <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.55rem; font-size: 0.75rem;" onclick="Targets.openUpdateModal('${emp.userId}', renderCompanyRevenueTargets)" title="Update Target for ${Utils.escapeHtml(emp.userName)}">
+                    <i class="fa-solid fa-pen-to-square"></i> Update
+                  </button>
+                  <a href="customers.html?salesperson=${encodeURIComponent(emp.userId)}" class="btn-action-icon" title="View Assigned Leads for ${Utils.escapeHtml(emp.userName)}">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                  </a>
+                </div>
               </td>
             </tr>
           `;
         }).join('');
+      }
+    }
+
+    let barChartInstance = null;
+    let doughnutChartInstance = null;
+
+    function renderExecutiveCharts(kpis) {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const textColor = isDark ? '#94a3b8' : '#64748b';
+      const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(226, 232, 240, 0.7)';
+
+      // 1. Pipeline Bar Chart
+      const stages = Pipeline.getStages();
+      const customers = Customers.getAll();
+      const stageCounts = stages.map(st => customers.filter(c => c.stage === st).length);
+
+      const ctxBar = document.getElementById('pipelineBarChart')?.getContext('2d');
+      if (ctxBar) {
+        if (barChartInstance) barChartInstance.destroy();
+
+        const barColors = [
+          '#6366f1', '#0ea5e9', '#8b5cf6', '#3b82f6',
+          '#f59e0b', '#ec4899', '#10b981', '#94a3b8', '#ef4444'
+        ];
+
+        barChartInstance = new Chart(ctxBar, {
+          type: 'bar',
+          data: {
+            labels: stages,
+            datasets: [{
+              label: 'Leads in Stage',
+              data: stageCounts,
+              backgroundColor: barColors,
+              borderRadius: 8,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                backgroundColor: isDark ? 'rgba(17, 24, 39, 0.95)' : 'rgba(15, 23, 42, 0.95)',
+                titleColor: '#fff',
+                bodyColor: '#e2e8f0',
+                titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
+                bodyFont: { family: 'Inter', size: 12 },
+                padding: 10,
+                cornerRadius: 8,
+                displayColors: true,
+                boxWidth: 8,
+                boxHeight: 8,
+                callbacks: {
+                  label: (ctx) => ` ${ctx.parsed.y} candidate leads (${((ctx.parsed.y / (customers.length || 1)) * 100).toFixed(1)}%)`,
+                  afterLabel: () => ' ➜ Click bar to open in Pipeline'
+                }
+              }
+            },
+            scales: {
+              y: {
+                beginAtZero: true,
+                ticks: { precision: 0, color: textColor },
+                grid: { color: gridColor }
+              },
+              x: {
+                ticks: { font: { size: 11, family: 'Inter' }, color: textColor },
+                grid: { display: false }
+              }
+            },
+            onClick: (e, items) => {
+              if (items.length > 0) {
+                const clickedIndex = items[0].index;
+                const clickedStage = stages[clickedIndex];
+                window.location.href = `pipeline.html?stage=${encodeURIComponent(clickedStage)}`;
+              }
+            }
+          }
+        });
+      }
+
+      // 2. Pipeline Doughnut Chart
+      const ctxDoughnut = document.getElementById('pipelineDoughnutChart')?.getContext('2d');
+      if (ctxDoughnut) {
+        if (doughnutChartInstance) doughnutChartInstance.destroy();
+
+        doughnutChartInstance = new Chart(ctxDoughnut, {
+          type: 'doughnut',
+          data: {
+            labels: ['Active Pipeline', 'Enrolled Leads', 'Lost / Inactive'],
+            datasets: [{
+              data: [
+                customers.filter(c => !['Enrolled', 'Converted', 'Lost', 'Not Interested'].includes(c.stage)).length,
+                kpis.enrolled !== undefined ? kpis.enrolled : kpis.converted,
+                (kpis.lost || 0) + (kpis.notInterested || 0)
+              ],
+              backgroundColor: ['#6366f1', '#10b981', '#ef4444'],
+              borderWidth: 2,
+              borderColor: isDark ? '#111827' : '#ffffff',
+              hoverOffset: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '72%',
+            plugins: {
+              legend: {
+                position: 'bottom',
+                labels: {
+                  boxWidth: 12,
+                  font: { size: 11, family: 'Inter' },
+                  color: textColor
+                }
+              },
+              tooltip: {
+                backgroundColor: isDark ? 'rgba(17, 24, 39, 0.95)' : 'rgba(15, 23, 42, 0.95)',
+                titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: '700' },
+                bodyFont: { family: 'Inter', size: 12 },
+                padding: 10,
+                cornerRadius: 8,
+                callbacks: {
+                  label: (ctx) => ` ${ctx.label}: ${ctx.parsed} leads (${((ctx.parsed / (customers.length || 1)) * 100).toFixed(1)}%)`
+                }
+              }
+            }
+          }
+        });
       }
     }
 
@@ -503,68 +661,17 @@
       document.getElementById('kpi-interested').textContent = kpis.interested;
       document.getElementById('kpi-prospects').textContent = kpis.prospects;
       document.getElementById('kpi-converted').textContent = kpis.converted;
-      document.getElementById('kpi-lost').textContent = kpis.lost + kpis.notInterested;
+      document.getElementById('kpi-lost').textContent = (kpis.lost || 0) + (kpis.notInterested || 0);
       document.getElementById('kpi-today-followups').textContent = kpis.todayFollowups;
       document.getElementById('kpi-conv-rate').textContent = `${kpis.conversionRate}% conversion rate`;
       document.getElementById('kpi-overdue-subtext').textContent = `${kpis.overdueFollowups} overdue follow-ups`;
 
-      // 4. Render Pipeline Bar Chart
-      const stages = Pipeline.getStages();
-      const customers = Customers.getAll();
-      const stageCounts = stages.map(st => customers.filter(c => c.stage === st).length);
+      // 5. Render Executive Charts
+      renderExecutiveCharts(kpis);
 
-      const ctxBar = document.getElementById('pipelineBarChart').getContext('2d');
-      new Chart(ctxBar, {
-        type: 'bar',
-        data: {
-          labels: stages,
-          datasets: [{
-            label: 'Leads in Stage',
-            data: stageCounts,
-            backgroundColor: [
-              '#6366f1', '#0ea5e9', '#8b5cf6', '#3b82f6',
-              '#f59e0b', '#ec4899', '#10b981', '#94a3b8', '#ef4444'
-            ],
-            borderRadius: 6
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { display: false }
-          },
-          scales: {
-            y: { beginAtZero: true, ticks: { precision: 0 } },
-            x: { ticks: { font: { size: 11 } } }
-          }
-        }
-      });
-
-      // 5. Render Pipeline Doughnut Chart
-      const ctxDoughnut = document.getElementById('pipelineDoughnutChart').getContext('2d');
-      new Chart(ctxDoughnut, {
-        type: 'doughnut',
-        data: {
-          labels: ['Active Pipeline', 'Enrolled Leads', 'Lost / Inactive'],
-          datasets: [{
-            data: [
-              customers.filter(c => !['Enrolled', 'Converted', 'Lost', 'Not Interested'].includes(c.stage)).length,
-              kpis.enrolled !== undefined ? kpis.enrolled : kpis.converted,
-              kpis.lost + kpis.notInterested
-            ],
-            backgroundColor: ['#6366f1', '#10b981', '#ef4444'],
-            borderWidth: 2,
-            borderColor: '#ffffff'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: {
-            legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
-          }
-        }
+      // Re-render charts when theme changes
+      window.addEventListener('crmThemeChanged', () => {
+        renderExecutiveCharts(kpis);
       });
 
       // 6. Populate Team Summary Table
@@ -575,19 +682,32 @@
           <tr>
             <td>
               <div style="display: flex; align-items: center; gap: 0.65rem;">
-                <img src="${rep.avatar}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
-                <span style="font-weight: 600; color: var(--slate-800);">${Utils.escapeHtml(rep.name)}</span>
+                <img src="${rep.avatar}" style="width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 1.5px solid var(--border-light);">
+                <div>
+                  <span style="font-weight: 700; color: var(--slate-900); font-size: 0.85rem;">${Utils.escapeHtml(rep.name)}</span>
+                  <div style="font-size: 0.7rem; color: var(--slate-400);">${Utils.escapeHtml(rep.email || '')}</div>
+                </div>
               </div>
             </td>
-            <td><span style="color: var(--slate-600);">${Utils.escapeHtml(rep.managerName)}</span></td>
-            <td><strong>${rep.leadsAssigned}</strong></td>
-            <td>${rep.callsMade}</td>
+            <td><span style="color: var(--slate-600); font-size: 0.825rem;">${Utils.escapeHtml(rep.managerName)}</span></td>
+            <td><strong style="color: var(--slate-900);">${rep.leadsAssigned}</strong></td>
+            <td><span style="color: var(--slate-600);">${rep.callsMade}</span></td>
             <td><span class="badge badge-stage-enrolled">${rep.enrolledCount !== undefined ? rep.enrolledCount : rep.convertedCount}</span></td>
             <td><strong style="color: var(--success-solid);">${rep.conversionRate}</strong></td>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.35rem;">
+                <a href="customers.html?salesperson=${encodeURIComponent(rep.id)}" class="btn-action-pill" title="View Assigned Leads for ${Utils.escapeHtml(rep.name)}">
+                  <i class="fa-solid fa-list-check"></i> Leads
+                </a>
+                <button class="btn-action-icon btn-action-wa" onclick="window.open('https://wa.me/?text=' + encodeURIComponent('Hi ${Utils.escapeHtml(rep.name)}, checking in on our placement pipeline today.'), '_blank')" title="WhatsApp ${Utils.escapeHtml(rep.name)}">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </button>
+              </div>
+            </td>
           </tr>
         `).join('');
       } else {
-        teamTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400);">No sales reps found</td></tr>`;
+        teamTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--slate-400);">No sales reps found</td></tr>`;
       }
 
       // 7. Populate Recent Activities Feed

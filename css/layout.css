@@ -283,21 +283,31 @@
   position: relative;
 }
 
-/* Header */
+/* Header with Glassmorphism */
 .crm-header,
 .crm-top-header {
   height: 64px;
   min-height: 64px;
   max-height: 64px;
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.82) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
   border-bottom: 1px solid var(--border-light);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 1.75rem;
   z-index: 30;
-  box-shadow: var(--shadow-xs);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
   flex-shrink: 0;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+[data-theme="dark"] .crm-header,
+[data-theme="dark"] .crm-top-header {
+  background-color: rgba(17, 24, 39, 0.85) !important;
+  border-bottom-color: var(--border-light) !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35) !important;
 }
 
 .crm-header-left {

@@ -2,13 +2,17 @@
  * SALES CRM - APP MODULE
  * Global Layout Manager, Role-Aware Navigation, Header Components,
  * Global Live Search, Add Customer Modal, and Demo Persona Switcher
- */
+// Immediate theme initialization to prevent flash
+try {
+  document.documentElement.setAttribute('data-theme', localStorage.getItem('crm_theme') || 'light');
+} catch (e) {}
 
 const App = {
   init(activePageKey = '') {
     const currentUser = Auth.getCurrentUser();
     if (!currentUser) return;
 
+    this.initTheme();
     this.renderSidebar(activePageKey, currentUser);
     this.renderHeader(currentUser);
     this.initGlobalSearch();
@@ -23,6 +27,7 @@ const App = {
     const currentUser = (user && typeof user === 'object' && user.id) ? user : Auth.getCurrentUser();
     if (!currentUser) return;
 
+    this.initTheme();
     this.renderSidebar(activePageKey, currentUser);
     this.renderHeader(currentUser);
     this.initGlobalSearch();
@@ -332,13 +337,21 @@ const App = {
           <div style="position: relative; width: 100%;">
             <div class="search-box-container" style="position: relative; width: 100%;">
               <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--slate-400);"></i>
-              <input type="text" id="global-search-input" class="form-control" placeholder="Quick search leads by ID, name, college, degree, skills, phone..." style="padding-left: 2.5rem; border-radius: var(--radius-full); background-color: var(--slate-100); border-color: transparent;">
+              <input type="text" id="global-search-input" class="form-control" placeholder="Quick search leads by ID, name, college, degree, skills, phone..." style="padding-left: 2.5rem; padding-right: 4.5rem; border-radius: var(--radius-full); background-color: var(--slate-100); border-color: transparent;">
+              <div class="hide-mobile" style="position: absolute; right: 0.85rem; top: 50%; transform: translateY(-50%); pointer-events: none; display: flex; align-items: center; gap: 0.2rem;">
+                <kbd style="font-family: inherit; font-size: 0.65rem; font-weight: 700; color: var(--slate-400); background: var(--slate-200); padding: 0.12rem 0.35rem; border-radius: 4px; border: 1px solid var(--border-light);">Ctrl K</kbd>
+              </div>
             </div>
             <div id="global-search-results" class="quick-search-results"></div>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <!-- Dark / Light Theme Toggle -->
+          <button class="btn btn-icon btn-secondary" id="theme-toggle-btn" title="Toggle Dark / Light Mode" style="border-radius: var(--radius-full); width: 34px; height: 34px; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s ease;">
+            <i class="fa-solid fa-moon" id="theme-toggle-icon"></i>
+          </button>
+
           ${(role === 'admin' || role === 'manager') ? `
             <button class="btn btn-secondary btn-sm" id="global-templates-btn" title="Create & Manage Communication Templates">
               <i class="fa-solid fa-envelope-open-text" style="color: var(--primary-600);"></i>
@@ -391,8 +404,11 @@ const App = {
           </div>
 
           <!-- Active User Profile Pill in Header -->
-          <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.5rem 0.25rem 0.25rem; border-radius: var(--radius-full); background: var(--slate-100); border: 1px solid var(--border-light);">
-            <img src="${(currentUser && currentUser.avatar) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80'}" alt="${(currentUser && currentUser.name) || 'User'}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0.6rem 0.25rem 0.25rem; border-radius: var(--radius-full); background: var(--slate-100); border: 1px solid var(--border-light);">
+            <div style="position: relative; display: flex; align-items: center;">
+              <img src="${(currentUser && currentUser.avatar) || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80'}" alt="${(currentUser && currentUser.name) || 'User'}" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover;">
+              <span style="position: absolute; bottom: -1px; right: -1px; width: 8px; height: 8px; border-radius: 50%; background: #10b981; border: 1.5px solid var(--bg-card);"></span>
+            </div>
             <div class="hide-mobile" style="line-height: 1.2; padding-right: 0.25rem;">
               <div style="font-size: 0.78rem; font-weight: 600; color: var(--slate-900);">${Utils.escapeHtml((currentUser && currentUser.name) || 'User')}</div>
               <div style="font-size: 0.65rem; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">${Utils.escapeHtml(role)}</div>
@@ -463,6 +479,15 @@ const App = {
 
     const isPagesDir = window.location.pathname.includes('/pages/');
     const custDetailUrl = isPagesDir ? 'customer-details.html?id=' : 'pages/customer-details.html?id=';
+
+    // Global Ctrl+K / Cmd+K listener
+    document.addEventListener('keydown', (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        input.focus();
+        input.select();
+      }
+    });
 
     input.addEventListener('input', Utils.debounce((e) => {
       const q = e.target.value.trim().toLowerCase();
@@ -916,6 +941,37 @@ const App = {
         }
       });
     });
+  },
+
+  /**
+   * Theme Manager (Dark / Light Mode)
+   */
+  initTheme() {
+    const savedTheme = localStorage.getItem('crm_theme') || 'light';
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    this.updateThemeIcon(savedTheme);
+
+    const toggleBtn = document.getElementById('theme-toggle-btn');
+    toggleBtn?.addEventListener('click', () => {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem('crm_theme', next);
+      this.updateThemeIcon(next);
+      window.dispatchEvent(new CustomEvent('crmThemeChanged', { detail: { theme: next } }));
+    });
+  },
+
+  updateThemeIcon(theme) {
+    const icon = document.getElementById('theme-toggle-icon');
+    if (!icon) return;
+    if (theme === 'dark') {
+      icon.className = 'fa-solid fa-sun';
+      icon.style.color = '#fbbf24';
+    } else {
+      icon.className = 'fa-solid fa-moon';
+      icon.style.color = 'var(--slate-600)';
+    }
   }
 };
 
