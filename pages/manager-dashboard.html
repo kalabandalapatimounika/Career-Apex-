@@ -3,199 +3,171 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales Manager Command Center — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Sales Manager Dashboard — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Sales Manager Command Center</h1>
-            <p class="page-subtitle">Team performance, pipeline velocity, counselor conversion quotas, and critical candidate follow-ups.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Sales Manager Command Center</h1>
+              <span class="badge badge-role-manager" id="manager-badge">Manager</span>
+            </div>
+            <p style="color: var(--slate-500); font-size: 0.875rem;" id="manager-welcome-subtext">Team pipeline tracking, lead reassignments, and daily follow-up execution.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-header-action" onclick="Team.openReassignModal(refreshPageData)" title="Reassign Leads">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-              Reassign Leads
-            </button>
-            <a href="pipeline.html" class="btn-primary-purple" title="Open Spreadsheet Pipeline">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
-              Team Pipeline
+          <div style="display: flex; gap: 0.75rem;">
+            <a href="reports.html" class="btn btn-secondary btn-sm">
+              <i class="fa-solid fa-chart-column"></i> Revenue & Reports
+            </a>
+            <a href="pipeline.html" class="btn btn-primary btn-sm">
+              <i class="fa-solid fa-chart-kanban"></i> Team Pipeline
             </a>
           </div>
         </div>
 
-        <!-- Manager Revenue & Fee Overview Card -->
-        <div class="enterprise-card">
-          <div class="card-header-bar">
-            <div class="card-title-group">
-              <div class="card-icon-square">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M6 3h12M6 8h12M6 13l7 8M6 13h4a4 4 0 000-8H6"/>
-                </svg>
+        <!-- Team Placement Fee & Revenue Summary Strip -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid var(--primary-100);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--primary-600); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
               </div>
-              <div class="card-title-text">
-                <div class="card-heading">Team Revenue &amp; Fee Realization</div>
-                <div class="card-subheading">Supervised counselor pipeline, collected fees, and overdue installments</div>
+              <div>
+                <h3 style="font-size: 1rem; font-weight: 800; color: var(--slate-900); margin: 0;">Team Placement Fee & Cash Collection</h3>
+                <span style="font-size: 0.75rem; color: var(--slate-500);">Realized revenue and milestone dues under your counseling team</span>
               </div>
             </div>
-            <a href="reports.html" class="btn-header-action" style="color: var(--primary);">
-              Team Analytics →
+            <a href="reports.html" class="btn btn-secondary btn-sm" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-chart-line"></i> Team Reports →
             </a>
           </div>
 
-          <div class="kpi-four-grid">
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">TEAM BOOKED FEE</div>
-              <div class="kpi-subcard-value" id="mgr-booked-fee">₹16,00,000</div>
-              <div class="kpi-subcard-footer">All supervised student contracts</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Team Booked Fee</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--slate-900); margin-top: 0.25rem;" id="mgr-fee-booked">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--slate-400);">Contracted placement value</span>
             </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">TEAM CASH COLLECTED</div>
-              <div class="kpi-subcard-value val-green" id="mgr-collected-fee">₹6,03,500</div>
-              <div class="kpi-subcard-footer">Bank &amp; UPI collections</div>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Cash Collected</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--success-solid); margin-top: 0.25rem;" id="mgr-fee-collected">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--success-text);">Received in account</span>
             </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">TEAM PENDING DUES</div>
-              <div class="kpi-subcard-value val-amber" id="mgr-pending-fee">₹9,96,500</div>
-              <div class="kpi-subcard-footer has-overdue" id="mgr-overdue-milestones">3 Overdue Milestones</div>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Pending Dues</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--warning-solid); margin-top: 0.25rem;" id="mgr-fee-pending">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--danger-solid);" id="mgr-fee-overdue">0 Overdue Milestones</span>
             </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">COLLECTION RATE</div>
-              <div class="kpi-subcard-value val-purple" id="mgr-realization-rate">37.7%</div>
-              <div class="kpi-progress-bar-track">
-                <div class="kpi-progress-bar-fill" id="mgr-realization-bar" style="width: 37.7%;"></div>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Collection Rate</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #8b5cf6; margin-top: 0.25rem;" id="mgr-fee-rate">0.0%</div>
+              <div style="height: 4px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-top: 0.35rem;">
+                <div id="mgr-fee-rate-bar" style="height: 100%; width: 0%; background: #8b5cf6;"></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 8 Candidate Pipeline KPI Cards -->
-        <div class="candidate-kpi-grid">
-          <a href="customers.html" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #eff6ff; color: #3b82f6;">Team Total</div>
-            <div class="stat-card-num" id="stat-total">36</div>
-            <div class="stat-card-title">Supervised Students</div>
-            <div class="stat-card-subtitle">Active pool across all counselors</div>
-          </a>
-
-          <a href="pipeline.html?stage=New+Lead" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #e0f2fe; color: #0284c7;">Fresh</div>
-            <div class="stat-card-num" id="stat-new">4</div>
-            <div class="stat-card-title">New Inquiries</div>
-            <div class="stat-card-subtitle">Needs assignment / 1st call</div>
-          </a>
-
-          <a href="pipeline.html?stage=Contacted" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #f1f5f9; color: #475569;">Engaged</div>
-            <div class="stat-card-num" id="stat-contacted">4</div>
-            <div class="stat-card-title">Contacted Leads</div>
-            <div class="stat-card-subtitle">Introductory call completed</div>
-          </a>
-
-          <a href="pipeline.html?stage=Interested" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #f5f3ff; color: #7c3aed;">High Intent</div>
-            <div class="stat-card-num" id="stat-interested">5</div>
-            <div class="stat-card-title">Interested Candidates</div>
-            <div class="stat-card-subtitle">Awaiting counseling session</div>
-          </a>
-
-          <a href="pipeline.html?stage=Prospect" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #fef3c7; color: #d97706;">Hot Leads</div>
-            <div class="stat-card-num" id="stat-prospect">4</div>
-            <div class="stat-card-title">Qualified Prospects</div>
-            <div class="stat-card-subtitle">Fee proposal presented</div>
-          </a>
-
-          <a href="pipeline.html?stage=Converted" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Won</div>
-            <div class="stat-card-num" id="stat-converted">5</div>
-            <div class="stat-card-title">Converted Enrollments</div>
-            <div class="stat-card-subtitle">Batch placement confirmed</div>
-          </a>
-
-          <a href="pipeline.html?stage=Lost" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #fef2f2; color: #dc2626;">Churned</div>
-            <div class="stat-card-num" id="stat-lost">1</div>
-            <div class="stat-card-title">Lost Leads</div>
-            <div class="stat-card-subtitle">Archived or competitor</div>
-          </a>
-
-          <a href="followups.html?filter=today" class="stat-card" style="text-decoration: none;">
-            <div class="stat-card-badge" style="background: #fffbeb; color: #b45309;">Urgent</div>
-            <div class="stat-card-num" id="stat-followups">8</div>
-            <div class="stat-card-title">Today's Team Tasks</div>
-            <div class="stat-card-subtitle">Counselor touchpoints scheduled</div>
-          </a>
-        </div>
-
-        <!-- Manager 2-Column Grid: Counselor Leaderboard + Urgent Follow-ups -->
-        <div class="dashboard-grid-2col">
-          <!-- Counselor Performance Leaderboard -->
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-title-text">
-                  <div class="card-heading">Counselor Team Leaderboard</div>
-                  <div class="card-subheading">Live conversion rate, student bookings &amp; cash collected</div>
-                </div>
+        <!-- Team Revenue Target & 4-Week Milestone Realization Card -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: #ffffff; border: 1.5px solid var(--border-light); border-radius: var(--radius-xl); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+          <!-- Card Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <div style="width: 38px; height: 38px; border-radius: var(--radius-md); background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
+                <i class="fa-solid fa-bullseye"></i>
               </div>
-              <a href="team.html" class="btn-header-action">Full Roster →</a>
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--slate-900); margin: 0;">Team Revenue Targets & 4-Week Progress Breakdown</h3>
+                  <span class="badge" id="mgr-target-month-badge" style="background: #f1f5f9; color: #475569; font-weight: 700;">October 2026</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500);">Monthly targets and 4-week milestones for every employee under this team</span>
+              </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="crm-table">
-                <thead>
-                  <tr>
-                    <th>Counselor</th>
-                    <th>Assigned</th>
-                    <th>Converted</th>
-                    <th>Conversion</th>
-                    <th>Collected (₹)</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody id="manager-roster-tbody">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button class="btn btn-primary btn-sm" id="btn-mgr-update-targets" style="font-size: 0.78rem;">
+                <i class="fa-solid fa-pen-to-square"></i> Set / Update Targets
+              </button>
             </div>
           </div>
 
-          <!-- Urgent & Overdue Follow-ups Queue -->
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-title-text">
-                  <div class="card-heading">Urgent Team Follow-ups</div>
-                  <div class="card-subheading">Candidate calls and counseling sessions requiring immediate review</div>
-                </div>
+          <!-- Team Monthly High-Level Target Summary Strip -->
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #bfdbfe; border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 0.75rem;">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Team Monthly Target</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); line-height: 1.2;" id="mgr-monthly-target-amt">₹0</div>
               </div>
-              <a href="followups.html" class="btn-header-action">View All Tasks →</a>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--success-text); text-transform: uppercase; letter-spacing: 0.05em;">Team Achieved Revenue</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--success-solid); line-height: 1.2;" id="mgr-monthly-achieved-amt">₹0</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Remaining to Target</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning-solid); line-height: 1.2;" id="mgr-monthly-remaining-amt">₹0</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Team Realization</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #4338ca; line-height: 1.2;" id="mgr-team-percent-label">0.0%</div>
+              </div>
             </div>
 
-            <div class="table-responsive">
-              <table class="crm-table">
+            <!-- Progress Bar -->
+            <div>
+              <div style="height: 8px; background: rgba(0,0,0,0.08); border-radius: 9999px; overflow: hidden;">
+                <div id="mgr-monthly-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 9999px; transition: width 0.5s ease;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4-Week Team Milestone Cards Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;" id="mgr-weeks-container">
+            <!-- Populated dynamically -->
+          </div>
+
+          <!-- Team Member Target Breakdown Table -->
+          <div style="border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden;">
+            <div style="padding: 0.75rem 1rem; background: var(--slate-50); border-bottom: 1px solid var(--border-light); display: flex; align-items: center; justify-content: space-between;">
+              <span style="font-weight: 700; font-size: 0.825rem; color: var(--slate-800); text-transform: uppercase; letter-spacing: 0.04em;">
+                <i class="fa-solid fa-users" style="color: var(--primary-600);"></i> Counselor Revenue Targets & Progress
+              </span>
+              <span style="font-size: 0.75rem; color: var(--slate-500);">Monthly Target divided across 4 Weeks</span>
+            </div>
+            <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+              <table class="table" style="font-size: 0.825rem; margin: 0;">
                 <thead>
-                  <tr>
-                    <th>Student</th>
+                  <tr style="background: var(--slate-100);">
                     <th>Counselor</th>
-                    <th>Purpose</th>
-                    <th>Date / Time</th>
-                    <th>Actions</th>
+                    <th>Monthly Target</th>
+                    <th>Achieved</th>
+                    <th>Realization %</th>
+                    <th>Week 1</th>
+                    <th>Week 2</th>
+                    <th>Week 3</th>
+                    <th>Week 4</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
-                <tbody id="manager-followups-tbody">
+                <tbody id="mgr-reps-targets-tbody">
                   <!-- Populated dynamically -->
                 </tbody>
               </table>
@@ -203,232 +175,410 @@
           </div>
         </div>
 
-        <!-- Charts: Stage Distribution & Team Revenue Breakdown -->
-        <div class="dashboard-grid-2col" style="margin-top: 24px;">
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-heading">Team Pipeline Distribution</div>
-              <span class="card-pill-badge">Stage Share</span>
+        <!-- Team KPI Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-info">
+              <span class="kpi-label">Team Members</span>
+              <span class="kpi-value" id="kpi-mgr-team-count">0</span>
+              <span class="kpi-subtext" style="color: #9333ea; font-size: 0.75rem;">Direct sales reps</span>
             </div>
-            <div class="chart-container-box">
-              <canvas id="chart-mgr-pipeline"></canvas>
+            <div class="kpi-icon"><i class="fa-solid fa-users-gear"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-info">
+              <span class="kpi-label">Team Total Leads</span>
+              <span class="kpi-value" id="kpi-mgr-total-leads">0</span>
+              <span class="kpi-subtext" style="color: var(--slate-500); font-size: 0.75rem;">Assigned leads</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-info">
+              <span class="kpi-label">Today's Follow-ups</span>
+              <span class="kpi-value" id="kpi-mgr-today-flw">0</span>
+              <span class="kpi-subtext" style="color: var(--danger-solid); font-size: 0.75rem;" id="kpi-mgr-overdue-flw">0 overdue</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-calendar-check"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-info">
+            <div class="kpi-info">
+              <span class="kpi-label">Interested Leads</span>
+              <span class="kpi-value" id="kpi-mgr-interested">0</span>
+              <span class="kpi-subtext" style="color: var(--info-solid); font-size: 0.75rem;">Warm qualified leads</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-fire"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-info">
+              <span class="kpi-label">Active Prospects</span>
+              <span class="kpi-value" id="kpi-mgr-prospects">0</span>
+              <span class="kpi-subtext" style="color: var(--primary-600); font-size: 0.75rem;">Demo & negotiation</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-handshake"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-info">
+              <span class="kpi-label">Team Enrolled</span>
+              <span class="kpi-value" id="kpi-mgr-converted">0</span>
+              <span class="kpi-subtext" style="color: var(--success-solid); font-size: 0.75rem;" id="kpi-mgr-win-rate">0% win rate</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-trophy"></i></div>
+          </div>
+        </div>
+
+        <!-- Team Pipeline Chart & Team Members Status Grid -->
+        <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: var(--primary-600);"></i> Team Pipeline Distribution</h3>
+              <span style="font-size: 0.75rem; color: var(--slate-500);">Assigned Team Scope</span>
+            </div>
+            <div class="card-body">
+              <canvas id="mgrTeamPipelineChart" style="max-height: 270px; width: 100%;"></canvas>
             </div>
           </div>
 
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-heading">Counselor Collections vs Targets</div>
-              <span class="card-pill-badge">Realization</span>
+          <!-- Team Reps Card -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-user-group" style="color: var(--info-solid);"></i> My Sales Team</h3>
+              <a href="team.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">Manage →</a>
             </div>
-            <div class="chart-container-box">
-              <canvas id="chart-mgr-collections"></canvas>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Rep Name</th>
+                      <th>Leads</th>
+                      <th>Closed</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="mgr-team-reps-tbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Recent Team Activity Feed -->
-        <div class="enterprise-card" style="margin-top: 24px;">
-          <div class="card-header-bar">
-            <div class="card-heading">Recent Team Activities</div>
-            <a href="activities.html" class="btn-header-action">Full Audit Log →</a>
+        <!-- Team Activities Feed & Urgent Follow-ups -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+          <!-- Urgent Team Follow-ups -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-bell" style="color: var(--warning-solid);"></i> Today's Team Follow-ups</h3>
+              <a href="followups.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">View All →</a>
+            </div>
+            <div class="card-body" style="padding: 1rem 1.25rem; max-height: 350px; overflow-y: auto;">
+              <div id="mgr-today-followups-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+            </div>
           </div>
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Actor</th>
-                  <th>Action</th>
-                  <th>Student</th>
-                  <th>Details</th>
-                </tr>
-              </thead>
-              <tbody id="manager-activities-tbody">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
+
+          <!-- Team Activity Stream -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--primary-600);"></i> Team Activity Feed</h3>
+              <a href="activities.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">Activity Log →</a>
+            </div>
+            <div class="card-body" style="padding: 1rem 1.25rem; max-height: 350px; overflow-y: auto;">
+              <div id="mgr-team-activities-list" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+            </div>
           </div>
         </div>
-
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/pipeline.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    let charts = {};
+    function renderTeamRevenueTargets(managerId) {
+      if (!window.Targets) return;
+      const currentMonth = Targets.getCurrentMonth();
+      const currentUser = Auth.getCurrentUser();
+      const scopedMgrId = (currentUser && currentUser.role === 'admin') ? null : managerId;
+      const progress = Targets.getTeamRevenueProgress(scopedMgrId, currentMonth);
+      if (!progress) return;
 
-    function refreshPageData() {
-      const user = Auth.getCurrentUser();
-      const allStudents = Customers.getAll();
-      const allPayments = Payments.getAll();
-      const allFollowups = Followups.getAll();
-      const allActivities = Activities.getAll();
-      const roster = Team.getRoster();
+      const [year, monthNum] = currentMonth.split('-');
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthLabel = `${monthNames[parseInt(monthNum, 10) - 1]} ${year}`;
 
-      // Scoped team data for manager
-      const teamCounselorNames = roster.map(r => r.name);
-      const isManager = user && (user.role === 'MANAGER' || user.role === 'manager');
-      const teamStudents = isManager
-        ? allStudents.filter(s => s.manager === user.name || teamCounselorNames.includes(s.counselor))
-        : allStudents;
+      const monthBadge = document.getElementById('mgr-target-month-badge');
+      if (monthBadge) monthBadge.textContent = monthLabel;
 
-      const teamStudentIds = teamStudents.map(s => s.id);
-      const teamPayments = allPayments.filter(p => teamStudentIds.includes(p.studentId));
+      document.getElementById('mgr-monthly-target-amt').textContent = Targets.formatCurrency(progress.totalMonthlyTarget);
+      document.getElementById('mgr-monthly-achieved-amt').textContent = Targets.formatCurrency(progress.totalMonthlyAchieved);
+      document.getElementById('mgr-monthly-remaining-amt').textContent = Targets.formatCurrency(progress.teamRemaining);
+      document.getElementById('mgr-team-percent-label').textContent = `${progress.teamPercent}% (${Targets.formatCurrency(progress.totalMonthlyAchieved)} of ${Targets.formatCurrency(progress.totalMonthlyTarget)})`;
+      document.getElementById('mgr-monthly-progress-bar').style.width = `${Math.min(100, progress.teamPercent)}%`;
 
-      // Financials
-      const booked = teamStudents.reduce((sum, s) => sum + (s.placementFee || 0), 0);
-      const collected = teamStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
-      const pending = Math.max(0, booked - collected);
-      const rate = booked > 0 ? ((collected / booked) * 100).toFixed(1) : '0.0';
-
-      document.getElementById('mgr-booked-fee').textContent = Utils.formatINR(booked);
-      document.getElementById('mgr-collected-fee').textContent = Utils.formatINR(collected);
-      document.getElementById('mgr-pending-fee').textContent = Utils.formatINR(pending);
-      document.getElementById('mgr-realization-rate').textContent = rate + '%';
-      document.getElementById('mgr-realization-bar').style.width = Math.min(100, Number(rate)) + '%';
-
-      // KPI Counts
-      const counts = Pipeline.getStageCounts(teamStudents);
-      document.getElementById('stat-total').textContent = teamStudents.length;
-      document.getElementById('stat-new').textContent = counts['New Lead'] || 0;
-      document.getElementById('stat-contacted').textContent = counts['Contacted'] || 0;
-      document.getElementById('stat-interested').textContent = counts['Interested'] || 0;
-      document.getElementById('stat-prospect').textContent = counts['Prospect'] || 0;
-      document.getElementById('stat-converted').textContent = counts['Converted'] || 0;
-      document.getElementById('stat-lost').textContent = counts['Lost'] || 0;
-
-      const todayTasks = allFollowups.filter(f => f.status === 'Pending');
-      document.getElementById('stat-followups').textContent = todayTasks.length;
-
-      // Counselor Leaderboard
-      const rosterTbody = document.getElementById('manager-roster-tbody');
-      rosterTbody.innerHTML = roster.map(c => `
-        <tr>
-          <td>
-            <div style="font-weight: 600; color: var(--navy-900);">${Utils.escapeHtml(c.name)}</div>
-            <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(c.email)}</div>
-          </td>
-          <td><span class="badge" style="background: #f1f5f9; color: #334155; font-weight: 600;">${c.assignedCount}</span></td>
-          <td><span class="badge badge-converted">${c.convertedCount}</span></td>
-          <td><strong style="color: var(--primary);">${c.conversionRate}%</strong></td>
-          <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(c.revenue)}</td>
-          <td>
-            <div class="row-actions">
-              <a href="customers.html?counselor=${encodeURIComponent(c.name)}" class="btn-icon" title="View Leads">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </a>
-              <button class="btn-icon" onclick="Team.openReassignModal(refreshPageData)" title="Reassign">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
-              </button>
-            </div>
-          </td>
-        </tr>
-      `).join('');
-
-      // Urgent Followups
-      const urgentFollowups = allFollowups.filter(f => f.status === 'Pending').slice(0, 5);
-      const followTbody = document.getElementById('manager-followups-tbody');
-      if (urgentFollowups.length === 0) {
-        followTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 20px;">No pending urgent follow-ups</td></tr>`;
-      } else {
-        followTbody.innerHTML = urgentFollowups.map(f => `
-          <tr>
-            <td>
-              <a href="customer-details.html?id=${f.studentId}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
-                ${Utils.escapeHtml(f.studentName)}
-              </a>
-            </td>
-            <td><span style="font-size: 12px; color: var(--slate-600);">${Utils.escapeHtml(f.counselor)}</span></td>
-            <td><span style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(f.purpose)}</span></td>
-            <td><span style="font-size: 12px; color: var(--slate-500);">${f.scheduledDate} ${f.scheduledTime || ''}</span></td>
-            <td>
-              <div class="row-actions">
-                <button class="btn-icon" onclick="Communication.logCall('${f.studentId}', refreshPageData)" title="Call">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                </button>
-                <button class="btn-icon" onclick="Followups.openCompleteModal('${f.id}', refreshPageData)" title="Complete Task">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                </button>
+      // Render 4-Week Milestone Cards for the team
+      const weeksContainer = document.getElementById('mgr-weeks-container');
+      if (weeksContainer) {
+        weeksContainer.innerHTML = progress.weeks.map(w => {
+          const isCurr = w.isCurrentWeek;
+          return `
+            <div style="background: white; border: ${isCurr ? '2px solid var(--primary-500)' : '1px solid var(--border-light)'}; border-radius: var(--radius-lg); padding: 0.9rem 1rem; position: relative; ${isCurr ? 'box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);' : ''}">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 800; font-size: 0.88rem; color: var(--slate-900);">${w.label}</span>
+                <span style="font-size: 0.7rem; color: var(--slate-500); background: var(--slate-100); padding: 0.15rem 0.45rem; border-radius: 4px;">${w.dateRange}</span>
               </div>
-            </td>
-          </tr>
-        `).join('');
+              ${isCurr ? `
+                <div style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #dbeafe; padding: 0.1rem 0.4rem; border-radius: 9999px; margin-bottom: 0.4rem;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #2563eb; display: inline-block;"></span> Current Week
+                </div>
+              ` : ''}
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem;">
+                <span style="font-size: 0.72rem; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Target</span>
+                <span style="font-size: 0.95rem; font-weight: 800; color: var(--slate-900);">${Targets.formatCurrency(w.target)}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.72rem; color: var(--success-text); text-transform: uppercase; font-weight: 700;">Achieved</span>
+                <span style="font-size: 1rem; font-weight: 800; color: var(--success-solid);">${Targets.formatCurrency(w.achieved)}</span>
+              </div>
+              <div style="margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 600; color: var(--slate-600); margin-bottom: 0.2rem;">
+                  <span>Realization</span>
+                  <span>${w.percent}%</span>
+                </div>
+                <div style="height: 6px; background: var(--slate-100); border-radius: 9999px; overflow: hidden;">
+                  <div style="height: 100%; width: ${Math.min(100, w.percent)}%; background: ${w.percent >= 100 ? 'var(--success-solid)' : (w.percent >= 50 ? 'var(--primary-600)' : 'var(--warning-solid)')}; border-radius: 9999px;"></div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem;">
+                <span style="color: var(--slate-400);">Team Milestone</span>
+                <span class="badge ${w.statusClass}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">${w.status}</span>
+              </div>
+            </div>
+          `;
+        }).join('');
       }
 
-      // Recent Team Activities
-      const actTbody = document.getElementById('manager-activities-tbody');
-      const recentActs = allActivities.slice(0, 6);
-      actTbody.innerHTML = recentActs.map(a => `
-        <tr>
-          <td style="font-size: 12px; color: var(--slate-500); white-space: nowrap;">${Utils.formatDate(a.timestamp)}</td>
-          <td><span style="font-weight: 600; color: var(--navy-800);">${Utils.escapeHtml(a.user || 'System')}</span></td>
-          <td><span class="badge" style="background: #eef2ff; color: #4f46e5;">${Utils.escapeHtml(a.action)}</span></td>
-          <td>
-            ${a.studentId ? `<a href="customer-details.html?id=${a.studentId}" style="color: var(--primary); text-decoration: none; font-weight: 500;">${Utils.escapeHtml(a.studentName || a.studentId)}</a>` : '<span style="color: var(--slate-400);">-</span>'}
-          </td>
-          <td style="font-size: 13px; color: var(--slate-600);">${Utils.escapeHtml(a.description)}</td>
-        </tr>
-      `).join('');
-
-      renderCharts(teamStudents, roster);
-    }
-
-    function renderCharts(students, roster) {
-      if (charts.pipeline) charts.pipeline.destroy();
-      if (charts.collections) charts.collections.destroy();
-
-      const counts = Pipeline.getStageCounts(students);
-      const stages = Object.keys(counts).filter(k => k !== 'All Leads');
-
-      const ctx1 = document.getElementById('chart-mgr-pipeline')?.getContext('2d');
-      if (ctx1) {
-        charts.pipeline = new Chart(ctx1, {
-          type: 'doughnut',
-          data: {
-            labels: stages,
-            datasets: [{
-              data: stages.map(s => counts[s]),
-              backgroundColor: ['#94a3b8', '#38bdf8', '#3b82f6', '#818cf8', '#f59e0b', '#a855f7', '#6366f1', '#10b981', '#f43f5e', '#64748b']
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const ctx2 = document.getElementById('chart-mgr-collections')?.getContext('2d');
-      if (ctx2) {
-        charts.collections = new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: roster.map(r => r.name),
-            datasets: [
-              { label: 'Realized Collections (₹)', data: roster.map(r => r.revenue), backgroundColor: '#10b981', borderRadius: 6 },
-              { label: 'Quota Target (₹)', data: roster.map(r => r.target), backgroundColor: '#cbd5e1', borderRadius: 6 }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
-        });
+      // Render Reps Breakdown Table
+      const tbody = document.getElementById('mgr-reps-targets-tbody');
+      if (tbody) {
+        if (progress.reps.length) {
+          tbody.innerHTML = progress.reps.map(rep => `
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <div style="width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700;">
+                    ${rep.userName.charAt(0)}
+                  </div>
+                  <div>
+                    <span style="font-weight: 700; color: var(--slate-900); font-size: 0.85rem;">${Utils.escapeHtml(rep.userName)}</span>
+                    <div style="font-size: 0.7rem; color: var(--slate-500);">${rep.assignedLeadCount} Leads Assigned</div>
+                  </div>
+                </div>
+              </td>
+              <td style="font-weight: 700; color: var(--slate-900);">${Targets.formatCurrency(rep.monthlyTarget)}</td>
+              <td style="font-weight: 800; color: var(--success-solid);">${Targets.formatCurrency(rep.monthlyAchieved)}</td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.4rem;">
+                  <span style="font-weight: 700; font-size: 0.78rem;">${rep.monthlyPercent}%</span>
+                  <div style="width: 50px; height: 5px; background: var(--slate-100); border-radius: 9999px; overflow: hidden;">
+                    <div style="height: 100%; width: ${Math.min(100, rep.monthlyPercent)}%; background: ${rep.monthlyPercent >= 100 ? 'var(--success-solid)' : (rep.monthlyPercent >= 50 ? 'var(--primary-600)' : 'var(--warning-solid)')};"></div>
+                  </div>
+                </div>
+              </td>
+              <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(rep.weeks[0].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(rep.weeks[0].target)}</small></span></td>
+              <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(rep.weeks[1].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(rep.weeks[1].target)}</small></span></td>
+              <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(rep.weeks[2].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(rep.weeks[2].target)}</small></span></td>
+              <td><span style="font-size: 0.75rem; color: var(--slate-700);">${Targets.formatCurrency(rep.weeks[3].achieved)} / <small style="color: var(--slate-400);">${Targets.formatCurrency(rep.weeks[3].target)}</small></span></td>
+              <td>
+                <button class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.75rem;" onclick="Targets.openUpdateModal('${rep.userId}', () => renderTeamRevenueTargets('${managerId}'))" title="Update Target">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        } else {
+          tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No counselors reporting under this team</td></tr>`;
+        }
       }
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      UI.init('dashboard');
-      refreshPageData();
+      // 1. Guard page for Manager or Admin
+      if (!Auth.requireAuth(['manager', 'admin'])) return;
+
+      App.init('dashboard');
+      const currentUser = Auth.getCurrentUser();
+
+      document.getElementById('manager-badge').textContent = `Manager: ${currentUser.name}`;
+
+      // 2. Load team data
+      const teamReps = Users.getTeamMembers(currentUser.id);
+      document.getElementById('kpi-mgr-team-count').textContent = teamReps.length;
+
+      const teamCustomers = Customers.getScopedCustomers(currentUser);
+      document.getElementById('kpi-mgr-total-leads').textContent = teamCustomers.length;
+
+      // Fee & Revenue Summary for Team
+      const feeSummary = Payments.getSummary(teamCustomers);
+      document.getElementById('mgr-fee-booked').textContent = Payments.formatCurrency(feeSummary.totalBooked);
+      document.getElementById('mgr-fee-collected').textContent = Payments.formatCurrency(feeSummary.totalCollected);
+      document.getElementById('mgr-fee-pending').textContent = Payments.formatCurrency(feeSummary.totalPending);
+      document.getElementById('mgr-fee-overdue').textContent = `${feeSummary.overdueCount} Overdue Milestones`;
+      document.getElementById('mgr-fee-rate').textContent = `${feeSummary.collectionRate}%`;
+      document.getElementById('mgr-fee-rate-bar').style.width = `${Math.min(100, feeSummary.collectionRate)}%`;
+
+      // Render Team Revenue Targets (Monthly + 4 Weeks)
+      renderTeamRevenueTargets(currentUser.id);
+
+      // Top Update Target button
+      const updateTargetsBtn = document.getElementById('btn-mgr-update-targets');
+      if (updateTargetsBtn) {
+        updateTargetsBtn.addEventListener('click', () => {
+          Targets.openUpdateModal(null, () => {
+            renderTeamRevenueTargets(currentUser.id);
+          });
+        });
+      }
+
+      window.addEventListener('crmTargetsUpdated', () => {
+        renderTeamRevenueTargets(currentUser.id);
+      });
+
+      let interested = 0, prospects = 0, converted = 0;
+      teamCustomers.forEach(c => {
+        if (c.stage === 'Interested') interested++;
+        else if (c.stage === 'Prospect') prospects++;
+        else if (c.stage === 'Enrolled' || c.stage === 'Converted') converted++;
+      });
+
+      document.getElementById('kpi-mgr-interested').textContent = interested;
+      document.getElementById('kpi-mgr-prospects').textContent = prospects;
+      document.getElementById('kpi-mgr-converted').textContent = converted;
+
+      const winRate = teamCustomers.length > 0 ? ((converted / teamCustomers.length) * 100).toFixed(1) : 0;
+      document.getElementById('kpi-mgr-win-rate').textContent = `${winRate}% conversion`;
+
+      // 3. Team Follow-ups
+      const cats = Followups.getCategorized(true);
+      document.getElementById('kpi-mgr-today-flw').textContent = cats.today.length;
+      document.getElementById('kpi-mgr-overdue-flw').textContent = `${cats.overdue.length} overdue`;
+
+      // 4. Team Pipeline Chart
+      const stages = Pipeline.getStages();
+      const stageCounts = stages.map(st => teamCustomers.filter(c => c.stage === st).length);
+
+      const ctx = document.getElementById('mgrTeamPipelineChart').getContext('2d');
+      new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: stages,
+          datasets: [{
+            label: 'Team Leads',
+            data: stageCounts,
+            backgroundColor: '#6366f1',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+
+      // 5. Team Reps Table
+      const teamTbody = document.getElementById('mgr-team-reps-tbody');
+      const allCalls = StorageService.getData(CRM_STORAGE_KEYS.CALLS, []);
+      if (teamReps.length) {
+        teamTbody.innerHTML = teamReps.map(rep => {
+          const repLeads = teamCustomers.filter(c => c.salespersonId === rep.id);
+          const repClosed = repLeads.filter(c => c.stage === 'Enrolled' || c.stage === 'Converted').length;
+          return `
+            <tr>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <img src="${rep.avatar}" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover;">
+                  <span style="font-weight: 600; color: var(--slate-800);">${Utils.escapeHtml(rep.name)}</span>
+                </div>
+              </td>
+              <td><strong>${repLeads.length}</strong></td>
+              <td><span class="badge badge-stage-enrolled">${repClosed}</span></td>
+              <td>
+                <a href="leads.html?rep=${rep.id}" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem;">
+                  View Leads
+                </a>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } else {
+        teamTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--slate-400);">No team members reporting yet</td></tr>`;
+      }
+
+      // 6. Today's follow-ups list
+      const flwContainer = document.getElementById('mgr-today-followups-list');
+      if (cats.today.length) {
+        flwContainer.innerHTML = cats.today.map(f => `
+          <div style="padding: 0.75rem; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: #fff; display: flex; align-items: center; justify-content: space-between;">
+            <div>
+              <div style="font-weight: 600; font-size: 0.85rem; color: var(--slate-900);">${Utils.escapeHtml(f.customerName)}</div>
+              <div style="font-size: 0.75rem; color: var(--slate-500);">${f.time} • Assigned to: <strong>${Utils.escapeHtml(f.salespersonName)}</strong></div>
+              <div style="font-size: 0.75rem; color: var(--slate-600); margin-top: 0.2rem;">${Utils.escapeHtml(f.purpose)}</div>
+            </div>
+            <div>
+              <a href="customer-details.html?id=${f.customerId}" class="btn btn-secondary btn-sm" style="font-size: 0.75rem;">Open</a>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        flwContainer.innerHTML = `<div class="empty-state" style="padding: 1.5rem;"><div class="empty-state-title" style="font-size: 0.95rem;">No follow-ups due today</div><div class="empty-state-desc">Your team is all caught up!</div></div>`;
+      }
+
+      // 7. Team activities
+      const teamActs = Activities.getAll({ scoped: true }).slice(0, 7);
+      const actContainer = document.getElementById('mgr-team-activities-list');
+      if (teamActs.length) {
+        actContainer.innerHTML = teamActs.map(a => `
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-subtle);">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background-color: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; margin-top: 2px;">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 600; font-size: 0.8rem; color: var(--slate-900);">${Utils.escapeHtml(a.user)}</span>
+                <span style="font-size: 0.7rem; color: var(--slate-400);">${Utils.formatRelativeTime(a.timestamp)}</span>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--slate-600); margin-top: 0.1rem;">
+                ${Utils.escapeHtml(a.description)}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        actContainer.innerHTML = `<div style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No team activities recorded yet</div>`;
+      }
     });
   </script>
 </body>

@@ -3,333 +3,516 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Career Counselor Daily Workspace — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Sales Rep Workspace — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Career Counselor Daily Workspace</h1>
-            <p class="page-subtitle">Candidate call queue, daily counseling touchpoints, stage progressions, and student enrollment quotas.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Welcome Greeting -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Daily Sales Operations</h1>
+              <span class="badge badge-role-sales" id="rep-name-badge">Sales Rep</span>
+            </div>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Your assigned portfolio, daily scheduled outreach, and lead pipeline milestones.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-header-action" onclick="Followups.openScheduleModal(null, refreshPageData)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              + Schedule Follow-up
-            </button>
-            <button type="button" class="btn-primary-purple" onclick="UI.openAddLeadModal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              + Add Lead
-            </button>
-          </div>
-        </div>
-
-        <!-- Counselor Metrics Strip -->
-        <div class="candidate-kpi-grid">
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #eff6ff; color: #3b82f6;">Assigned</div>
-            <div class="stat-card-num" id="counselor-stat-leads">12</div>
-            <div class="stat-card-title">My Total Leads</div>
-            <div class="stat-card-subtitle">Active student portfolio</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #fffbeb; color: #b45309;">Urgent</div>
-            <div class="stat-card-num" id="counselor-stat-today">3</div>
-            <div class="stat-card-title">Today's Tasks</div>
-            <div class="stat-card-subtitle">Calls &amp; counseling sessions</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #fef2f2; color: #dc2626;">Action Required</div>
-            <div class="stat-card-num" id="counselor-stat-overdue">1</div>
-            <div class="stat-card-title">Overdue Follow-ups</div>
-            <div class="stat-card-subtitle">Needs immediate resolution</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #f5f3ff; color: #7c3aed;">High Intent</div>
-            <div class="stat-card-num" id="counselor-stat-interested">2</div>
-            <div class="stat-card-title">Interested Candidates</div>
-            <div class="stat-card-subtitle">Counseling scheduled</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #fef3c7; color: #d97706;">Hot</div>
-            <div class="stat-card-num" id="counselor-stat-prospects">2</div>
-            <div class="stat-card-title">Active Prospects</div>
-            <div class="stat-card-subtitle">Fee proposal pending</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Success</div>
-            <div class="stat-card-num" id="counselor-stat-converted">2</div>
-            <div class="stat-card-title">Enrolled / Converted</div>
-            <div class="stat-card-subtitle">Verified placements</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Realized</div>
-            <div class="stat-card-num val-green" id="counselor-stat-collections">₹2,10,000</div>
-            <div class="stat-card-title">Collected Fees</div>
-            <div class="stat-card-subtitle">Paid installment amount</div>
-          </div>
-
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #eef2ff; color: #6366f1;">Quota</div>
-            <div class="stat-card-num val-purple" id="counselor-stat-quota">52.5%</div>
-            <div class="stat-card-title">Monthly Quota Pace</div>
-            <div class="stat-card-subtitle">Target ₹4,00,000</div>
+          <div style="display: flex; gap: 0.75rem;">
+            <a href="pipeline.html" class="btn btn-secondary btn-sm">
+              <i class="fa-solid fa-chart-kanban"></i> My Pipeline
+            </a>
+            <a href="followups.html" class="btn btn-primary btn-sm">
+              <i class="fa-solid fa-calendar-check"></i> My Follow-ups
+            </a>
           </div>
         </div>
 
-        <!-- Priority Outreach Action Queue (Today & Overdue) -->
-        <div class="enterprise-card" style="margin-top: 24px;">
-          <div class="card-header-bar">
-            <div class="card-title-group">
-              <div class="card-icon-square" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
-                </svg>
+        <!-- Personal Placement Fee & Cash Collection Strip -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid var(--primary-100);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <div style="width: 32px; height: 32px; border-radius: var(--radius-md); background: var(--primary-600); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+                <i class="fa-solid fa-indian-rupee-sign"></i>
               </div>
-              <div class="card-title-text">
-                <div class="card-heading">Today's Candidate Outreach Tasks</div>
-                <div class="card-subheading">1-Click actions to Call, WhatsApp, Email, or Complete task with counseling outcome notes</div>
+              <div>
+                <h3 style="font-size: 1rem; font-weight: 800; color: var(--slate-900); margin: 0;">My Placement Fee & Cash Inflow</h3>
+                <span style="font-size: 0.75rem; color: var(--slate-500);">Placement fees contracted and collected across your assigned leads</span>
               </div>
             </div>
-            <a href="followups.html" class="btn-header-action">Full Agenda →</a>
+            <a href="customers.html" class="btn btn-secondary btn-sm" style="font-size: 0.78rem;">
+              <i class="fa-solid fa-users"></i> View Candidates →
+            </a>
           </div>
 
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>Student Candidate</th>
-                  <th>Target Role</th>
-                  <th>Time / Due</th>
-                  <th>Priority</th>
-                  <th>Purpose / Agenda</th>
-                  <th>Quick Action Hub</th>
-                </tr>
-              </thead>
-              <tbody id="counselor-tasks-tbody">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Booked Fees</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--slate-900); margin-top: 0.25rem;" id="rep-fee-booked">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--slate-400);">Contracted placement fees</span>
+            </div>
 
-        <!-- Counselor's Active Leads Pipeline -->
-        <div class="enterprise-card" style="margin-top: 24px;">
-          <div class="card-header-bar">
-            <div class="card-title-group">
-              <div class="card-icon-square">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-              </div>
-              <div class="card-title-text">
-                <div class="card-heading">My Assigned Candidates &amp; Placement Pipeline</div>
-                <div class="card-subheading">Real-time stage transitions, payment balances, and immediate actions</div>
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Collected to Date</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--success-solid); margin-top: 0.25rem;" id="rep-fee-collected">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--success-text);">Received payments</span>
+            </div>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Pending Dues</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: var(--warning-solid); margin-top: 0.25rem;" id="rep-fee-pending">₹0</div>
+              <span style="font-size: 0.72rem; color: var(--danger-solid);" id="rep-fee-overdue">0 Overdue Milestones</span>
+            </div>
+
+            <div style="background: white; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light);">
+              <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Realization Rate</span>
+              <div style="font-size: 1.4rem; font-weight: 800; color: #8b5cf6; margin-top: 0.25rem;" id="rep-fee-rate">0.0%</div>
+              <div style="height: 4px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-top: 0.35rem;">
+                <div id="rep-fee-rate-bar" style="height: 100%; width: 0%; background: #8b5cf6;"></div>
               </div>
             </div>
-            <a href="pipeline.html" class="btn-header-action">Open Pipeline →</a>
-          </div>
-
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>ID</th>
-                  <th>Student Name</th>
-                  <th>Mobile</th>
-                  <th>College &amp; Degree</th>
-                  <th>Stage</th>
-                  <th>Fee Status</th>
-                  <th>Next Follow-up</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="counselor-leads-tbody">
-                <!-- Populated dynamically -->
-              </tbody>
-            </table>
           </div>
         </div>
 
+        <!-- Revenue Target & 4-Week Milestone Roadmap Card -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.25rem; background: #ffffff; border: 1.5px solid var(--border-light); border-radius: var(--radius-xl); box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+          <!-- Card Header -->
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.75rem;">
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <div style="width: 38px; height: 38px; border-radius: var(--radius-md); background: #e0e7ff; color: #4338ca; display: flex; align-items: center; justify-content: center; font-size: 1.15rem;">
+                <i class="fa-solid fa-bullseye"></i>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <h3 style="font-size: 1.05rem; font-weight: 800; color: var(--slate-900); margin: 0;">My Revenue Target & 4-Week Milestone Roadmap</h3>
+                  <span class="badge" id="rep-target-month-badge" style="background: #f1f5f9; color: #475569; font-weight: 700;">October 2026</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500);">Monthly revenue target broken into 4 weekly performance milestones</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button class="btn btn-primary btn-sm" id="btn-open-target-modal" style="display: none; font-size: 0.78rem;">
+                <i class="fa-solid fa-pen-to-square"></i> Admin: Update Target
+              </button>
+            </div>
+          </div>
+
+          <!-- Monthly High-Level Target Summary Strip -->
+          <div style="background: linear-gradient(135deg, #f8fafc 0%, #eff6ff 100%); border: 1px solid #bfdbfe; border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1rem;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 0.75rem;">
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Monthly Target</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); line-height: 1.2;" id="rep-monthly-target-amt">₹0</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--success-text); text-transform: uppercase; letter-spacing: 0.05em;">Revenue Achieved</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--success-solid); line-height: 1.2;" id="rep-monthly-achieved-amt">₹0</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Remaining to Target</span>
+                <div style="font-size: 1.5rem; font-weight: 800; color: var(--warning-solid); line-height: 1.2;" id="rep-monthly-remaining-amt">₹0</div>
+              </div>
+              <div>
+                <span style="font-size: 0.72rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">Achievement Status</span>
+                <div style="margin-top: 0.2rem;" id="rep-monthly-status-badge">
+                  <span class="badge badge-stage-interested">In Progress</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div>
+              <div style="display: flex; justify-content: space-between; font-size: 0.75rem; font-weight: 700; margin-bottom: 0.25rem;">
+                <span style="color: var(--slate-600);">Monthly Target Realization</span>
+                <span id="rep-monthly-percent-label" style="color: var(--primary-700);">0.0%</span>
+              </div>
+              <div style="height: 8px; background: rgba(0,0,0,0.08); border-radius: 9999px; overflow: hidden;">
+                <div id="rep-monthly-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #3b82f6, #10b981); border-radius: 9999px; transition: width 0.5s ease;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 4-Week Milestone Cards Grid -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0.85rem;" id="rep-weeks-container">
+            <!-- Populated dynamically via Targets.getUserRevenueProgress -->
+          </div>
+        </div>
+
+        <!-- Salesperson Specific KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-info">
+              <span class="kpi-label">My Leads</span>
+              <span class="kpi-value" id="kpi-my-leads">0</span>
+              <span class="kpi-subtext" style="color: var(--slate-500); font-size: 0.75rem;">Assigned to me</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-address-book"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-info">
+              <span class="kpi-label">Today's Follow-ups</span>
+              <span class="kpi-value" id="kpi-my-today-flw">0</span>
+              <span class="kpi-subtext" style="color: var(--warning-solid); font-size: 0.75rem;">Scheduled for today</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-clock"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-danger">
+            <div class="kpi-info">
+              <span class="kpi-label">Overdue Follow-ups</span>
+              <span class="kpi-value" id="kpi-my-overdue-flw">0</span>
+              <span class="kpi-subtext" style="color: var(--danger-solid); font-size: 0.75rem;">Requires urgent action</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-info">
+              <span class="kpi-label">Interested Leads</span>
+              <span class="kpi-value" id="kpi-my-interested">0</span>
+              <span class="kpi-subtext" style="color: #9333ea; font-size: 0.75rem;">High purchase intent</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-fire"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-info">
+            <div class="kpi-info">
+              <span class="kpi-label">Prospects</span>
+              <span class="kpi-value" id="kpi-my-prospects">0</span>
+              <span class="kpi-subtext" style="color: var(--info-solid); font-size: 0.75rem;">In negotiation / proposal</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-bullseye"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-success">
+            <div class="kpi-info">
+              <span class="kpi-label">My Enrolled Leads</span>
+              <span class="kpi-value" id="kpi-my-converted">0</span>
+              <span class="kpi-subtext" style="color: var(--success-solid); font-size: 0.75rem;" id="kpi-my-rate">0% closed</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-trophy"></i></div>
+          </div>
+        </div>
+
+        <!-- Main Body Grid: Today's Action Queue & Recent Leads Assigned -->
+        <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+          <!-- Today's Action Tasks -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-list-check" style="color: var(--primary-600);"></i> Today's Follow-up Action Queue</h3>
+              <a href="followups.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">All Follow-ups →</a>
+            </div>
+            <div class="card-body" style="padding: 1rem; max-height: 400px; overflow-y: auto;">
+              <div id="rep-today-tasks-container" style="display: flex; flex-direction: column; gap: 0.75rem;">
+                <!-- Populated dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- My Recent Leads -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-user-plus" style="color: var(--info-solid);"></i> My Active Portfolio</h3>
+              <a href="customers.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">View Customers →</a>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Customer / Lead</th>
+                      <th>Stage</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="rep-recent-leads-tbody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- My Recent Activity Trail -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--slate-600);"></i> My Recent Activities</h3>
+            <a href="activities.html" style="font-size: 0.8rem; color: var(--primary-600); font-weight: 600;">Audit Log →</a>
+          </div>
+          <div class="card-body" style="padding: 1rem 1.25rem;">
+            <div id="rep-recent-activities-list" style="display: flex; flex-direction: column; gap: 0.75rem;">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/pipeline.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    function refreshPageData() {
-      const user = Auth.getCurrentUser();
-      const allStudents = Customers.getAll();
-      const allFollowups = Followups.getAll();
-      const allPayments = Payments.getAll();
+    function renderRevenueTargets(userId) {
+      if (!window.Targets) return;
+      const currentMonth = Targets.getCurrentMonth();
+      const progress = Targets.getUserRevenueProgress(userId, currentMonth);
+      if (!progress) return;
 
-      // Determine active counselor name: if logged in as counselor, use user's name, otherwise default to Arun Kumar
-      const isCounselor = user && (user.role === 'COUNSELOR' || user.role === 'counselor');
-      const counselorName = isCounselor ? user.name : 'Arun Kumar';
+      const [year, monthNum] = currentMonth.split('-');
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      const monthLabel = `${monthNames[parseInt(monthNum, 10) - 1]} ${year}`;
 
-      const myStudents = allStudents.filter(s => s.counselor === counselorName);
-      const myStudentIds = myStudents.map(s => s.id);
+      const monthBadge = document.getElementById('rep-target-month-badge');
+      if (monthBadge) monthBadge.textContent = monthLabel;
 
-      const myFollowups = allFollowups.filter(f => f.counselor === counselorName || myStudentIds.includes(f.studentId));
-      const myPayments = allPayments.filter(p => myStudentIds.includes(p.studentId));
+      document.getElementById('rep-monthly-target-amt').textContent = Targets.formatCurrency(progress.monthlyTarget);
+      document.getElementById('rep-monthly-achieved-amt').textContent = Targets.formatCurrency(progress.monthlyAchieved);
+      document.getElementById('rep-monthly-remaining-amt').textContent = Targets.formatCurrency(progress.monthlyRemaining);
+      document.getElementById('rep-monthly-percent-label').textContent = `${progress.monthlyPercent}% (${Targets.formatCurrency(progress.monthlyAchieved)} of ${Targets.formatCurrency(progress.monthlyTarget)})`;
+      document.getElementById('rep-monthly-progress-bar').style.width = `${Math.min(100, progress.monthlyPercent)}%`;
+      document.getElementById('rep-monthly-status-badge').innerHTML = `<span class="badge ${progress.monthlyStatusClass}">${progress.monthlyStatus}</span>`;
 
-      // Financials
-      const myBooked = myStudents.reduce((sum, s) => sum + (s.placementFee || 0), 0);
-      const myCollected = myStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
-      const myTarget = 400000; // Monthly benchmark quota
-      const quotaPct = ((myCollected / myTarget) * 100).toFixed(1);
-
-      // Counts
-      const counts = Pipeline.getStageCounts(myStudents);
-      document.getElementById('counselor-stat-leads').textContent = myStudents.length;
-      document.getElementById('counselor-stat-interested').textContent = counts['Interested'] || 0;
-      document.getElementById('counselor-stat-prospects').textContent = counts['Prospect'] || 0;
-      document.getElementById('counselor-stat-converted').textContent = counts['Converted'] || 0;
-      document.getElementById('counselor-stat-collections').textContent = Utils.formatINR(myCollected);
-      document.getElementById('counselor-stat-quota').textContent = quotaPct + '%';
-
-      // Tasks: today & overdue
-      const todayStr = new Date().toISOString().split('T')[0];
-      const pendingTasks = myFollowups.filter(f => f.status === 'Pending');
-      const todayTasks = pendingTasks.filter(f => f.scheduledDate === todayStr);
-      const overdueTasks = pendingTasks.filter(f => f.scheduledDate < todayStr);
-
-      document.getElementById('counselor-stat-today').textContent = todayTasks.length;
-      document.getElementById('counselor-stat-overdue').textContent = overdueTasks.length;
-
-      // Populate Action Queue
-      const taskTbody = document.getElementById('counselor-tasks-tbody');
-      const activeQueue = pendingTasks.slice(0, 8);
-
-      if (activeQueue.length === 0) {
-        taskTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 30px;">Great job! No pending outreach tasks remaining.</td></tr>`;
-      } else {
-        taskTbody.innerHTML = activeQueue.map(f => {
-          const student = myStudents.find(s => s.id === f.studentId) || { mobile: '9876543210', targetRole: 'Software Engineer' };
-          const isOverdue = f.scheduledDate < todayStr;
+      // Render 4-Week Milestone Cards
+      const weeksContainer = document.getElementById('rep-weeks-container');
+      if (weeksContainer) {
+        weeksContainer.innerHTML = progress.weeks.map(w => {
+          const isCurr = w.isCurrentWeek;
           return `
-            <tr>
-              <td>
-                <div style="font-weight: 600;">
-                  <a href="customer-details.html?id=${f.studentId}" style="color: var(--primary); text-decoration: none;">
-                    ${Utils.escapeHtml(f.studentName)}
-                  </a>
+            <div style="background: white; border: ${isCurr ? '2px solid var(--primary-500)' : '1px solid var(--border-light)'}; border-radius: var(--radius-lg); padding: 0.9rem 1rem; position: relative; ${isCurr ? 'box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);' : ''}">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span style="font-weight: 800; font-size: 0.88rem; color: var(--slate-900);">${w.label}</span>
+                <span style="font-size: 0.7rem; color: var(--slate-500); background: var(--slate-100); padding: 0.15rem 0.45rem; border-radius: 4px;">${w.dateRange}</span>
+              </div>
+              ${isCurr ? `
+                <div style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.68rem; font-weight: 700; color: #1d4ed8; background: #dbeafe; padding: 0.1rem 0.4rem; border-radius: 9999px; margin-bottom: 0.4rem;">
+                  <span style="width: 6px; height: 6px; border-radius: 50%; background: #2563eb; display: inline-block;"></span> Current Week
                 </div>
-                <div style="font-size: 11px; color: var(--slate-500);">${f.studentId} • ${student.mobile || ''}</div>
-              </td>
-              <td><span style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(student.targetRole || 'Developer')}</span></td>
-              <td>
-                <div style="font-weight: 500; font-size: 12px; color: ${isOverdue ? 'var(--red)' : 'var(--navy-900)'};">
-                  ${f.scheduledDate} ${f.scheduledTime || ''}
+              ` : ''}
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.25rem;">
+                <span style="font-size: 0.72rem; color: var(--slate-500); text-transform: uppercase; font-weight: 700;">Target</span>
+                <span style="font-size: 0.95rem; font-weight: 800; color: var(--slate-900);">${Targets.formatCurrency(w.target)}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 0.5rem;">
+                <span style="font-size: 0.72rem; color: var(--success-text); text-transform: uppercase; font-weight: 700;">Achieved</span>
+                <span style="font-size: 1rem; font-weight: 800; color: var(--success-solid);">${Targets.formatCurrency(w.achieved)}</span>
+              </div>
+              <div style="margin-bottom: 0.5rem;">
+                <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: 600; color: var(--slate-600); margin-bottom: 0.2rem;">
+                  <span>Progress</span>
+                  <span>${w.percent}%</span>
                 </div>
-                ${isOverdue ? '<span class="badge badge-lost" style="font-size: 10px; padding: 2px 6px;">Overdue</span>' : ''}
-              </td>
-              <td><span class="badge ${f.priority === 'High' ? 'badge-interested' : 'badge-new'}">${f.priority || 'Normal'}</span></td>
-              <td style="font-size: 13px; color: var(--slate-700); max-width: 220px;">${Utils.escapeHtml(f.purpose)}</td>
-              <td>
-                <div class="row-actions">
-                  <button class="btn-icon" onclick="Communication.logCall('${f.studentId}', refreshPageData)" title="Call Student">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendWhatsApp('${f.studentId}', 'followup')" title="WhatsApp Message">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendEmail('${f.studentId}')" title="Email Student">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Followups.openCompleteModal('${f.id}', refreshPageData)" title="Complete Task">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                  </button>
+                <div style="height: 6px; background: var(--slate-100); border-radius: 9999px; overflow: hidden;">
+                  <div style="height: 100%; width: ${Math.min(100, w.percent)}%; background: ${w.percent >= 100 ? 'var(--success-solid)' : (w.percent >= 50 ? 'var(--primary-600)' : 'var(--warning-solid)')}; border-radius: 9999px;"></div>
                 </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      // Populate Counselor Leads Table
-      const leadsTbody = document.getElementById('counselor-leads-tbody');
-      if (myStudents.length === 0) {
-        leadsTbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--slate-400); padding: 30px;">No assigned students yet. Click "+ Add Lead" to enroll.</td></tr>`;
-      } else {
-        leadsTbody.innerHTML = myStudents.map(s => {
-          const stageBadge = Utils.getStageBadge(s.stage);
-          const paymentBadge = Utils.getPaymentBadge(s.paymentStatus);
-          return `
-            <tr>
-              <td><span style="font-family: monospace; font-size: 11px; color: var(--slate-500);">${s.id}</span></td>
-              <td>
-                <a href="customer-details.html?id=${s.id}" style="font-weight: 600; color: var(--navy-900); text-decoration: none;">
-                  ${Utils.escapeHtml(s.name)}
-                </a>
-              </td>
-              <td><span style="font-size: 13px; color: var(--slate-600);">${Utils.escapeHtml(s.mobile)}</span></td>
-              <td>
-                <div style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(s.college || '-')}</div>
-                <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(s.degree || '')} (${s.passingYear || ''})</div>
-              </td>
-              <td>${stageBadge}</td>
-              <td>
-                <div>${paymentBadge}</div>
-                <div style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">
-                  Paid: ${Utils.formatINR(s.paidAmount || 0)} / ${Utils.formatINR(s.placementFee || 0)}
-                </div>
-              </td>
-              <td><span style="font-size: 12px; color: var(--slate-600);">${s.nextFollowup || 'Not scheduled'}</span></td>
-              <td>
-                <div class="row-actions">
-                  <a href="customer-details.html?id=${s.id}" class="btn-icon" title="View Profile">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </a>
-                  <button class="btn-icon" onclick="Pipeline.openStageChangeModal('${s.id}', refreshPageData)" title="Update Stage">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Payments.openRecordModal('${s.id}', refreshPageData)" title="Record Payment">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; font-size: 0.72rem;">
+                <span style="color: var(--slate-400);">${w.paymentCount} payments</span>
+                <span class="badge ${w.statusClass}" style="font-size: 0.68rem; padding: 0.15rem 0.45rem;">${w.status}</span>
+              </div>
+            </div>
           `;
         }).join('');
       }
     }
-
     document.addEventListener('DOMContentLoaded', () => {
-      UI.init('dashboard');
-      refreshPageData();
+      // 1. Guard page
+      if (!Auth.requireAuth(['sales', 'manager', 'admin'])) return;
+
+      App.init('dashboard');
+      const currentUser = Auth.getCurrentUser();
+      document.getElementById('rep-name-badge').textContent = `Rep: ${currentUser.name}`;
+
+      // 2. Fetch scoped data
+      const myCustomers = Customers.getScopedCustomers(currentUser);
+      document.getElementById('kpi-my-leads').textContent = myCustomers.length;
+
+      // Personal Fee & Collection Summary
+      const myFeeSummary = Payments.getSummary(myCustomers);
+      document.getElementById('rep-fee-booked').textContent = Payments.formatCurrency(myFeeSummary.totalBooked);
+      document.getElementById('rep-fee-collected').textContent = Payments.formatCurrency(myFeeSummary.totalCollected);
+      document.getElementById('rep-fee-pending').textContent = Payments.formatCurrency(myFeeSummary.totalPending);
+      document.getElementById('rep-fee-overdue').textContent = `${myFeeSummary.overdueCount} Overdue Milestones`;
+      document.getElementById('rep-fee-rate').textContent = `${myFeeSummary.collectionRate}%`;
+      document.getElementById('rep-fee-rate-bar').style.width = `${Math.min(100, myFeeSummary.collectionRate)}%`;
+
+      // Render Revenue Targets (Monthly + 4 Weeks)
+      renderRevenueTargets(currentUser.id);
+
+      // If user is Admin or Manager, show update target button
+      const targetBtn = document.getElementById('btn-open-target-modal');
+      if (targetBtn && (currentUser.role === 'admin' || currentUser.role === 'manager')) {
+        targetBtn.style.display = 'inline-flex';
+        targetBtn.addEventListener('click', () => {
+          Targets.openUpdateModal(currentUser.id, () => {
+            renderRevenueTargets(currentUser.id);
+          });
+        });
+      }
+
+      window.addEventListener('crmTargetsUpdated', (e) => {
+        if (!e.detail || String(e.detail.userId) === String(currentUser.id)) {
+          renderRevenueTargets(currentUser.id);
+        }
+      });
+
+      let interested = 0, prospects = 0, converted = 0;
+      myCustomers.forEach(c => {
+        if (c.stage === 'Interested') interested++;
+        else if (c.stage === 'Prospect') prospects++;
+        else if (c.stage === 'Enrolled' || c.stage === 'Converted') converted++;
+      });
+
+      document.getElementById('kpi-my-interested').textContent = interested;
+      document.getElementById('kpi-my-prospects').textContent = prospects;
+      document.getElementById('kpi-my-converted').textContent = converted;
+
+      const rate = myCustomers.length > 0 ? ((converted / myCustomers.length) * 100).toFixed(1) : 0;
+      document.getElementById('kpi-my-rate').textContent = `${rate}% enrollment`;
+
+      // 3. Follow-up statistics
+      const cats = Followups.getCategorized(true);
+      document.getElementById('kpi-my-today-flw').textContent = cats.today.length;
+      document.getElementById('kpi-my-overdue-flw').textContent = cats.overdue.length;
+
+      // 4. Render Today's tasks with 1-click Call, WhatsApp, Complete actions
+      const taskContainer = document.getElementById('rep-today-tasks-container');
+      const todayAndOverdue = [...cats.overdue, ...cats.today];
+
+      if (todayAndOverdue.length) {
+        taskContainer.innerHTML = todayAndOverdue.map(f => {
+          const isOverdue = cats.overdue.some(o => o.id === f.id);
+          const cust = Customers.getById(f.customerId);
+          return `
+            <div style="padding: 0.85rem; border-radius: var(--radius-md); border: 1px solid ${isOverdue ? 'var(--danger-border)' : 'var(--border-light)'}; background-color: ${isOverdue ? 'var(--danger-bg)' : '#fff'};">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.35rem;">
+                <div>
+                  <a href="customer-details.html?id=${f.customerId}" style="font-weight: 700; color: var(--slate-900); font-size: 0.9rem; text-decoration: none;">
+                    ${Utils.escapeHtml(f.customerName)}
+                  </a>
+                  <div style="font-size: 0.75rem; color: var(--slate-500); margin-top: 0.1rem;">
+                    ${isOverdue ? '<span class="badge badge-priority-high" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; margin-right: 0.35rem;">OVERDUE</span>' : ''}
+                    Time: ${f.time} • ${f.date}
+                  </div>
+                </div>
+                ${Utils.getPriorityBadge(f.priority)}
+              </div>
+              <div style="font-size: 0.8rem; color: var(--slate-700); margin-bottom: 0.65rem; line-height: 1.4;">
+                ${Utils.escapeHtml(f.purpose)}
+              </div>
+              <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="Communication.initiateCall('${f.customerId}')">
+                  <i class="fa-solid fa-phone" style="color: var(--success-solid);"></i> Call
+                </button>
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="Communication.openWhatsApp('${f.customerId}')">
+                  <i class="fa-brands fa-whatsapp" style="color: #25d366;"></i> WhatsApp
+                </button>
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;" onclick="Communication.initiateEmail('${f.customerId}')">
+                  <i class="fa-solid fa-envelope" style="color: var(--primary-600);"></i> Email
+                </button>
+                <button class="btn btn-primary btn-sm" style="font-size: 0.75rem; padding: 0.25rem 0.6rem; margin-left: auto;" onclick="markComplete('${f.id}')">
+                  <i class="fa-solid fa-check"></i> Complete
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      } else {
+        taskContainer.innerHTML = `
+          <div class="empty-state" style="padding: 2rem;">
+            <div class="empty-state-icon"><i class="fa-solid fa-circle-check" style="color: var(--success-solid);"></i></div>
+            <div class="empty-state-title">No pending tasks for today</div>
+            <div class="empty-state-desc">You are completely up-to-date with your follow-ups!</div>
+          </div>
+        `;
+      }
+
+      // 5. Render recent leads in portfolio
+      const tbody = document.getElementById('rep-recent-leads-tbody');
+      if (myCustomers.length) {
+        tbody.innerHTML = myCustomers.slice(0, 6).map(c => `
+          <tr>
+            <td>
+              <a href="customer-details.html?id=${c.id}" style="font-weight: 600; color: var(--slate-900); text-decoration: none;">
+                ${Utils.escapeHtml(c.name)}
+              </a>
+              <div style="font-size: 0.72rem; color: var(--slate-500);">${c.id} • ${c.mobile}</div>
+            </td>
+            <td>${Utils.getStageBadge(c.stage)}</td>
+            <td>
+              <a href="customer-details.html?id=${c.id}" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.55rem; font-size: 0.75rem;">
+                Open
+              </a>
+            </td>
+          </tr>
+        `).join('');
+      } else {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No leads assigned to you yet</td></tr>`;
+      }
+
+      // 6. My recent activities
+      const myActivities = Activities.getAll({ scoped: true }).slice(0, 6);
+      const actContainer = document.getElementById('rep-recent-activities-list');
+      if (myActivities.length) {
+        actContainer.innerHTML = myActivities.map(a => `
+          <div style="display: flex; gap: 0.75rem; align-items: flex-start; padding-bottom: 0.65rem; border-bottom: 1px solid var(--border-subtle);">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background-color: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; margin-top: 2px;">
+              <i class="fa-solid fa-clock"></i>
+            </div>
+            <div style="flex: 1; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                <span style="font-weight: 600; font-size: 0.8rem; color: var(--slate-900);">${Utils.escapeHtml(a.action)}</span>
+                <span style="font-size: 0.7rem; color: var(--slate-400);">${Utils.formatRelativeTime(a.timestamp)}</span>
+              </div>
+              <div style="font-size: 0.78rem; color: var(--slate-600); margin-top: 0.1rem;">
+                ${Utils.escapeHtml(a.description)}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      } else {
+        actContainer.innerHTML = `<div style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No activities logged yet</div>`;
+      }
     });
+
+    function markComplete(followupId) {
+      const notes = prompt('Enter follow-up completion notes / summary:');
+      if (notes !== null) {
+        Followups.complete(followupId, notes);
+        setTimeout(() => window.location.reload(), 400);
+      }
+    }
   </script>
 </body>
 </html>

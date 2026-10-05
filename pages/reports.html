@@ -3,600 +3,906 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Placement Intelligence Reports — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Sales Reports & Placement Analytics — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Placement Intelligence Reports</h1>
-            <p class="page-subtitle">Executive financial analytics, counselor conversion velocity, recruitment funnel drop-off, and lead source attribution.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Sales Intelligence & Placement Reports</h1>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Placement revenue realization, counselor benchmarks, stage velocity, and multi-filter analytics.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-primary-purple" onclick="exportCurrentReportCSV()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Export Report CSV
+          <div style="display: flex; gap: 0.75rem;">
+            <button class="btn btn-secondary btn-sm" id="btn-export-csv">
+              <i class="fa-solid fa-file-csv" style="color: #107c41;"></i> Export Active Report CSV
             </button>
           </div>
         </div>
 
-        <!-- Report Tabs Navigation -->
-        <div class="enterprise-card" style="padding: 12px 16px; margin-bottom: 20px;">
-          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <button type="button" class="btn-outline-sm" id="rep-tab-revenue" onclick="switchReportTab('revenue')" style="background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600;">
-              💰 Revenue Analytics
-            </button>
-            <button type="button" class="btn-outline-sm" id="rep-tab-counselor" onclick="switchReportTab('counselor')">
-              🏆 Counselor Performance
-            </button>
-            <button type="button" class="btn-outline-sm" id="rep-tab-funnel" onclick="switchReportTab('funnel')">
-              ⚡ Stage Movement &amp; Funnel
-            </button>
-            <button type="button" class="btn-outline-sm" id="rep-tab-source" onclick="switchReportTab('source')">
-              🎯 Lead Source Attribution
-            </button>
-          </div>
-        </div>
-
-        <!-- Global Report Filters Toolbar -->
-        <div class="enterprise-card" style="margin-bottom: 20px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
-            <select id="rep-filter-counselor" class="filter-select" onchange="renderActiveReport()">
-              <option value="">All Counselors</option>
-              <option value="Arun Kumar">Arun Kumar</option>
-              <option value="Sneha Rao">Sneha Rao</option>
-              <option value="Vikram Singh">Vikram Singh</option>
-              <option value="Neha Gupta">Neha Gupta</option>
-              <option value="Rahul Mehta">Rahul Mehta</option>
-            </select>
-
-            <select id="rep-filter-stage" class="filter-select" onchange="renderActiveReport()">
-              <option value="">All Stages</option>
-              <option value="Cold Calling">Cold Calling</option>
-              <option value="New Lead">New Lead</option>
-              <option value="Contacted">Contacted</option>
-              <option value="Interested">Interested</option>
-              <option value="Prospect">Prospect</option>
-              <option value="Converted">Converted</option>
-              <option value="Lost">Lost</option>
-            </select>
-
-            <select id="rep-filter-source" class="filter-select" onchange="renderActiveReport()">
-              <option value="">All Sources</option>
-              <option value="LinkedIn Ads">LinkedIn Ads</option>
-              <option value="College Seminar">College Seminar</option>
-              <option value="Website Inbound">Website Inbound</option>
-              <option value="Student Referral">Student Referral</option>
-              <option value="Job Portal">Job Portal</option>
-            </select>
-
-            <select id="rep-filter-payment" class="filter-select" onchange="renderActiveReport()">
-              <option value="">All Payment Statuses</option>
-              <option value="Paid">Fully Paid</option>
-              <option value="Partially Paid">Partially Paid</option>
-              <option value="Pending">Pending</option>
-              <option value="Overdue">Overdue</option>
-            </select>
-
-            <button type="button" class="btn-outline-sm" onclick="resetReportFilters()">Reset</button>
-          </div>
-        </div>
-
-        <!-- TAB 1: REVENUE ANALYTICS -->
-        <div id="pane-revenue">
-          <div class="kpi-four-grid" style="margin-bottom: 20px;">
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">TOTAL BOOKED FEE</div>
-              <div class="kpi-subcard-value" id="rep-rev-booked">₹16,00,000</div>
-              <div class="kpi-subcard-footer">Contracted placement pipeline</div>
+        <!-- Universal Multi-Dimensional Filter Card -->
+        <div class="card" style="margin-bottom: 1.25rem; padding: 1.25rem;">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.5rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-weight: 700; font-size: 0.9rem; color: var(--slate-800); display: flex; align-items: center; gap: 0.5rem;">
+              <i class="fa-solid fa-filter" style="color: var(--primary-600);"></i> Universal Report Intelligence Filters
             </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">CASH REALIZED</div>
-              <div class="kpi-subcard-value val-green" id="rep-rev-collected">₹6,03,500</div>
-              <div class="kpi-subcard-footer">Cleared in bank</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">PENDING REVENUE DUE</div>
-              <div class="kpi-subcard-value val-amber" id="rep-rev-pending">₹9,96,500</div>
-              <div class="kpi-subcard-footer">Scheduled installments</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">REALIZATION EFFICIENCY</div>
-              <div class="kpi-subcard-value val-purple" id="rep-rev-rate">37.7%</div>
-              <div class="kpi-progress-bar-track">
-                <div class="kpi-progress-bar-fill" id="rep-rev-bar" style="width: 37.7%;"></div>
-              </div>
+            <div style="font-size: 0.8rem; color: var(--slate-500);">
+              Scoped Candidates: <span id="filter-scoped-count" style="font-weight: 700; color: var(--primary-700);">0</span>
             </div>
           </div>
 
-          <div class="dashboard-grid-2col">
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Contracted Value vs Realized Cash by Counselor</div>
-              </div>
-              <div class="chart-container-box">
-                <canvas id="chart-rep-rev-counselor"></canvas>
-              </div>
+          <!-- Filter Controls Grid -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1.2fr 1.2fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div>
+              <label class="form-label">Date Preset</label>
+              <select id="rpt-date-preset" class="form-select">
+                <option value="all" selected>All Time</option>
+                <option value="today">Today</option>
+                <option value="yesterday">Yesterday</option>
+                <option value="this_week">This Week</option>
+                <option value="this_month">This Month</option>
+                <option value="last_30_days">Last 30 Days</option>
+                <option value="this_quarter">This Quarter</option>
+                <option value="custom">Custom Date Range</option>
+              </select>
             </div>
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Collections by Payment Mode</div>
-              </div>
-              <div class="chart-container-box">
-                <canvas id="chart-rep-rev-modes"></canvas>
-              </div>
+
+            <div>
+              <label class="form-label">Start Date</label>
+              <input type="date" id="rpt-start-date" class="form-control">
+            </div>
+
+            <div>
+              <label class="form-label">End Date</label>
+              <input type="date" id="rpt-end-date" class="form-control">
+            </div>
+
+            <div>
+              <label class="form-label">Career Counselor</label>
+              <select id="rpt-counselor" class="form-select">
+                <option value="all">All Counselors</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Sales Manager</label>
+              <select id="rpt-manager" class="form-select">
+                <option value="all">All Managers</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.2fr 1.2fr 1.5fr auto; gap: 0.75rem; align-items: flex-end;">
+            <div>
+              <label class="form-label">Pipeline Stage</label>
+              <select id="rpt-stage" class="form-select">
+                <option value="all">All Pipeline Stages</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Fee / Payment Status</label>
+              <select id="rpt-fee-status" class="form-select">
+                <option value="all">All Fee Statuses</option>
+                <option value="Fully Paid">Fully Paid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Overdue">Overdue Due</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Lead Source</label>
+              <select id="rpt-source" class="form-select">
+                <option value="all">All Acquisition Channels</option>
+              </select>
+            </div>
+
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-primary" id="rpt-btn-apply" title="Apply filter criteria">
+                <i class="fa-solid fa-filter"></i> Apply Filters
+              </button>
+              <button class="btn btn-secondary" id="rpt-btn-reset" title="Reset all filters">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
             </div>
           </div>
         </div>
 
-        <!-- TAB 2: COUNSELOR PERFORMANCE -->
-        <div id="pane-counselor" style="display: none;">
-          <div class="enterprise-card" style="margin-bottom: 20px;">
-            <div class="card-header-bar">
-              <div class="card-heading">Counselor Conversion Matrix</div>
-              <span class="card-pill-badge">Benchmarked vs Target</span>
+        <!-- Report Tabs -->
+        <div class="nav-tabs" style="margin-bottom: 1.25rem;">
+          <button class="tab-btn active" data-report="tab-revenue-payments">
+            <i class="fa-solid fa-indian-rupee-sign"></i> Placement Fees & Revenue
+          </button>
+          <button class="tab-btn" data-report="tab-team-performance">
+            <i class="fa-solid fa-chart-column"></i> Counselor Performance
+          </button>
+          <button class="tab-btn" data-report="tab-stage-movement">
+            <i class="fa-solid fa-arrows-split-up-and-left"></i> Stage Movement & Velocity
+          </button>
+          <button class="tab-btn" data-report="tab-sources">
+            <i class="fa-solid fa-pie-chart"></i> Lead Source Attribution
+          </button>
+        </div>
+
+        <!-- TAB 1: PLACEMENT REVENUE & FEES -->
+        <div id="tab-revenue-payments" class="tab-pane active">
+          <!-- KPI Cards Strip -->
+          <div class="dashboard-kpi-grid" style="margin-bottom: 1.25rem;">
+            <div class="card kpi-card" style="padding: 1.25rem; border-left: 4px solid var(--primary-600);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Total Booked Fee</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: var(--slate-900); margin: 0.25rem 0;" id="rev-kpi-booked">₹0</div>
+              <div style="font-size: 0.78rem; color: var(--slate-500);" id="rev-kpi-students">Across 0 leads</div>
             </div>
-            <div class="chart-container-box">
-              <canvas id="chart-rep-counselor-perf"></canvas>
+
+            <div class="card kpi-card" style="padding: 1.25rem; border-left: 4px solid var(--success-solid);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Cash Collected</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: var(--success-solid); margin: 0.25rem 0;" id="rev-kpi-collected">₹0</div>
+              <div style="font-size: 0.78rem; color: var(--slate-500);" id="rev-kpi-fullypaid">0 Fully Paid Leads</div>
+            </div>
+
+            <div class="card kpi-card" style="padding: 1.25rem; border-left: 4px solid var(--warning-solid);">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Pending Dues</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: var(--warning-solid); margin: 0.25rem 0;" id="rev-kpi-pending">₹0</div>
+              <div style="font-size: 0.78rem; color: var(--danger-solid);" id="rev-kpi-overdue">0 Overdue Dues</div>
+            </div>
+
+            <div class="card kpi-card" style="padding: 1.25rem; border-left: 4px solid #8b5cf6;">
+              <div style="font-size: 0.8rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Collection Rate</div>
+              <div style="font-size: 1.75rem; font-weight: 800; color: #8b5cf6; margin: 0.25rem 0;" id="rev-kpi-rate">0.0%</div>
+              <div style="height: 6px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-top: 0.5rem;">
+                <div id="rev-kpi-rate-bar" style="height: 100%; width: 0%; background: #8b5cf6; transition: width 0.4s ease;"></div>
+              </div>
             </div>
           </div>
 
-          <div class="enterprise-card" style="padding: 0; overflow: hidden;">
-            <div class="table-responsive">
-              <table class="crm-table">
-                <thead>
-                  <tr>
-                    <th>Counselor</th>
-                    <th>Manager</th>
-                    <th>Assigned Leads</th>
-                    <th>Calls Logged</th>
-                    <th>Follow-ups Completed</th>
-                    <th>Converted Students</th>
-                    <th>Revenue Realized</th>
-                    <th>Conversion Velocity</th>
-                  </tr>
-                </thead>
-                <tbody id="rep-counselor-tbody">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+          <!-- Counselor Leaderboard & Payment Modes Grid -->
+          <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+            <!-- Counselor Revenue Realization Table -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-trophy" style="color: #f59e0b;"></i> Counselor Fee Realization Leaderboard</h3>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Career Counselor</th>
+                        <th>Manager</th>
+                        <th style="text-align: right;">Leads</th>
+                        <th style="text-align: right;">Booked Fee</th>
+                        <th style="text-align: right;">Collected</th>
+                        <th style="text-align: right;">Pending Due</th>
+                        <th style="text-align: right;">Realization</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rev-counselor-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Mode Split Doughnut Chart -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-money-check-dollar" style="color: var(--primary-600);"></i> Payment Methods</h3>
+              </div>
+              <div class="card-body" style="display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 260px;">
+                <canvas id="revPaymentModeChart" style="max-height: 200px;"></canvas>
+                <div id="rev-mode-legend" style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; font-size: 0.75rem;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Revenue by Stage & Overdue Milestones Grid -->
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; margin-bottom: 1.25rem;">
+            <!-- Revenue by Pipeline Stage Chart -->
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-chart-column" style="color: var(--primary-600);"></i> Revenue Realization by Stage</h3>
+              </div>
+              <div class="card-body">
+                <canvas id="revStageChart" style="max-height: 260px; width: 100%;"></canvas>
+              </div>
+            </div>
+
+            <!-- Overdue & Upcoming Milestones Alert -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left" style="color: var(--danger-solid);"></i> Pending & Overdue Installments</h3>
+                <span class="badge badge-danger" id="rev-dues-badge">0 dues</span>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive" style="max-height: 280px; overflow-y: auto;">
+                  <table class="table" style="font-size: 0.8rem;">
+                    <thead>
+                      <tr>
+                        <th>Candidate</th>
+                        <th>Milestone</th>
+                        <th>Due Date</th>
+                        <th style="text-align: right;">Amount</th>
+                        <th style="text-align: center;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="rev-dues-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- TAB 3: STAGE MOVEMENT & FUNNEL VELOCITY -->
-        <div id="pane-funnel" style="display: none;">
-          <div class="enterprise-card" style="margin-bottom: 20px;">
-            <div class="card-header-bar">
-              <div class="card-heading">Hiring &amp; Placement Pipeline Funnel</div>
-              <span class="card-pill-badge">Conversion Velocity</span>
+        <!-- TAB 2: COUNSELOR PERFORMANCE REPORT -->
+        <div id="tab-team-performance" class="tab-pane" style="display: none;">
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-simple" style="color: var(--primary-600);"></i> Team Leads vs Closed Conversions</h3>
             </div>
-            <div class="chart-container-box">
-              <canvas id="chart-rep-funnel"></canvas>
-            </div>
-          </div>
-
-          <div class="enterprise-card" style="padding: 0; overflow: hidden;">
-            <div class="table-responsive">
-              <table class="crm-table">
-                <thead>
-                  <tr>
-                    <th>Pipeline Stage</th>
-                    <th>Candidates In Stage</th>
-                    <th>Stage Pipeline Value</th>
-                    <th>Realized Cash In Stage</th>
-                    <th>Pending In Stage</th>
-                    <th>Funnel Conversion %</th>
-                  </tr>
-                </thead>
-                <tbody id="rep-funnel-tbody">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+            <div class="card-body">
+              <canvas id="teamComparisonChart" style="max-height: 280px; width: 100%;"></canvas>
             </div>
           </div>
 
-          <!-- Stage Movement Transitions Table (From, To, Count) -->
-          <div class="enterprise-card" style="padding: 0; overflow: hidden; margin-top: 24px;">
-            <div class="card-header-bar" style="padding: 16px 20px; border-bottom: 1px solid var(--border-light);">
-              <div>
-                <div class="card-heading">Stage Movement &amp; Candidate Transitions</div>
-                <div class="card-subheading">Historical progression ledger (From → To → Count)</div>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-users"></i> Sales Representative Leaderboard</h3>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Counselor</th>
+                      <th>Manager</th>
+                      <th>Assigned</th>
+                      <th>Contacted</th>
+                      <th>Calls</th>
+                      <th>Interested</th>
+                      <th>Prospects</th>
+                      <th>Follow-ups</th>
+                      <th>Enrolled</th>
+                      <th>Booked Fee</th>
+                      <th>Collected</th>
+                      <th>Win Rate</th>
+                    </tr>
+                  </thead>
+                  <tbody id="team-report-tbody"></tbody>
+                </table>
               </div>
-              <span class="card-pill-badge">From crm_stage_history</span>
-            </div>
-            <div class="table-responsive">
-              <table class="crm-table">
-                <thead>
-                  <tr>
-                    <th>From Stage</th>
-                    <th>To Stage</th>
-                    <th>Transition Count</th>
-                    <th>Latest Transition Reason</th>
-                  </tr>
-                </thead>
-                <tbody id="rep-stage-movement-tbody">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
 
-        <!-- TAB 4: LEAD SOURCE ATTRIBUTION -->
-        <div id="pane-source" style="display: none;">
-          <div class="dashboard-grid-2col" style="margin-bottom: 20px;">
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Lead Generation Volume by Channel</div>
+        <!-- TAB 3: STAGE MOVEMENT REPORT -->
+        <div id="tab-stage-movement" class="tab-pane" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 1.25rem; margin-bottom: 1.5rem;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-chart-line" style="color: var(--primary-600);"></i> Stage Velocity Breakdown</h3>
               </div>
-              <div class="chart-container-box">
-                <canvas id="chart-rep-source-volume"></canvas>
-              </div>
-            </div>
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Realized Revenue by Acquisition Channel</div>
-              </div>
-              <div class="chart-container-box">
-                <canvas id="chart-rep-source-revenue"></canvas>
+              <div class="card-body">
+                <canvas id="stageMovementChart" style="max-height: 280px; width: 100%;"></canvas>
               </div>
             </div>
-          </div>
 
-          <div class="enterprise-card" style="padding: 0; overflow: hidden;">
-            <div class="table-responsive">
-              <table class="crm-table">
-                <thead>
-                  <tr>
-                    <th>Acquisition Source</th>
-                    <th>Total Inquiries</th>
-                    <th>Converted Students</th>
-                    <th>Conversion Rate</th>
-                    <th>Total Contracted Fee</th>
-                    <th>Cash Realized (₹)</th>
-                  </tr>
-                </thead>
-                <tbody id="rep-source-tbody">
-                  <!-- Populated dynamically -->
-                </tbody>
-              </table>
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-list-ol"></i> Transition Volume</h3>
+                <span class="badge badge-priority-medium" id="total-movements-badge">0 total</span>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>From Stage</th>
+                        <th>To Stage</th>
+                        <th style="text-align: right;">Movements</th>
+                      </tr>
+                    </thead>
+                    <tbody id="movement-table-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- TAB 4: SOURCES -->
+        <div id="tab-sources" class="tab-pane" style="display: none;">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem;">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-pie-chart" style="color: #9333ea;"></i> Lead Inflow by Channel</h3>
+              </div>
+              <div class="card-body" style="display: flex; align-items: center; justify-content: center; min-height: 300px;">
+                <canvas id="sourcePieChart" style="max-height: 280px;"></canvas>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title"><i class="fa-solid fa-table-list"></i> Source Volume Breakdown</h3>
+              </div>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Lead Source</th>
+                        <th style="text-align: right;">Count</th>
+                        <th style="text-align: right;">Share</th>
+                      </tr>
+                    </thead>
+                    <tbody id="source-table-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/pipeline.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    let activeTab = 'revenue';
-    let charts = {};
-
-    function switchReportTab(tabKey) {
-      activeTab = tabKey;
-      ['revenue', 'counselor', 'funnel', 'source'].forEach(k => {
-        const btn = document.getElementById(`rep-tab-${k}`);
-        const pane = document.getElementById(`pane-${k}`);
-        if (btn) {
-          if (k === tabKey) {
-            btn.style.background = 'var(--primary)';
-            btn.style.color = '#fff';
-            btn.style.borderColor = 'var(--primary)';
-            btn.style.fontWeight = '600';
-          } else {
-            btn.style.background = '#ffffff';
-            btn.style.color = 'var(--slate-700)';
-            btn.style.borderColor = 'var(--slate-200)';
-            btn.style.fontWeight = '500';
-          }
-        }
-        if (pane) pane.style.display = (k === tabKey) ? 'block' : 'none';
-      });
-
-      renderActiveReport();
-    }
-
-    function getFilteredStudents() {
-      const counselor = document.getElementById('rep-filter-counselor')?.value || '';
-      const stage = document.getElementById('rep-filter-stage')?.value || '';
-      const source = document.getElementById('rep-filter-source')?.value || '';
-      const payment = document.getElementById('rep-filter-payment')?.value || '';
-
-      return Customers.getAll().filter(s => {
-        if (counselor && s.counselor !== counselor) return false;
-        if (stage && s.stage !== stage) return false;
-        if (source && s.leadSource !== source) return false;
-        if (payment && s.paymentStatus !== payment) return false;
-        return true;
-      });
-    }
-
-    function resetReportFilters() {
-      document.getElementById('rep-filter-counselor').value = '';
-      document.getElementById('rep-filter-stage').value = '';
-      document.getElementById('rep-filter-source').value = '';
-      document.getElementById('rep-filter-payment').value = '';
-      renderActiveReport();
-    }
-
-    function renderActiveReport() {
-      const students = getFilteredStudents();
-      const roster = Team.getRoster();
-      const payments = Payments.getAll();
-
-      if (activeTab === 'revenue') {
-        renderRevenueReport(students, roster, payments);
-      } else if (activeTab === 'counselor') {
-        renderCounselorReport(students, roster);
-      } else if (activeTab === 'funnel') {
-        renderFunnelReport(students);
-      } else if (activeTab === 'source') {
-        renderSourceReport(students);
-      }
-    }
-
-    function renderRevenueReport(students, roster, payments) {
-      const booked = students.reduce((sum, s) => sum + (s.placementFee || 0), 0);
-      const collected = students.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
-      const pending = Math.max(0, booked - collected);
-      const rate = booked > 0 ? ((collected / booked) * 100).toFixed(1) : '0.0';
-
-      document.getElementById('rep-rev-booked').textContent = Utils.formatINR(booked);
-      document.getElementById('rep-rev-collected').textContent = Utils.formatINR(collected);
-      document.getElementById('rep-rev-pending').textContent = Utils.formatINR(pending);
-      document.getElementById('rep-rev-rate').textContent = rate + '%';
-      document.getElementById('rep-rev-bar').style.width = Math.min(100, Number(rate)) + '%';
-
-      if (charts.revCounselor) charts.revCounselor.destroy();
-      if (charts.revModes) charts.revModes.destroy();
-
-      const ctx1 = document.getElementById('chart-rep-rev-counselor')?.getContext('2d');
-      if (ctx1) {
-        charts.revCounselor = new Chart(ctx1, {
-          type: 'bar',
-          data: {
-            labels: roster.map(r => r.name),
-            datasets: [
-              { label: 'Realized Collections (₹)', data: roster.map(r => r.revenue), backgroundColor: '#10b981', borderRadius: 6 },
-              { label: 'Total Contracted Fee (₹)', data: roster.map(r => (students.filter(s => s.counselor === r.name).reduce((sum, s) => sum + (s.placementFee || 0), 0))), backgroundColor: '#6366f1', borderRadius: 6 }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const modeMap = { UPI: 0, 'Net Banking': 0, 'Credit Card': 0, Cash: 0, Cheque: 0 };
-      payments.forEach(p => { if (p.status === 'Success') modeMap[p.mode || 'UPI'] += Number(p.amount || 0); });
-      const ctx2 = document.getElementById('chart-rep-rev-modes')?.getContext('2d');
-      if (ctx2) {
-        charts.revModes = new Chart(ctx2, {
-          type: 'doughnut',
-          data: {
-            labels: Object.keys(modeMap),
-            datasets: [{
-              data: Object.values(modeMap),
-              backgroundColor: ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899']
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-    }
-
-    function renderCounselorReport(students, roster) {
-      if (charts.counselorPerf) charts.counselorPerf.destroy();
-      const ctx = document.getElementById('chart-rep-counselor-perf')?.getContext('2d');
-      if (ctx) {
-        charts.counselorPerf = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: roster.map(r => r.name),
-            datasets: [
-              { label: 'Assigned Leads', data: roster.map(r => r.assignedCount), backgroundColor: '#cbd5e1', borderRadius: 6 },
-              { label: 'Calls Made', data: roster.map(r => r.calls), backgroundColor: '#38bdf8', borderRadius: 6 },
-              { label: 'Converted Students', data: roster.map(r => r.convertedCount), backgroundColor: '#6366f1', borderRadius: 6 }
-            ]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const tbody = document.getElementById('rep-counselor-tbody');
-      tbody.innerHTML = roster.map(r => `
-        <tr>
-          <td><strong>${Utils.escapeHtml(r.name)}</strong></td>
-          <td>${Utils.escapeHtml(r.manager)}</td>
-          <td><span class="badge" style="background: #f1f5f9; color: #334155;">${r.assignedCount}</span></td>
-          <td>${r.calls}</td>
-          <td>${r.followups}</td>
-          <td><span class="badge badge-converted">${r.convertedCount}</span></td>
-          <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(r.revenue)}</td>
-          <td><strong style="color: var(--primary);">${r.conversionRate}%</strong></td>
-        </tr>
-      `).join('');
-    }
-
-    function renderFunnelReport(students) {
-      const counts = Pipeline.getStageCounts(students);
-      const stages = ['Cold Calling', 'New Lead', 'Contacted', 'Interested', 'Prospect', 'Follow-up', 'Negotiation', 'Converted', 'Lost'];
-
-      if (charts.funnel) charts.funnel.destroy();
-      const ctx = document.getElementById('chart-rep-funnel')?.getContext('2d');
-      if (ctx) {
-        charts.funnel = new Chart(ctx, {
-          type: 'bar',
-          data: {
-            labels: stages,
-            datasets: [{
-              label: 'Candidates in Stage',
-              data: stages.map(s => counts[s] || 0),
-              backgroundColor: ['#94a3b8', '#38bdf8', '#3b82f6', '#818cf8', '#f59e0b', '#a855f7', '#6366f1', '#10b981', '#ef4444'],
-              borderRadius: 6
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const tbody = document.getElementById('rep-funnel-tbody');
-      tbody.innerHTML = stages.map(stg => {
-        const stageStudents = students.filter(s => s.stage === stg);
-        const booked = stageStudents.reduce((sum, s) => sum + (s.placementFee || 0), 0);
-        const collected = stageStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
-        const pending = Math.max(0, booked - collected);
-        const pct = students.length > 0 ? ((stageStudents.length / students.length) * 100).toFixed(1) : '0.0';
-
-        return `
-          <tr>
-            <td>${Utils.getStageBadge(stg)}</td>
-            <td><strong>${stageStudents.length}</strong></td>
-            <td>${Utils.formatINR(booked)}</td>
-            <td style="color: var(--green); font-weight: 600;">${Utils.formatINR(collected)}</td>
-            <td style="color: var(--amber);">${Utils.formatINR(pending)}</td>
-            <td><strong style="color: var(--primary);">${pct}%</strong></td>
-          </tr>
-        `;
-      }).join('');
-
-      // Populate Stage Movement Transitions Table (From, To, Count)
-      const stageHistory = StorageService.get(CRM_KEYS.STAGE_HISTORY) || [];
-      const moveMap = {};
-      stageHistory.forEach(h => {
-        const key = `${h.fromStage || 'New'} → ${h.toStage || 'Updated'}`;
-        if (!moveMap[key]) moveMap[key] = { from: h.fromStage || 'New', to: h.toStage || 'Updated', count: 0, latestReason: h.reason || '' };
-        moveMap[key].count++;
-        if (h.reason) moveMap[key].latestReason = h.reason;
-      });
-
-      const moveTbody = document.getElementById('rep-stage-movement-tbody');
-      if (moveTbody) {
-        const moves = Object.values(moveMap);
-        if (moves.length === 0) {
-          moveTbody.innerHTML = `<tr><td colspan="4" style="text-align: center; color: var(--slate-400); padding: 24px;">No stage movements recorded yet. Move candidates between stages to view transition telemetry.</td></tr>`;
-        } else {
-          moveTbody.innerHTML = moves.map(m => `
-            <tr>
-              <td>${Utils.getStageBadge(m.from)}</td>
-              <td>${Utils.getStageBadge(m.to)}</td>
-              <td><span class="badge" style="background: #eef2ff; color: #4338ca; font-weight: 700; font-size: 13px;">${m.count} transitions</span></td>
-              <td style="font-size: 12.5px; color: var(--slate-600);">${Utils.escapeHtml(m.latestReason || 'Stage progression')}</td>
-            </tr>
-          `).join('');
-        }
-      }
-    }
-
-    function renderSourceReport(students) {
-      const sourceMap = {};
-      students.forEach(s => {
-        const src = s.leadSource || 'Direct';
-        if (!sourceMap[src]) sourceMap[src] = { count: 0, converted: 0, booked: 0, revenue: 0 };
-        sourceMap[src].count++;
-        sourceMap[src].booked += (s.placementFee || 0);
-        sourceMap[src].revenue += (s.paidAmount || 0);
-        if (s.stage === 'Converted' || s.stage === 'Enrolled') sourceMap[src].converted++;
-      });
-
-      const sources = Object.keys(sourceMap);
-
-      if (charts.sourceVol) charts.sourceVol.destroy();
-      if (charts.sourceRev) charts.sourceRev.destroy();
-
-      const ctx1 = document.getElementById('chart-rep-source-volume')?.getContext('2d');
-      if (ctx1) {
-        charts.sourceVol = new Chart(ctx1, {
-          type: 'doughnut',
-          data: {
-            labels: sources,
-            datasets: [{
-              data: sources.map(s => sourceMap[s].count),
-              backgroundColor: ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6']
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const ctx2 = document.getElementById('chart-rep-source-revenue')?.getContext('2d');
-      if (ctx2) {
-        charts.sourceRev = new Chart(ctx2, {
-          type: 'bar',
-          data: {
-            labels: sources,
-            datasets: [{
-              label: 'Realized Revenue (₹)',
-              data: sources.map(s => sourceMap[s].revenue),
-              backgroundColor: '#10b981',
-              borderRadius: 6
-            }]
-          },
-          options: { responsive: true, maintainAspectRatio: false }
-        });
-      }
-
-      const tbody = document.getElementById('rep-source-tbody');
-      tbody.innerHTML = sources.map(src => {
-        const item = sourceMap[src];
-        const convRate = item.count > 0 ? ((item.converted / item.count) * 100).toFixed(1) : '0.0';
-        return `
-          <tr>
-            <td><strong>${Utils.escapeHtml(src)}</strong></td>
-            <td>${item.count}</td>
-            <td><span class="badge badge-converted">${item.converted}</span></td>
-            <td><strong style="color: var(--primary);">${convRate}%</strong></td>
-            <td>${Utils.formatINR(item.booked)}</td>
-            <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(item.revenue)}</td>
-          </tr>
-        `;
-      }).join('');
-    }
-
-    function exportCurrentReportCSV() {
-      const students = getFilteredStudents();
-      let csv = 'Report,StudentID,StudentName,Stage,Counselor,PlacementFee,PaidAmount,PendingAmount,PaymentStatus,LeadSource\n';
-      students.forEach(s => {
-        csv += `"${activeTab}","${s.id}","${s.name}","${s.stage}","${s.counselor}","${s.placementFee}","${s.paidAmount}","${s.pendingAmount}","${s.paymentStatus}","${s.leadSource}"\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `CareerApex_PlacementReport_${activeTab}_${new Date().toISOString().split('T')[0]}.csv`;
-      link.click();
-      URL.revokeObjectURL(url);
-    }
+    let activeTabId = 'tab-revenue-payments';
+    let revStageChartInstance = null;
+    let revPaymentModeChartInstance = null;
+    let stageMovementChartInstance = null;
+    let teamComparisonChartInstance = null;
+    let sourcePieChartInstance = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      UI.init('reports');
-      renderActiveReport();
+      const user = Auth.requireAuth(['admin', 'manager', 'sales']);
+      if (!user) return;
+
+      App.initCommon(user, 'reports');
+      initFilterDropdowns();
+      setupTabs();
+      setupUniversalFilters();
+      refreshActiveReport();
     });
+
+    function initFilterDropdowns() {
+      // 1. Counselors
+      const counselorSel = document.getElementById('rpt-counselor');
+      Users.getSalespeople().forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.id;
+        opt.textContent = `${c.name} (${c.managerName || 'No Mgr'})`;
+        counselorSel.appendChild(opt);
+      });
+
+      // 2. Managers
+      const mgrSel = document.getElementById('rpt-manager');
+      Users.getManagers().forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.id;
+        opt.textContent = m.name;
+        mgrSel.appendChild(opt);
+      });
+
+      // 3. Stages
+      const stageSel = document.getElementById('rpt-stage');
+      SeedData.STAGES.forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st;
+        opt.textContent = st;
+        stageSel.appendChild(opt);
+      });
+
+      // 4. Sources
+      const srcSel = document.getElementById('rpt-source');
+      const allCustomers = Customers.getAll();
+      const sources = [...new Set(allCustomers.map(c => c.source).filter(Boolean))].sort();
+      sources.forEach(src => {
+        const opt = document.createElement('option');
+        opt.value = src;
+        opt.textContent = src;
+        srcSel.appendChild(opt);
+      });
+    }
+
+    function setupUniversalFilters() {
+      // Date preset selector logic
+      document.getElementById('rpt-date-preset').addEventListener('change', (e) => {
+        const val = e.target.value;
+        const now = new Date();
+        const startInput = document.getElementById('rpt-start-date');
+        const endInput = document.getElementById('rpt-end-date');
+
+        if (val === 'all') {
+          startInput.value = '';
+          endInput.value = '';
+        } else if (val === 'today') {
+          const d = now.toISOString().split('T')[0];
+          startInput.value = d;
+          endInput.value = d;
+        } else if (val === 'yesterday') {
+          const y = new Date(now.getTime() - 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          startInput.value = y;
+          endInput.value = y;
+        } else if (val === 'this_week') {
+          const d = new Date(now);
+          const day = d.getDay();
+          const diff = d.getDate() - day + (day === 0 ? -6 : 1);
+          d.setDate(diff);
+          startInput.value = d.toISOString().split('T')[0];
+          endInput.value = now.toISOString().split('T')[0];
+        } else if (val === 'this_month') {
+          const y = now.getFullYear();
+          const m = String(now.getMonth() + 1).padStart(2, '0');
+          startInput.value = `${y}-${m}-01`;
+          endInput.value = now.toISOString().split('T')[0];
+        } else if (val === 'last_30_days') {
+          const d = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+          startInput.value = d.toISOString().split('T')[0];
+          endInput.value = now.toISOString().split('T')[0];
+        } else if (val === 'this_quarter') {
+          const qMonth = Math.floor(now.getMonth() / 3) * 3;
+          const qStart = new Date(now.getFullYear(), qMonth, 1);
+          startInput.value = qStart.toISOString().split('T')[0];
+          endInput.value = now.toISOString().split('T')[0];
+        }
+      });
+
+      document.getElementById('rpt-btn-apply').addEventListener('click', () => {
+        refreshActiveReport();
+        Toast.success('Applied universal filter criteria to reports.');
+      });
+
+      document.getElementById('rpt-btn-reset').addEventListener('click', () => {
+        document.getElementById('rpt-date-preset').value = 'all';
+        document.getElementById('rpt-start-date').value = '';
+        document.getElementById('rpt-end-date').value = '';
+        document.getElementById('rpt-counselor').value = 'all';
+        document.getElementById('rpt-manager').value = 'all';
+        document.getElementById('rpt-stage').value = 'all';
+        document.getElementById('rpt-fee-status').value = 'all';
+        document.getElementById('rpt-source').value = 'all';
+        refreshActiveReport();
+        Toast.info('Filters reset to default.');
+      });
+
+      document.getElementById('btn-export-csv').addEventListener('click', exportActiveReportCsv);
+    }
+
+    function getActiveFilters() {
+      return {
+        startDate: document.getElementById('rpt-start-date').value,
+        endDate: document.getElementById('rpt-end-date').value,
+        salespersonId: document.getElementById('rpt-counselor').value,
+        managerId: document.getElementById('rpt-manager').value,
+        stage: document.getElementById('rpt-stage').value,
+        paymentStatus: document.getElementById('rpt-fee-status').value,
+        source: document.getElementById('rpt-source').value
+      };
+    }
+
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+
+          const target = btn.getAttribute('data-report');
+          activeTabId = target;
+          document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+          const activePane = document.getElementById(target);
+          if (activePane) activePane.style.display = 'block';
+
+          refreshActiveReport();
+        });
+      });
+    }
+
+    function refreshActiveReport() {
+      const filters = getActiveFilters();
+      const filteredCustomers = Reports.filterCustomers(filters);
+      document.getElementById('filter-scoped-count').textContent = filteredCustomers.length;
+
+      if (activeTabId === 'tab-revenue-payments') {
+        loadRevenueReport(filters);
+      } else if (activeTabId === 'tab-team-performance') {
+        loadTeamReport(filters);
+      } else if (activeTabId === 'tab-stage-movement') {
+        loadStageMovementReport(filters);
+      } else if (activeTabId === 'tab-sources') {
+        loadSourceReport(filters);
+      }
+    }
+
+    // 1. REVENUE REPORT
+    function loadRevenueReport(filters) {
+      const repData = Reports.getRevenueReport(filters);
+      const summary = repData.summary;
+
+      // KPIs
+      document.getElementById('rev-kpi-booked').textContent = Payments.formatCurrency(summary.totalBooked);
+      document.getElementById('rev-kpi-students').textContent = `Across ${summary.totalLeads || summary.totalStudents || 0} lead files`;
+
+      document.getElementById('rev-kpi-collected').textContent = Payments.formatCurrency(summary.totalCollected);
+      document.getElementById('rev-kpi-fullypaid').textContent = `${summary.fullyPaidCount} Fully Paid Leads`;
+
+      document.getElementById('rev-kpi-pending').textContent = Payments.formatCurrency(summary.totalPending);
+      document.getElementById('rev-kpi-overdue').textContent = `${summary.overdueCount} Overdue Milestones`;
+
+      document.getElementById('rev-kpi-rate').textContent = `${summary.collectionRate}%`;
+      document.getElementById('rev-kpi-rate-bar').style.width = `${Math.min(100, summary.collectionRate)}%`;
+
+      // Counselor Leaderboard
+      const cTbody = document.getElementById('rev-counselor-tbody');
+      if (!repData.counselorStats.length) {
+        cTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No counselor revenue data</td></tr>`;
+      } else {
+        cTbody.innerHTML = repData.counselorStats.map(c => `
+          <tr>
+            <td>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <img src="${c.avatar}" style="width: 24px; height: 24px; border-radius: 50%; object-fit: cover;">
+                <span style="font-weight: 700; color: var(--slate-900); font-size: 0.85rem;">${Utils.escapeHtml(c.name)}</span>
+              </div>
+            </td>
+            <td><span style="font-size: 0.8rem; color: var(--slate-600);">${Utils.escapeHtml(c.managerName)}</span></td>
+            <td style="text-align: right; font-weight: 600;">${c.studentCount}</td>
+            <td style="text-align: right; font-weight: 600;">${Payments.formatCurrency(c.bookedFee)}</td>
+            <td style="text-align: right; font-weight: 700; color: var(--success-solid);">${Payments.formatCurrency(c.collectedFee)}</td>
+            <td style="text-align: right; font-weight: 600; color: ${c.pendingFee > 0 ? 'var(--warning-solid)' : 'var(--slate-400)'};">${Payments.formatCurrency(c.pendingFee)}</td>
+            <td style="text-align: right;"><span class="badge ${c.rateNumber >= 50 ? 'badge-success' : 'badge-warning'}">${c.realizationRate}</span></td>
+          </tr>
+        `).join('');
+      }
+
+      // Payment Mode Chart
+      const modeKeys = Object.keys(repData.modeStats);
+      const modeVals = Object.values(repData.modeStats);
+      const modeColors = ['#4f46e5', '#0ea5e9', '#10b981', '#f59e0b', '#ec4899'];
+
+      const modeCtx = document.getElementById('revPaymentModeChart').getContext('2d');
+      if (revPaymentModeChartInstance) revPaymentModeChartInstance.destroy();
+
+      revPaymentModeChartInstance = new Chart(modeCtx, {
+        type: 'doughnut',
+        data: {
+          labels: modeKeys,
+          datasets: [{
+            data: modeVals,
+            backgroundColor: modeColors
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } }
+        }
+      });
+
+      const modeLegendEl = document.getElementById('rev-mode-legend');
+      modeLegendEl.innerHTML = modeKeys.map((k, i) => `
+        <div style="display: flex; align-items: center; gap: 0.35rem;">
+          <span style="display: inline-block; width: 10px; height: 10px; border-radius: 2px; background: ${modeColors[i % modeColors.length]};"></span>
+          <span>${k}: <strong>${Payments.formatCurrency(modeVals[i])}</strong></span>
+        </div>
+      `).join('');
+
+      // Revenue by Stage Chart
+      const activeStages = repData.stageRevenue.filter(s => s.booked > 0);
+      const stageCtx = document.getElementById('revStageChart').getContext('2d');
+      if (revStageChartInstance) revStageChartInstance.destroy();
+
+      revStageChartInstance = new Chart(stageCtx, {
+        type: 'bar',
+        data: {
+          labels: activeStages.map(s => s.stage),
+          datasets: [
+            {
+              label: 'Booked Fees',
+              data: activeStages.map(s => s.booked),
+              backgroundColor: '#818cf8',
+              borderRadius: 4
+            },
+            {
+              label: 'Collected Cash',
+              data: activeStages.map(s => s.collected),
+              backgroundColor: '#10b981',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                callback: (val) => '₹' + (val >= 1000 ? (val / 1000) + 'k' : val)
+              }
+            }
+          }
+        }
+      });
+
+      // Pending & Overdue Milestones
+      const duesTbody = document.getElementById('rev-dues-tbody');
+      document.getElementById('rev-dues-badge').textContent = `${repData.dues.length} dues`;
+      if (!repData.dues.length) {
+        duesTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 1.5rem;">No pending installment dues found</td></tr>`;
+      } else {
+        duesTbody.innerHTML = repData.dues.map(d => `
+          <tr>
+            <td>
+              <a href="customer-details.html?id=${d.customerId}#payments" style="font-weight: 700; color: var(--primary-600); text-decoration: none;">
+                ${Utils.escapeHtml(d.customerName)}
+              </a>
+              <div style="font-size: 0.7rem; color: var(--slate-400);">${Utils.escapeHtml(d.counselorName || '—')}</div>
+            </td>
+            <td>${Utils.escapeHtml(d.name)}</td>
+            <td>
+              <span style="font-weight: ${d.isOverdue ? '700; color: var(--danger-solid);' : '500;'}">
+                ${Utils.formatDate(d.dueDate)}
+                ${d.isOverdue ? '<span class="badge badge-danger" style="font-size: 0.65rem; padding: 0.1rem 0.35rem; margin-left: 0.25rem;">OVERDUE</span>' : ''}
+              </span>
+            </td>
+            <td style="text-align: right; font-weight: 700; color: var(--slate-900);">${Payments.formatCurrency(d.amount)}</td>
+            <td style="text-align: center;">
+              <a href="customer-details.html?id=${d.customerId}#payments" class="btn btn-secondary btn-sm" style="padding: 0.2rem 0.5rem; font-size: 0.72rem; color: var(--primary-700);">
+                Collect
+              </a>
+            </td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // 2. COUNSELOR PERFORMANCE REPORT
+    function loadTeamReport(filters) {
+      const stats = Reports.getTeamPerformanceReport(filters);
+      const tbody = document.getElementById('team-report-tbody');
+
+      if (!stats.length) {
+        tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--slate-400); padding: 2rem;">No team data found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = stats.map(s => `
+        <tr>
+          <td>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <img src="${s.avatar}" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover;">
+              <span style="font-weight: 700; color: var(--slate-900); font-size: 0.85rem;">${Utils.escapeHtml(s.name)}</span>
+            </div>
+          </td>
+          <td><span style="font-size: 0.8rem; color: var(--slate-600);">${Utils.escapeHtml(s.managerName)}</span></td>
+          <td><strong>${s.leadsAssigned}</strong></td>
+          <td>${s.leadsContacted}</td>
+          <td>${s.callsMade}</td>
+          <td>${s.interestedCount}</td>
+          <td>${s.prospectsCount}</td>
+          <td>${s.followupsCompleted} / ${s.followupsScheduled}</td>
+          <td><span class="badge badge-stage-enrolled">${s.enrolledCount !== undefined ? s.enrolledCount : s.convertedCount}</span></td>
+          <td style="font-weight: 600;">${Payments.formatCurrency(s.bookedFee || 0)}</td>
+          <td style="font-weight: 700; color: var(--success-solid);">${Payments.formatCurrency(s.collectedFee || 0)}</td>
+          <td><strong style="color: var(--success-solid);">${s.conversionRate}</strong></td>
+        </tr>
+      `).join('');
+
+      // Render chart
+      const ctx = document.getElementById('teamComparisonChart').getContext('2d');
+      if (teamComparisonChartInstance) teamComparisonChartInstance.destroy();
+
+      teamComparisonChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: stats.map(s => s.name),
+          datasets: [
+            {
+              label: 'Assigned Leads',
+              data: stats.map(s => s.leadsAssigned),
+              backgroundColor: '#6366f1',
+              borderRadius: 4
+            },
+            {
+              label: 'Closed / Enrolled',
+              data: stats.map(s => s.enrolledCount !== undefined ? s.enrolledCount : s.convertedCount),
+              backgroundColor: '#10b981',
+              borderRadius: 4
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+    }
+
+    // 3. STAGE MOVEMENT REPORT
+    function loadStageMovementReport(filters) {
+      const res = Reports.getStageMovementReport(filters);
+      document.getElementById('total-movements-badge').textContent = `${res.totalMovements} movements`;
+
+      const tbody = document.getElementById('movement-table-tbody');
+      if (!res.transitions.length) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--slate-400); padding: 2rem;">No stage movements recorded for this filter range</td></tr>`;
+      } else {
+        tbody.innerHTML = res.transitions.map(t => `
+          <tr>
+            <td>${Utils.getStageBadge(t.fromStage)}</td>
+            <td>${Utils.getStageBadge(t.toStage)}</td>
+            <td style="text-align: right;"><strong style="font-size: 0.95rem;">${t.count}</strong></td>
+          </tr>
+        `).join('');
+      }
+
+      // Render chart
+      const labels = res.transitions.slice(0, 8).map(t => `${t.fromStage} → ${t.toStage}`);
+      const data = res.transitions.slice(0, 8).map(t => t.count);
+
+      const ctx = document.getElementById('stageMovementChart').getContext('2d');
+      if (stageMovementChartInstance) stageMovementChartInstance.destroy();
+
+      stageMovementChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Movements Count',
+            data,
+            backgroundColor: '#4f46e5',
+            borderRadius: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true, ticks: { precision: 0 } } }
+        }
+      });
+    }
+
+    // 4. SOURCE REPORT
+    function loadSourceReport(filters) {
+      const sources = Reports.getLeadSourceStats(filters);
+      const keys = Object.keys(sources);
+      const values = Object.values(sources);
+      const total = values.reduce((a, b) => a + b, 0);
+
+      const tbody = document.getElementById('source-table-tbody');
+      if (!keys.length) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--slate-400); padding: 2rem;">No source attribution data found</td></tr>`;
+      } else {
+        tbody.innerHTML = keys.map((src, i) => {
+          const count = values[i];
+          const share = total > 0 ? ((count / total) * 100).toFixed(1) : 0;
+          return `
+            <tr>
+              <td><strong>${Utils.escapeHtml(src)}</strong></td>
+              <td style="text-align: right;">${count}</td>
+              <td style="text-align: right;"><span class="badge badge-priority-medium">${share}%</span></td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      const ctx = document.getElementById('sourcePieChart').getContext('2d');
+      if (sourcePieChartInstance) sourcePieChartInstance.destroy();
+
+      sourcePieChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: keys,
+          datasets: [{
+            data: values,
+            backgroundColor: [
+              '#4f46e5', '#0ea5e9', '#10b981', '#f59e0b',
+              '#ec4899', '#8b5cf6', '#64748b', '#14b8a6'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } }
+        }
+      });
+    }
+
+    function exportActiveReportCsv() {
+      const filters = getActiveFilters();
+      if (activeTabId === 'tab-revenue-payments') {
+        const repData = Reports.getRevenueReport(filters);
+        const rows = repData.counselorStats.map(c => ({
+          Counselor: c.name,
+          Manager: c.managerName,
+          Leads: c.studentCount,
+          BookedFee: c.bookedFee,
+          CollectedFee: c.collectedFee,
+          PendingFee: c.pendingFee,
+          RealizationRate: c.realizationRate,
+          FullyPaidLeads: c.fullyPaidCount
+        }));
+        Utils.exportToCsv('Placement_Revenue_Leaderboard.csv', rows);
+        Toast.success('Exported placement revenue report to CSV.');
+      } else if (activeTabId === 'tab-team-performance') {
+        const stats = Reports.getTeamPerformanceReport(filters);
+        const rows = stats.map(s => ({
+          Counselor: s.name,
+          Email: s.email,
+          Manager: s.managerName,
+          AssignedLeads: s.leadsAssigned,
+          ContactedLeads: s.leadsContacted,
+          CallsMade: s.callsMade,
+          Interested: s.interestedCount,
+          Prospects: s.prospectsCount,
+          FollowupsScheduled: s.followupsScheduled,
+          FollowupsCompleted: s.followupsCompleted,
+          Enrolled: s.enrolledCount !== undefined ? s.enrolledCount : s.convertedCount,
+          BookedFee: s.bookedFee,
+          CollectedFee: s.collectedFee,
+          ConversionRate: s.conversionRate
+        }));
+        Utils.exportToCsv('Sales_Team_Performance_Report.csv', rows);
+        Toast.success('Exported team performance report to CSV.');
+      } else if (activeTabId === 'tab-stage-movement') {
+        const res = Reports.getStageMovementReport(filters);
+        const rows = res.transitions.map(t => ({
+          FromStage: t.fromStage,
+          ToStage: t.toStage,
+          Movements: t.count
+        }));
+        Utils.exportToCsv('Stage_Movement_Report.csv', rows);
+        Toast.success('Exported stage movement report to CSV.');
+      } else {
+        const sources = Reports.getLeadSourceStats(filters);
+        const rows = Object.entries(sources).map(([source, count]) => ({
+          LeadSource: source,
+          Count: count
+        }));
+        Utils.exportToCsv('Lead_Source_Report.csv', rows);
+        Toast.success('Exported source report to CSV.');
+      }
+    }
   </script>
 </body>
 </html>

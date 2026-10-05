@@ -3,529 +3,1834 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Profile Dossier — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>Lead Profile — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .profile-hero {
+      background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .profile-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .profile-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1.25rem;
+      padding-top: 1.25rem;
+      border-top: 1px solid var(--border-light);
+    }
+
+    .profile-meta-item label {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--slate-400);
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.05em;
+    }
+
+    .profile-meta-item span {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--slate-800);
+    }
+
+    .badge-stage-cold {
+      background-color: #ecfeff;
+      color: #0e7490;
+      border: 1px solid #a5f3fc;
+    }
+  </style>
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Back Navigation & Breadcrumb -->
-        <div style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-          <a href="customers.html" style="display: inline-flex; align-items: center; gap: 6px; color: var(--slate-600); font-size: 13px; font-weight: 500; text-decoration: none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;"><polyline points="15 18 9 12 15 6"/></svg>
-            Back to Student Directory
-          </a>
-          <div style="font-size: 12px; color: var(--slate-400);">
-            Candidate Profile Dossier • <span id="student-id-breadcrumb" style="font-family: monospace; font-weight: 600; color: var(--navy-800);">CRM-STU-001</span>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Breadcrumbs -->
+        <div style="margin-bottom: 1rem; font-size: 0.825rem; color: var(--slate-500); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="display: flex; align-items: center; gap: 0.5rem;">
+            <a href="customers.html" style="color: var(--primary-600); text-decoration: none; font-weight: 500;">Leads</a>
+            <i class="fa-solid fa-chevron-right" style="font-size: 0.65rem;"></i>
+            <span id="breadcrumb-cust-id">SM-LD-0001</span>
+          </div>
+          <div>
+            <a href="customers.html" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-arrow-left"></i> Back to Leads Directory
+            </a>
           </div>
         </div>
 
-        <!-- Student Profile Dossier Hero Header Card -->
-        <div class="enterprise-card" style="margin-bottom: 24px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between;">
-            <div style="display: flex; gap: 16px; align-items: center;">
-              <div id="student-avatar" style="width: 64px; height: 64px; border-radius: 12px; background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #ffffff; display: flex; align-items: center; justify-content: center; font-size: 24px; font-weight: 700; box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);">
-                AK
+        <!-- Lead Profile Hero Card -->
+        <div class="profile-hero">
+          <div class="profile-hero-top">
+            <div style="display: flex; align-items: center; gap: 1.25rem;">
+              <div style="width: 60px; height: 60px; border-radius: var(--radius-lg); background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.75rem; font-weight: 800; box-shadow: 0 6px 16px var(--primary-glow);" id="hero-avatar-init">
+                LD
               </div>
               <div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <h1 class="page-title" id="student-name" style="margin-bottom: 0;">Aarav Kumar</h1>
-                  <span id="student-stage-badge" class="badge badge-interested">Interested</span>
-                  <span id="student-priority-badge" class="badge" style="background: #fef3c7; color: #d97706;">High Priority</span>
+                <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+                  <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;" id="hero-cust-name">
+                    Lead Name
+                  </h1>
+                  <span id="hero-stage-badge"></span>
+                  <span id="hero-status-badge"></span>
+                  <span id="hero-priority-badge"></span>
                 </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 6px; font-size: 13px; color: var(--slate-500);">
-                  <span><strong>ID:</strong> <span id="student-id-display" style="font-family: monospace; color: var(--navy-800);">CRM-STU-001</span></span>
-                  <span><strong>Target:</strong> <span id="student-role-display" style="color: var(--navy-800);">Software Engineer</span></span>
-                  <span><strong>Counselor:</strong> <span id="student-counselor-display" style="color: var(--navy-800);">Sarah Jenkins</span></span>
-                  <span><strong>Payment:</strong> <span id="student-payment-badge" class="badge badge-partially">Partially Paid</span></span>
+                <div style="color: var(--slate-500); font-size: 0.875rem; margin-top: 0.25rem;" id="hero-subtitle">
+                  SM-LD-0001 • Degree / College • City
                 </div>
               </div>
             </div>
 
-            <!-- Action Hub Toolbar -->
-            <div class="page-actions-group">
-              <button type="button" class="btn-header-action" onclick="callStudent()" title="Direct Phone Call">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                Call
+            <!-- Communication & Profile Action Buttons -->
+            <div style="display: flex; gap: 0.6rem; flex-wrap: wrap; align-items: center;">
+              <!-- Edit All Details Button -->
+              <button class="btn btn-primary" id="btn-hero-edit-lead" onclick="openEditLeadModal()" style="background: var(--primary-600); font-weight: 700;">
+                <i class="fa-solid fa-user-pen"></i> Edit Profile
               </button>
-              <button type="button" class="btn-header-action" onclick="whatsAppStudent()" title="WhatsApp Chat">
-                <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                WhatsApp
+
+              <button class="btn btn-secondary" id="btn-action-call" style="color: var(--success-solid); border-color: var(--success-border); background-color: var(--success-bg);">
+                <i class="fa-solid fa-phone"></i> Call
               </button>
-              <button type="button" class="btn-header-action" onclick="emailStudent()" title="Send Email">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                Email
+              <button class="btn btn-secondary" id="btn-action-wa" style="color: #128c7e; border-color: #a7f3d0; background-color: #f0fdf4;">
+                <i class="fa-brands fa-whatsapp"></i> WhatsApp
               </button>
-              <button type="button" class="btn-header-action" onclick="openScheduleFollowup()" title="Schedule Follow-up">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                Follow-up
+              <button class="btn btn-secondary" id="btn-action-email" style="color: var(--info-solid); border-color: var(--info-border); background-color: var(--info-bg);">
+                <i class="fa-solid fa-envelope"></i> Email
               </button>
-              <button type="button" class="btn-header-action" onclick="openStageChange()" title="Change Candidate Stage">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                Change Stage
+              
+              <div style="height: 24px; width: 1px; background-color: var(--border-light); margin: 0 0.25rem;"></div>
+
+              <button class="btn btn-secondary" id="btn-action-record-call">
+                <i class="fa-solid fa-phone-volume"></i> Record Call
               </button>
-              <button type="button" class="btn-primary-purple" onclick="openRecordPayment()" title="Record Installment Payment">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                Record Payment
+              <button class="btn btn-secondary" id="btn-action-change-stage">
+                <i class="fa-solid fa-chart-line"></i> Change Stage
               </button>
-              <button type="button" class="btn-outline-sm" onclick="editStudent()" title="Edit Student Profile">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Edit
+              <button class="btn btn-secondary" id="btn-action-schedule-flw">
+                <i class="fa-solid fa-calendar-plus"></i> Schedule Follow-up
               </button>
+            </div>
+          </div>
+
+          <!-- Hero Bottom Meta Grid -->
+          <div class="profile-meta-grid">
+            <div class="profile-meta-item">
+              <label>Primary Phone</label>
+              <span id="meta-phone">—</span>
+            </div>
+            <div class="profile-meta-item">
+              <label>Email Address</label>
+              <span id="meta-email">—</span>
+            </div>
+            <div class="profile-meta-item">
+              <label>Target Role</label>
+              <span id="meta-target-role">—</span>
+            </div>
+            <div class="profile-meta-item">
+              <label>Career Counselor</label>
+              <span id="meta-salesperson">—</span>
+            </div>
+            <div class="profile-meta-item">
+              <label>Next Follow-up</label>
+              <span id="meta-next-flw">—</span>
             </div>
           </div>
         </div>
 
-        <!-- 2-Column Dossier Content -->
-        <div class="dashboard-grid-2col">
-          <!-- Left Column: Academic, Career, CRM Details -->
-          <div style="display: flex; flex-direction: column; gap: 24px;">
-            <!-- Contact & Academic Profile -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Candidate Background &amp; Academics</div>
-                <span class="card-pill-badge" id="student-batch-badge">2024 Batch</span>
-              </div>
-              <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; font-size: 13px;">
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Primary Mobile</div>
-                  <div id="dossier-mobile" style="font-weight: 600; color: var(--navy-900); margin-top: 2px;">+91 98765 43210</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Alternate Mobile</div>
-                  <div id="dossier-alt-mobile" style="font-weight: 500; color: var(--slate-700); margin-top: 2px;">-</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Email Address</div>
-                  <div id="dossier-email" style="font-weight: 500; color: var(--navy-900); margin-top: 2px;">aarav.k@example.com</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">College / University</div>
-                  <div id="dossier-college" style="font-weight: 600; color: var(--navy-900); margin-top: 2px;">IIT Delhi</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Degree &amp; Branch</div>
-                  <div id="dossier-degree" style="font-weight: 500; color: var(--navy-900); margin-top: 2px;">B.Tech Computer Science</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Target Career Role</div>
-                  <div id="dossier-target-role" style="font-weight: 600; color: var(--primary); margin-top: 2px;">Software Engineer</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Preferred Job Location</div>
-                  <div id="dossier-location" style="font-weight: 500; color: var(--navy-900); margin-top: 2px;">Bangalore / Hyderabad</div>
-                </div>
-                <div>
-                  <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600;">Lead Acquisition Source</div>
-                  <div id="dossier-source" style="font-weight: 500; color: var(--navy-900); margin-top: 2px;">LinkedIn Ads</div>
-                </div>
-              </div>
+        <!-- Lead Detail Tabs -->
+        <div class="nav-tabs" style="margin-bottom: 1.5rem;">
+          <button class="tab-btn active" data-tab="tab-overview">
+            <i class="fa-solid fa-id-card"></i> Candidate Overview
+          </button>
+          <button class="tab-btn" data-tab="tab-timeline">
+            <i class="fa-solid fa-clock-rotate-left"></i> Activity Timeline <span class="tab-badge" id="tab-count-activities">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-notes">
+            <i class="fa-solid fa-note-sticky"></i> Counseling Notes <span class="tab-badge" id="tab-count-notes">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-calls">
+            <i class="fa-solid fa-phone-volume"></i> Call Logs <span class="tab-badge" id="tab-count-calls">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-followups">
+            <i class="fa-solid fa-calendar-check"></i> Follow-ups <span class="tab-badge" id="tab-count-followups">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-stage-history">
+            <i class="fa-solid fa-timeline"></i> Stage History <span class="tab-badge" id="tab-count-stages">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-payments" id="tab-btn-payments">
+            <i class="fa-solid fa-receipt"></i> Placement Fee & Payments <span class="tab-badge" id="tab-badge-payment-status"></span>
+          </button>
+        </div>
 
-              <!-- Skills Tags -->
-              <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--slate-100);">
-                <div style="color: var(--slate-400); font-size: 11px; text-transform: uppercase; font-weight: 600; margin-bottom: 6px;">Technical Competencies &amp; Skills</div>
-                <div id="dossier-skills-container" style="display: flex; flex-wrap: wrap; gap: 6px;">
-                  <!-- Dynamic tags -->
-                </div>
+        <!-- TAB CONTENT: 1. OVERVIEW & INFO -->
+        <div id="tab-overview" class="tab-pane active">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+            <!-- Academic Background Card -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-graduation-cap" style="color: var(--primary-600);"></i> Academic Background & Contact</h3>
+                <button class="btn btn-secondary btn-sm" onclick="openEditStudentModal()" style="font-size: 0.78rem; padding: 0.25rem 0.6rem; color: var(--primary-700);">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
               </div>
-            </div>
-
-            <!-- Financial Ledger & Installment Plan -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Placement Fee &amp; Installment Ledger</div>
-                <button type="button" class="btn-outline-sm" onclick="openRecordPayment()">+ Record Payment</button>
-              </div>
-
-              <!-- Fee Breakdown -->
-              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px;">
-                <div style="background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid var(--slate-200);">
-                  <div style="font-size: 11px; color: var(--slate-500); font-weight: 600;">TOTAL CONTRACTED FEE</div>
-                  <div style="font-size: 18px; font-weight: 700; color: var(--navy-900); margin-top: 4px;" id="dossier-total-fee">₹50,000</div>
-                </div>
-                <div style="background: #f0fdf4; padding: 12px; border-radius: 8px; border: 1px solid #bbf7d0;">
-                  <div style="font-size: 11px; color: #166534; font-weight: 600;">PAID AMOUNT</div>
-                  <div style="font-size: 18px; font-weight: 700; color: var(--green); margin-top: 4px;" id="dossier-paid-fee">₹25,000</div>
-                </div>
-                <div style="background: #fffbeb; padding: 12px; border-radius: 8px; border: 1px solid #fde68a;">
-                  <div style="font-size: 11px; color: #92400e; font-weight: 600;">PENDING DUES</div>
-                  <div style="font-size: 18px; font-weight: 700; color: var(--amber); margin-top: 4px;" id="dossier-pending-fee">₹25,000</div>
-                </div>
-              </div>
-
-              <!-- Installments Schedule Table -->
-              <div style="font-size: 12px; font-weight: 600; color: var(--navy-900); margin-bottom: 8px;">Installment Schedule (<span id="dossier-plan-name">2 Installments</span>)</div>
-              <div class="table-responsive">
-                <table class="crm-table">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Due Date</th>
-                      <th>Amount</th>
-                      <th>Status</th>
-                      <th>Paid Date</th>
-                    </tr>
-                  </thead>
-                  <tbody id="dossier-installments-tbody">
-                    <!-- Populated dynamically -->
+              <div class="card-body">
+                <table class="table" style="font-size: 0.85rem;">
+                  <tbody>
+                    <tr><td style="width: 38%; color: var(--slate-500); font-weight: 500;">Degree / Qualification</td><td id="det-qualification" style="font-weight: 700; color: var(--slate-900);">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">College / University</td><td id="det-college" style="font-weight: 600;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Passing Year (YOP)</td><td id="det-yop">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">CGPA / Percentage</td><td id="det-cgpa">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Primary Mobile</td><td id="det-mobile" style="font-family: monospace; font-weight: 600;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Alternate Mobile / WhatsApp</td><td id="det-alt-mobile" style="font-family: monospace;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Email Address</td><td id="det-email">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Current City & State</td><td id="det-city-state">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Permanent Address</td><td id="det-address">—</td></tr>
                   </tbody>
                 </table>
               </div>
+            </div>
 
-              <!-- Payment Transaction Receipts -->
-              <div style="margin-top: 20px;">
-                <div style="font-size: 12px; font-weight: 600; color: var(--navy-900); margin-bottom: 8px;">Payment Transaction Receipts</div>
+            <!-- Career Preferences & Placement Metadata Card -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-briefcase" style="color: var(--info-solid);"></i> Career Targets & Counseling</h3>
+                <button class="btn btn-secondary btn-sm" onclick="openEditStudentModal()" style="font-size: 0.78rem; padding: 0.25rem 0.6rem; color: var(--primary-700);">
+                  <i class="fa-solid fa-pen-to-square"></i> Edit
+                </button>
+              </div>
+              <div class="card-body">
+                <table class="table" style="font-size: 0.85rem;">
+                  <tbody>
+                    <tr><td style="width: 38%; color: var(--slate-500); font-weight: 500;">Target Job Role</td><td id="det-target-role" style="font-weight: 700; color: var(--slate-900);">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Key Technical Skills</td><td id="det-skills" style="color: var(--primary-700); font-weight: 600;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Experience Level</td><td id="det-experience">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Preferred Job Location</td><td id="det-prefloc">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Expected CTC / Package</td><td id="det-ctc">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Inflow Source</td><td id="det-source">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Pipeline Stage</td><td id="det-stage">—</td></tr>
+                    <tr id="row-det-est-rev" style="display: none; background: #fefce8;"><td style="color: #854d0e; font-weight: 700;"><i class="fa-solid fa-indian-rupee-sign"></i> Estimated Revenue</td><td id="det-est-rev" style="font-weight: 800; color: #b45309;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Placement Status</td><td id="det-status">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Career Counselor</td><td id="det-salesperson" style="font-weight: 600;">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Counseling Manager</td><td id="det-manager">—</td></tr>
+                    <tr><td style="color: var(--slate-500); font-weight: 500;">Registered Date</td><td id="det-created">—</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Placement Fee & Installment Summary Card -->
+            <div class="card" style="grid-column: 1 / -1; border-top: 3px solid #10b981;">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
+                <h3 class="card-title"><i class="fa-solid fa-receipt" style="color: #047857;"></i> Placement Fee Agreement & Payment Summary</h3>
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-secondary btn-sm" onclick="openRecordPaymentModal()" style="font-size: 0.78rem; color: #047857; background: #ecfdf5; border-color: #a7f3d0;">
+                    <i class="fa-solid fa-hand-holding-dollar"></i> Record Payment
+                  </button>
+                  <button class="btn btn-primary btn-sm" onclick="switchToPaymentsTab()" style="font-size: 0.78rem;">
+                    <i class="fa-solid fa-arrow-right"></i> View Full Ledger
+                  </button>
+                </div>
+              </div>
+              <div class="card-body">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.25rem; align-items: center;">
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Agreed Placement Fee</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900);" id="overview-fee-total">₹0</div>
+                    <div style="font-size: 0.78rem; color: var(--slate-500);" id="overview-fee-plan">Plan: —</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Collected to Date</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #047857;" id="overview-fee-paid">₹0</div>
+                    <div style="font-size: 0.78rem; color: #047857;" id="overview-fee-percent">0% collected</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600; text-transform: uppercase;">Outstanding Due Balance</div>
+                    <div style="font-size: 1.5rem; font-weight: 800; color: #b45309;" id="overview-fee-pending">₹0</div>
+                    <div style="font-size: 0.78rem;" id="overview-fee-status">Status: —</div>
+                  </div>
+                  <div>
+                    <div style="font-size: 0.75rem; color: var(--slate-500); font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase;">Realization Progress</div>
+                    <div style="height: 8px; background: var(--slate-100); border-radius: 9999px; overflow: hidden; margin-bottom: 0.35rem;">
+                      <div id="overview-fee-bar" style="height: 100%; width: 0%; background: #10b981; border-radius: 9999px; transition: width 0.4s ease;"></div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: var(--slate-500);" id="overview-fee-installments-count">0 installments scheduled</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 2. TIMELINE -->
+        <div id="tab-timeline" class="tab-pane" style="display: none;">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-clock-rotate-left"></i> Lead Engagement Timeline</h3>
+            </div>
+            <div class="card-body" style="padding: 1.5rem;">
+              <div id="customer-timeline-list" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 3. NOTES -->
+        <div id="tab-notes" class="tab-pane" style="display: none;">
+          <div class="card" style="margin-bottom: 1.5rem;">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-pen-clip"></i> Add Counseling Note / Mock Interview Remark</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <textarea id="new-note-text" class="form-control" rows="3" placeholder="Enter counseling remarks, mock interview feedback, lead career preferences..."></textarea>
+              </div>
+              <div style="display: flex; justify-content: flex-end;">
+                <button class="btn btn-primary" id="btn-save-note">
+                  <i class="fa-solid fa-paper-plane"></i> Save Counseling Note
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-note-sticky"></i> Note History</h3>
+            </div>
+            <div class="card-body">
+              <div id="customer-notes-container" style="display: flex; flex-direction: column; gap: 1rem;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 4. CALLS -->
+        <div id="tab-calls" class="tab-pane" style="display: none;">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="card-title"><i class="fa-solid fa-phone-volume"></i> Recorded Counseling & Placement Calls</h3>
+              <button class="btn btn-primary btn-sm" onclick="Communication.openCallRecordModal(currentCustomer.id, refreshCustomerData)">
+                <i class="fa-solid fa-plus"></i> Record New Call
+              </button>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Outcome</th>
+                      <th>Discussion Notes</th>
+                      <th>Next Action</th>
+                      <th>Counselor</th>
+                      <th>Timestamp</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customer-calls-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 5. FOLLOW-UPS -->
+        <div id="tab-followups" class="tab-pane" style="display: none;">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="card-title"><i class="fa-solid fa-calendar-check"></i> Placement Follow-up Tasks</h3>
+              <button class="btn btn-primary btn-sm" id="btn-tab-add-flw">
+                <i class="fa-solid fa-plus"></i> Schedule Follow-up
+              </button>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Status</th>
+                      <th>Date & Time</th>
+                      <th>Purpose / Objective</th>
+                      <th>Counselor</th>
+                      <th>Completion Remarks</th>
+                      <th style="text-align: right;">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customer-followups-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 6. STAGE HISTORY -->
+        <div id="tab-stage-history" class="tab-pane" style="display: none;">
+          <div class="card">
+            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 class="card-title"><i class="fa-solid fa-timeline"></i> Placement Stage Movements</h3>
+              <button class="btn btn-primary btn-sm" onclick="Pipeline.openStageModal(currentCustomer.id, null, refreshCustomerData)">
+                <i class="fa-solid fa-arrows-spin"></i> Move Stage
+              </button>
+            </div>
+            <div class="card-body" style="padding: 0;">
+              <div class="table-responsive">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>From Stage</th>
+                      <th>To Stage</th>
+                      <th>Reason / Justification</th>
+                      <th>Changed By</th>
+                      <th>Date & Time</th>
+                    </tr>
+                  </thead>
+                  <tbody id="customer-stage-history-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB CONTENT: 7. PLACEMENT FEE & INSTALLMENTS -->
+        <div id="tab-payments" class="tab-pane" style="display: none;">
+          <!-- 1. Fee Metrics Summary Strip -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+            <div class="card" style="padding: 1.25rem; border-left: 4px solid var(--primary-600);">
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Total Agreed Placement Fee</div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: var(--slate-900); margin: 0.25rem 0;" id="pay-total-fee">₹0</div>
+              <div style="font-size: 0.8rem; color: var(--slate-500);" id="pay-plan-type">Plan: —</div>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; border-left: 4px solid #10b981;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Total Collected to Date</div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: #047857; margin: 0.25rem 0;" id="pay-total-paid">₹0</div>
+              <div style="font-size: 0.8rem; color: #047857;" id="pay-percent-collected">0% of total</div>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; border-left: 4px solid #f59e0b;">
+              <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Outstanding Due Balance</div>
+              <div style="font-size: 1.6rem; font-weight: 800; color: #b45309; margin: 0.25rem 0;" id="pay-pending-balance">₹0</div>
+              <div style="font-size: 0.8rem; color: var(--slate-500);" id="pay-next-due-date">Next due: —</div>
+            </div>
+
+            <div class="card" style="padding: 1.25rem; border-left: 4px solid #6366f1; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Payment Status</div>
+                <div style="margin-top: 0.35rem;" id="pay-status-pill"></div>
+              </div>
+              <div style="margin-top: 0.75rem;">
+                <button class="btn btn-primary btn-sm" onclick="openRecordPaymentModal()" style="width: 100%; justify-content: center; font-weight: 700;">
+                  <i class="fa-solid fa-hand-holding-dollar"></i> Record Payment
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Collection Progress Bar -->
+          <div class="card" style="padding: 1.25rem; margin-bottom: 1.5rem;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; font-size: 0.85rem; font-weight: 600;">
+              <span>Placement Fee Collection Progress</span>
+              <span id="pay-progress-text">0% Realized</span>
+            </div>
+            <div style="height: 10px; background: var(--slate-100); border-radius: 9999px; overflow: hidden;">
+              <div id="pay-progress-bar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #10b981, #059669); border-radius: 9999px; transition: width 0.5s ease;"></div>
+            </div>
+          </div>
+
+          <!-- Installment Schedule & Transactions Grid -->
+          <div style="display: grid; grid-template-columns: 1.15fr 1fr; gap: 1.5rem;">
+            <!-- Left: Scheduled Installment Milestones -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-calendar-check" style="color: var(--primary-600);"></i> Scheduled Installment Milestones</h3>
+                <button class="btn btn-secondary btn-sm" onclick="openEditStudentModal()" style="font-size: 0.75rem;">
+                  <i class="fa-solid fa-sliders"></i> Edit Fee Plan
+                </button>
+              </div>
+              <div class="card-body" style="padding: 0;">
                 <div class="table-responsive">
-                  <table class="crm-table">
+                  <table class="table" style="font-size: 0.85rem;">
                     <thead>
                       <tr>
-                        <th>Receipt #</th>
-                        <th>Date</th>
+                        <th>Milestone / Installment</th>
+                        <th>Due Date</th>
                         <th>Amount</th>
-                        <th>Mode</th>
-                        <th>UTR / Ref</th>
+                        <th>Paid</th>
+                        <th>Status</th>
                         <th>Action</th>
                       </tr>
                     </thead>
-                    <tbody id="dossier-payments-tbody">
-                      <!-- Populated dynamically -->
-                    </tbody>
+                    <tbody id="pay-installments-tbody"></tbody>
                   </table>
                 </div>
               </div>
             </div>
 
-            <!-- Stage Movement History Timeline -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Stage Movement &amp; Velocity Log</div>
-                <span class="card-pill-badge">Audit Tracked</span>
+            <!-- Right: Official Payment Transaction History -->
+            <div class="card">
+              <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card-title"><i class="fa-solid fa-receipt" style="color: #047857;"></i> Payment Transaction Ledger</h3>
+                <span class="badge" style="background:#ecfdf5; color:#047857; font-weight: 700;" id="pay-trans-count">0 receipts</span>
               </div>
-              <div id="dossier-stage-history-container" style="display: flex; flex-direction: column; gap: 12px;">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column: Notes, Tasks, Interactions, Activities -->
-          <div style="display: flex; flex-direction: column; gap: 24px;">
-            <!-- Counselor Notes Card -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Counseling Notes &amp; Observations</div>
-                <span class="card-pill-badge">Internal Only</span>
-              </div>
-
-              <!-- Add Note Form -->
-              <div style="margin-bottom: 16px;">
-                <textarea id="new-note-text" class="filter-input" rows="3" placeholder="Enter counseling assessment, student interview readiness, feedback..." style="width: 100%; border-radius: 8px; resize: vertical;"></textarea>
-                <div style="display: flex; justify-content: flex-end; margin-top: 8px;">
-                  <button type="button" class="btn-primary-purple" style="padding: 6px 14px; font-size: 12px;" onclick="addCounselorNote()">Add Note</button>
+              <div class="card-body" style="padding: 0;">
+                <div class="table-responsive">
+                  <table class="table" style="font-size: 0.85rem;">
+                    <thead>
+                      <tr>
+                        <th>Receipt #</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Mode & Ref</th>
+                        <th>Received By</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="pay-transactions-tbody"></tbody>
+                  </table>
                 </div>
-              </div>
-
-              <!-- Notes List -->
-              <div id="dossier-notes-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 280px; overflow-y: auto;">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-
-            <!-- Follow-ups & Tasks Agenda -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Follow-up Tasks &amp; Counseling Schedule</div>
-                <button type="button" class="btn-outline-sm" onclick="openScheduleFollowup()">+ New Task</button>
-              </div>
-
-              <div id="dossier-tasks-container" style="display: flex; flex-direction: column; gap: 10px;">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-
-            <!-- Student Specific Audit Trail -->
-            <div class="enterprise-card">
-              <div class="card-header-bar">
-                <div class="card-heading">Candidate Audit Trail</div>
-                <span class="card-pill-badge">System Ledger</span>
-              </div>
-
-              <div id="dossier-activities-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto;">
-                <!-- Populated dynamically -->
               </div>
             </div>
           </div>
         </div>
-
       </main>
+    </div>
+  </div>
+
+  <!-- Edit Full Lead Details Modal -->
+  <div id="edit-lead-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-pen" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Edit Full Lead Profile</h3>
+        <button class="modal-close-btn" id="edit-stu-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-lead-form">
+          <input type="hidden" id="edit-stu-id">
+
+          <!-- Basic Candidate Info -->
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-id-card"></i> Candidate Details
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Lead Full Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="edit-stu-name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="edit-stu-email">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Primary Mobile <span class="required">*</span></label>
+              <input type="tel" class="form-control" id="edit-stu-mobile" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alternate Mobile / WhatsApp</label>
+              <input type="tel" class="form-control" id="edit-stu-alt-mobile">
+            </div>
+          </div>
+
+          <!-- Academic Background -->
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-graduation-cap"></i> Academic Background
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Degree / Qualification</label>
+              <input type="text" class="form-control" id="edit-stu-qualification">
+            </div>
+            <div class="form-group">
+              <label class="form-label">College / University</label>
+              <input type="text" class="form-control" id="edit-stu-college">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Passing Year (YOP)</label>
+              <input type="text" class="form-control" id="edit-stu-yop">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Experience Level</label>
+              <select class="form-select" id="edit-stu-exp">
+                <option value="Fresher">Fresher (0 yrs)</option>
+                <option value="0-1 yr">0 - 1 yr</option>
+                <option value="1-2 yrs">1 - 2 yrs</option>
+                <option value="2+ yrs">2+ yrs</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CGPA / %</label>
+              <input type="text" class="form-control" id="edit-stu-cgpa">
+            </div>
+          </div>
+
+          <!-- Career Preferences & Skills -->
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-briefcase"></i> Job Preferences & Skills
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Target Job Role</label>
+              <input type="text" class="form-control" id="edit-stu-role">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Key Technical Skills</label>
+              <input type="text" class="form-control" id="edit-stu-skills">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" id="edit-stu-city">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input type="text" class="form-control" id="edit-stu-state">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Location</label>
+              <input type="text" class="form-control" id="edit-stu-prefloc">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Expected CTC</label>
+              <input type="text" class="form-control" id="edit-stu-ctc" placeholder="e.g. 5.5 LPA">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Permanent Address</label>
+              <input type="text" class="form-control" id="edit-stu-address" placeholder="Flat, Street, Area">
+            </div>
+          </div>
+
+          <!-- Placement Fee & Payment Plan -->
+          <div style="font-size: 0.78rem; font-weight: 700; color: #047857; text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-receipt"></i> Placement Fee Agreement & Payment Terms
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Total Placement Fee (₹)</label>
+              <input type="number" class="form-control" id="edit-stu-fee" placeholder="e.g. 50000" min="0">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Plan</label>
+              <select class="form-select" id="edit-stu-payplan">
+                <option value="2 Installments">2 Installments (50% upfront, 50% on placement)</option>
+                <option value="Full Upfront">Full Upfront (100% upfront)</option>
+                <option value="3 Installments">3 Installments (40% / 30% / 30%)</option>
+                <option value="Pay After Placement">Pay After Placement (ISA Model)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Status</label>
+              <select class="form-select" id="edit-stu-paystatus">
+                <option value="Pending">Pending / Unpaid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Fully Paid">Fully Paid</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- CRM Pipeline & Assignment -->
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-sliders"></i> Pipeline, Status & Assignment
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Pipeline Stage <span class="required">*</span></label>
+              <select class="form-select" id="edit-stu-stage">
+                <option value="Cold Calling">Cold Calling (Raw Data - Uncalled)</option>
+                <option value="Not Connected">Not Connected</option>
+                <option value="New Lead">New Lead</option>
+                <option value="Contacted">Contacted</option>
+                <option value="Interested">Interested</option>
+                <option value="Prospect">Prospect</option>
+                <option value="Follow-up">Follow-up</option>
+                <option value="Negotiation">Negotiation</option>
+                <option value="Pending Closure">Pending Closure</option>
+                <option value="Enrolled">Enrolled</option>
+                <option value="Not Interested">Not Interested</option>
+                <option value="Lost">Lost</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Placement Status</label>
+              <select class="form-select" id="edit-stu-status">
+                <option value="Active">Active</option>
+                <option value="Pending Closure">Pending Closure</option>
+                <option value="Enrolled">Enrolled</option>
+                <option value="Not Connected">Not Connected</option>
+                <option value="Not Interested">Not Interested</option>
+                <option value="Lost">Lost</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <select class="form-select" id="edit-stu-priority">
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Dynamic Estimated Revenue for Pending Closure in Edit Modal -->
+          <div class="form-group" id="edit-stu-est-rev-group" style="display: none; background: #fefce8; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid #fef08a; margin-bottom: 0.85rem;">
+            <label class="form-label" style="font-weight: 700; color: #854d0e;">
+              <i class="fa-solid fa-indian-rupee-sign" style="margin-right: 0.25rem;"></i> Estimated Revenue (₹)
+            </label>
+            <div style="position: relative;">
+              <span style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: #b45309;">₹</span>
+              <input type="number" min="0" step="500" class="form-control" id="edit-stu-est-revenue" placeholder="e.g. 50000" style="padding-left: 2rem; font-weight: 700; background: #fff;">
+            </div>
+            <small style="font-size: 0.72rem; color: #92400e; margin-top: 0.35rem; display: block;">Expected closure value entered during pending closure.</small>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Lead Source</label>
+              <select class="form-select" id="edit-stu-source">
+                <option value="Cold Calling / Raw Database">Cold Calling / Raw Database</option>
+                <option value="Excel / CSV Upload">Excel / CSV Upload</option>
+                <option value="College Placement Cell">College Placement Cell</option>
+                <option value="Walk-in / Campus Drive">Walk-in / Campus Drive</option>
+                <option value="Job Portal / Naukri">Job Portal / Naukri</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Website Inquiry">Website Inquiry</option>
+                <option value="Referral">Referral</option>
+                <option value="Social Media / Instagram">Social Media / Instagram</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Manager</label>
+              <select class="form-select" id="edit-stu-manager"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Counselor</label>
+              <select class="form-select" id="edit-stu-salesperson"></select>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label">Counseling Notes & Career Aspirations</label>
+            <textarea class="form-control" id="edit-stu-notes" rows="2" placeholder="Lead background, immediate availability, preferred interview timings..."></textarea>
+          </div>
+
+          <div id="edit-stu-error" style="display: none; padding: 0.75rem; border-radius: var(--radius-md); background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); font-size: 0.85rem; margin-top: 0.5rem;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="edit-stu-cancel">Cancel</button>
+        <button class="btn btn-primary" id="edit-stu-save">Update Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Schedule Follow-up Modal -->
+  <div id="schedule-followup-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Schedule Follow-up</h3>
+        <button class="modal-close-btn" id="flw-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Follow-up Date <span class="required">*</span></label>
+          <input type="date" class="form-control" id="flw-modal-date" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="time" class="form-control" id="flw-modal-time" value="10:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select class="form-select" id="flw-modal-priority">
+            <option value="High">High Priority</option>
+            <option value="Medium" selected>Medium Priority</option>
+            <option value="Low">Low Priority</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Objective / Purpose <span class="required">*</span></label>
+          <input type="text" class="form-control" id="flw-modal-purpose" placeholder="e.g. Discuss Java placement track details...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="flw-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="flw-modal-save">Schedule</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Record Payment Modal -->
+  <div id="modal-record-payment" class="modal-backdrop">
+    <div class="modal-dialog modal-md" style="max-width: 540px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-hand-holding-dollar" style="color: #10b981; margin-right: 0.5rem;"></i>Record Fee Installment Payment</h3>
+        <button class="modal-close-btn" id="record-pay-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="record-payment-form">
+          <input type="hidden" id="pay-modal-customer-id">
+          
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" style="font-weight: 600;">Lead Candidate</label>
+            <input type="text" class="form-control" id="pay-modal-lead-name" readonly style="background: var(--slate-100); font-weight: 700;">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label" style="font-weight: 600;">Apply to Installment / Milestone</label>
+            <select class="form-select" id="pay-modal-installment-select"></select>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Amount Paid (₹) <span class="required">*</span></label>
+              <input type="number" class="form-control" id="pay-modal-amount" placeholder="e.g. 20000" min="1" required style="font-weight: 700; font-size: 1.1rem; color: #047857;">
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Payment Date <span class="required">*</span></label>
+              <input type="date" class="form-control" id="pay-modal-date" required>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; margin-bottom: 0.85rem;">
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Payment Mode <span class="required">*</span></label>
+              <select class="form-select" id="pay-modal-mode" required>
+                <option value="UPI / Online">UPI (GPay / PhonePe / Paytm)</option>
+                <option value="Net Banking">Net Banking / NEFT / IMPS</option>
+                <option value="Credit / Debit Card">Credit / Debit Card</option>
+                <option value="Cheque / DD">Cheque / Demand Draft</option>
+                <option value="Cash Deposit">Cash Deposit</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" style="font-weight: 600;">Transaction Ref / UTR #</label>
+              <input type="text" class="form-control" id="pay-modal-ref" placeholder="e.g. UPI-98214152">
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 0.85rem;">
+            <label class="form-label">Counselor / Received By</label>
+            <input type="text" class="form-control" id="pay-modal-received-by">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Notes / Remarks</label>
+            <textarea class="form-control" id="pay-modal-notes" rows="2" placeholder="e.g. 1st installment paid after placement orientation session."></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="record-pay-cancel">Cancel</button>
+        <button class="btn btn-primary" id="record-pay-save" style="background: #10b981; border-color: #059669; font-weight: 700;">
+          <i class="fa-solid fa-check"></i> Save & Generate Receipt
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Official Receipt Modal -->
+  <div id="modal-view-receipt" class="modal-backdrop">
+    <div class="modal-dialog modal-lg" style="max-width: 720px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-receipt" style="color: #0284c7; margin-right: 0.5rem;"></i>Official Fee Payment Receipt</h3>
+        <button class="modal-close-btn" id="receipt-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body" id="receipt-modal-content" style="padding: 0; max-height: 70vh; overflow-y: auto;"></div>
+      <div class="modal-footer" style="display: flex; justify-content: space-between;">
+        <button class="btn btn-secondary" id="receipt-modal-done">Close</button>
+        <button class="btn btn-primary" id="receipt-modal-print" style="font-weight: 700;">
+          <i class="fa-solid fa-print"></i> Print Receipt
+        </button>
+      </div>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/pipeline.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    let activeStudent = null;
+    let currentCustomer = null;
 
-    function loadStudentDossier() {
-      const params = Utils.parseQueryParams();
-      let studentId = params.id;
-
-      const all = Customers.getAll();
-      if (!studentId && all.length > 0) {
-        studentId = all[0].id;
+    function initCustomerDetails() {
+      // 1. Self-healing check: Ensure demo data is loaded and has SM-LD- format
+      try {
+        const storedCustomers = StorageService.getData(CRM_STORAGE_KEYS.CUSTOMERS, []);
+        const validStored = Array.isArray(storedCustomers) ? storedCustomers.filter(c => c && typeof c === 'object' && c.id) : [];
+        if (!validStored.length || validStored.some(c => !c.id || !c.id.startsWith('SM-LD-'))) {
+          if (window.SeedData && typeof SeedData.resetDemoData === 'function') {
+            SeedData.resetDemoData();
+          }
+        }
+      } catch (err) {
+        console.warn('Seed verification warning:', err);
       }
 
-      activeStudent = Customers.getById(studentId);
-      if (!activeStudent) {
-        if (all.length > 0) {
-          activeStudent = all[0];
-        } else {
-          alert('No students found in the CRM.');
-          window.location.href = 'customers.html';
-          return;
+      // 2. Guaranteed user authentication
+      let user = null;
+      try {
+        user = Auth.requireAuth();
+      } catch (err) {
+        console.warn('Auth check fallback:', err);
+      }
+      if (!user || !user.id) {
+        user = (window.Auth && typeof Auth.getCurrentUser === 'function' ? Auth.getCurrentUser() : null) || {
+          id: 'USR-001',
+          name: 'Alexander Wright',
+          email: 'admin@crm.local',
+          role: 'admin',
+          status: 'Active'
+        };
+      }
+
+      // 3. Initialize common app shell (sidebar, header, search)
+      try {
+        App.initCommon(user, 'customers');
+      } catch (err) {
+        console.error('App.initCommon error:', err);
+      }
+
+      // 4. Resolve Lead Candidate ID from URL with smart fallbacks
+      let customerId = null;
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        customerId = urlParams.get('id');
+      } catch (e) {
+        console.warn('URL parsing error:', e);
+      }
+
+      let allCustomers = [];
+      try {
+        allCustomers = Customers.getAll();
+      } catch (e) {
+        console.warn('Customers.getAll error:', e);
+      }
+
+      if (!allCustomers || !allCustomers.length) {
+        try {
+          if (window.SeedData && typeof SeedData.resetDemoData === 'function') {
+            SeedData.resetDemoData();
+            allCustomers = Customers.getAll();
+          }
+        } catch (e) {}
+      }
+
+      // Priority 1: Match by exact or normalized ID
+      if (customerId) {
+        try {
+          currentCustomer = Customers.getById(customerId);
+        } catch (e) {
+          console.warn('Customers.getById error:', e);
         }
       }
 
-      renderDossier();
-    }
-
-    function renderDossier() {
-      const s = activeStudent;
-
-      // Header displays
-      document.getElementById('student-id-breadcrumb').textContent = s.id;
-      document.getElementById('student-id-display').textContent = s.id;
-      document.getElementById('student-name').textContent = s.name;
-      document.getElementById('student-avatar').textContent = Utils.getInitials(s.name);
-      document.getElementById('student-role-display').textContent = s.targetRole || 'Not specified';
-      document.getElementById('student-counselor-display').textContent = s.counselor || 'Unassigned';
-
-      // Badges
-      const stageBadgeEl = document.getElementById('student-stage-badge');
-      stageBadgeEl.className = 'badge ' + Utils.getStageBadgeClass(s.stage);
-      stageBadgeEl.textContent = s.stage;
-
-      const priorityBadgeEl = document.getElementById('student-priority-badge');
-      priorityBadgeEl.textContent = (s.priority || 'Normal') + ' Priority';
-
-      const paymentBadgeEl = document.getElementById('student-payment-badge');
-      paymentBadgeEl.className = 'badge ' + Utils.getPaymentBadgeClass(s.paymentStatus);
-      paymentBadgeEl.textContent = s.paymentStatus || 'Pending';
-
-      // Academic & Career Details
-      document.getElementById('student-batch-badge').textContent = (s.passingYear ? s.passingYear + ' Batch' : 'Candidate');
-      document.getElementById('dossier-mobile').textContent = s.mobile || '-';
-      document.getElementById('dossier-alt-mobile').textContent = s.alternateMobile || 'None';
-      document.getElementById('dossier-email').textContent = s.email || '-';
-      document.getElementById('dossier-college').textContent = s.college || '-';
-      document.getElementById('dossier-degree').textContent = s.degree || '-';
-      document.getElementById('dossier-target-role').textContent = s.targetRole || '-';
-      document.getElementById('dossier-location').textContent = s.preferredLocation || 'Any';
-      document.getElementById('dossier-source').textContent = s.leadSource || 'Direct';
-
-      // Skills
-      const skillsContainer = document.getElementById('dossier-skills-container');
-      const skills = (s.skills || '').split(',').filter(sk => sk.trim().length > 0);
-      skillsContainer.innerHTML = skills.length > 0
-        ? skills.map(sk => `<span class="badge" style="background: #eef2ff; color: #4338ca; font-size: 12px; padding: 4px 10px;">${Utils.escapeHtml(sk.trim())}</span>`).join('')
-        : '<span style="color: var(--slate-400); font-size: 12px;">No skills specified</span>';
-
-      // Financials
-      document.getElementById('dossier-total-fee').textContent = Utils.formatINR(s.placementFee || 0);
-      document.getElementById('dossier-paid-fee').textContent = Utils.formatINR(s.paidAmount || 0);
-      document.getElementById('dossier-pending-fee').textContent = Utils.formatINR(s.pendingAmount || 0);
-      document.getElementById('dossier-plan-name').textContent = s.installmentPlan || 'Standard Plan';
-
-      // Installments Table
-      const instTbody = document.getElementById('dossier-installments-tbody');
-      const allInstallments = StorageService.get(CRM_KEYS.INSTALLMENTS) || [];
-      const studentInsts = allInstallments.filter(i => i.studentId === s.id);
-      if (studentInsts.length === 0) {
-        instTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 12px;">No installment plan active</td></tr>`;
-      } else {
-        instTbody.innerHTML = studentInsts.map(inst => `
-          <tr>
-            <td><strong>#${inst.installmentNo}</strong></td>
-            <td>${inst.dueDate || '-'}</td>
-            <td style="font-weight: 600;">${Utils.formatINR(inst.amount)}</td>
-            <td><span class="badge ${inst.status === 'Paid' ? 'badge-converted' : (inst.status === 'Overdue' ? 'badge-lost' : 'badge-new')}">${inst.status}</span></td>
-            <td>${inst.paidDate || '-'}</td>
-          </tr>
-        `).join('');
+      // Priority 2: Case-insensitive match from loaded list
+      if (!currentCustomer && customerId && allCustomers && allCustomers.length > 0) {
+        const cleanId = String(customerId).trim().toUpperCase();
+        currentCustomer = allCustomers.find(c => c && c.id && String(c.id).trim().toUpperCase() === cleanId);
       }
 
-      // Payments Table
-      const payTbody = document.getElementById('dossier-payments-tbody');
-      const allPayments = Payments.getAll();
-      const studentPayments = allPayments.filter(p => p.studentId === s.id);
-      if (studentPayments.length === 0) {
-        payTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 12px;">No payments recorded yet</td></tr>`;
-      } else {
-        payTbody.innerHTML = studentPayments.map(p => `
-          <tr>
-            <td><span style="font-family: monospace; font-size: 11px; font-weight: 600; color: var(--primary);">${p.receiptNo || p.id}</span></td>
-            <td>${p.paymentDate}</td>
-            <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(p.amount)}</td>
-            <td><span class="badge" style="background: #f1f5f9; color: #334155;">${p.mode}</span></td>
-            <td><span style="font-family: monospace; font-size: 11px; color: var(--slate-600);">${p.utr || '-'}</span></td>
-            <td>
-              <button type="button" class="btn-outline-sm" style="padding: 2px 8px; font-size: 11px;" onclick="Payments.printReceipt('${p.id}')">
-                Print
-              </button>
-            </td>
-          </tr>
-        `).join('');
+      // Priority 3: Fallback to first available lead
+      if (!currentCustomer) {
+        if (allCustomers && allCustomers.length > 0) {
+          currentCustomer = allCustomers[0];
+        } else if (window.SeedData && typeof SeedData.getCustomers === 'function') {
+          const seeds = SeedData.getCustomers();
+          currentCustomer = seeds && seeds.length ? seeds[0] : null;
+        }
       }
 
-      // Stage Movement History
-      const histContainer = document.getElementById('dossier-stage-history-container');
-      const allHist = StorageService.get(CRM_KEYS.STAGE_HISTORY) || [];
-      const studentHist = allHist.filter(h => h.studentId === s.id);
-      if (studentHist.length === 0) {
-        histContainer.innerHTML = `<div style="font-size: 13px; color: var(--slate-400); text-align: center; padding: 12px;">Initial lead stage recorded: ${Utils.escapeHtml(s.stage)}</div>`;
-      } else {
-        histContainer.innerHTML = studentHist.map(h => `
-          <div style="display: flex; gap: 12px; padding: 10px; background: #fafbfc; border-radius: 8px; border-left: 3px solid var(--primary);">
-            <div style="flex: 1;">
-              <div style="display: flex; justify-content: space-between; font-size: 12px;">
-                <span><strong>${Utils.escapeHtml(h.fromStage || 'Created')}</strong> → <strong style="color: var(--primary);">${Utils.escapeHtml(h.toStage)}</strong></span>
-                <span style="color: var(--slate-400); font-size: 11px;">${Utils.formatDate(h.timestamp)}</span>
-              </div>
-              <div style="font-size: 12px; color: var(--slate-700); margin-top: 4px;">Reason: ${Utils.escapeHtml(h.reason || 'Status updated')}</div>
-              <div style="font-size: 11px; color: var(--slate-400); margin-top: 2px;">Updated by: ${Utils.escapeHtml(h.changedBy || 'Counselor')}</div>
-            </div>
-          </div>
-        `).join('');
-      }
+      if (currentCustomer && currentCustomer.id) {
+        // Sync URL query param
+        try {
+          const newUrl = new URL(window.location.href);
+          if (newUrl.searchParams.get('id') !== currentCustomer.id) {
+            newUrl.searchParams.set('id', currentCustomer.id);
+            window.history.replaceState({}, '', newUrl);
+          }
+        } catch (e) {}
 
-      // Notes List
-      const notesContainer = document.getElementById('dossier-notes-container');
-      const notes = s.notes || [];
-      if (notes.length === 0) {
-        notesContainer.innerHTML = `<div style="color: var(--slate-400); font-size: 13px; text-align: center; padding: 12px;">No counselor notes recorded yet.</div>`;
+        try { renderCustomerHero(); } catch (e) { console.error('Error rendering hero:', e); }
+        try { renderCustomerDetails(); } catch (e) { console.error('Error rendering details:', e); }
+        try { setupTabs(); } catch (e) { console.error('Error setting up tabs:', e); }
+        try { setupActionButtons(); } catch (e) { console.error('Error setting up action buttons:', e); }
+        try { setupNoteSection(); } catch (e) { console.error('Error setting up notes:', e); }
+        try { setupFollowupModal(); } catch (e) { console.error('Error setting up followups modal:', e); }
+        try { setupEditStudentModal(); } catch (e) { console.error('Error setting up edit modal:', e); }
+        try { setupPaymentModals(); } catch (e) { console.error('Error setting up payment modal:', e); }
+        try { updateTabBadges(); } catch (e) { console.error('Error updating tab badges:', e); }
       } else {
-        notesContainer.innerHTML = notes.map(n => `
-          <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 8px; padding: 10px;">
-            <div style="display: flex; justify-content: space-between; font-size: 11px; color: var(--slate-400); margin-bottom: 4px;">
-              <span><strong>${Utils.escapeHtml(n.author || 'Counselor')}</strong></span>
-              <span>${Utils.formatDate(n.timestamp)}</span>
-            </div>
-            <div style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(n.text)}</div>
-          </div>
-        `).join('');
-      }
-
-      // Tasks List
-      const tasksContainer = document.getElementById('dossier-tasks-container');
-      const allFollowups = Followups.getAll();
-      const studentTasks = allFollowups.filter(f => f.studentId === s.id);
-      if (studentTasks.length === 0) {
-        tasksContainer.innerHTML = `<div style="color: var(--slate-400); font-size: 13px; text-align: center; padding: 12px;">No follow-up tasks scheduled.</div>`;
-      } else {
-        tasksContainer.innerHTML = studentTasks.map(t => `
-          <div style="display: flex; justify-content: space-between; align-items: center; background: #fafbfc; border: 1px solid var(--slate-200); border-radius: 8px; padding: 10px;">
-            <div>
-              <div style="font-size: 13px; font-weight: 600; color: var(--navy-900);">${Utils.escapeHtml(t.purpose)}</div>
-              <div style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">
-                Due: ${t.scheduledDate} ${t.scheduledTime || ''} • <span class="badge ${t.status === 'Completed' ? 'badge-converted' : 'badge-interested'}">${t.status}</span>
-              </div>
-            </div>
-            <div>
-              ${t.status === 'Pending' ? `
-                <button type="button" class="btn-outline-sm" style="padding: 3px 8px; font-size: 11px; color: var(--green); border-color: var(--green);" onclick="Followups.openCompleteModal('${t.id}', refreshPageData)">
-                  Complete
-                </button>
-              ` : '<span style="font-size: 11px; color: var(--green); font-weight: 600;">✓ Done</span>'}
-            </div>
-          </div>
-        `).join('');
-      }
-
-      // Candidate Audit Trail
-      const actContainer = document.getElementById('dossier-activities-container');
-      const allActs = Activities.getAll();
-      const studentActs = allActs.filter(a => a.studentId === s.id);
-      if (studentActs.length === 0) {
-        actContainer.innerHTML = `<div style="color: var(--slate-400); font-size: 13px; text-align: center; padding: 12px;">No logged activities.</div>`;
-      } else {
-        actContainer.innerHTML = studentActs.map(a => `
-          <div style="display: flex; gap: 10px; font-size: 12px; padding: 8px; background: #ffffff; border: 1px solid var(--slate-100); border-radius: 6px;">
-            <span style="color: var(--slate-400); font-size: 11px; white-space: nowrap;">${Utils.formatDate(a.timestamp)}</span>
-            <div style="flex: 1;">
-              <span style="font-weight: 600; color: var(--navy-900);">${Utils.escapeHtml(a.user || 'User')}</span>:
-              <span style="color: var(--slate-700);">${Utils.escapeHtml(a.description)}</span>
-            </div>
-          </div>
-        `).join('');
+        Toast.error('No lead candidate records found in system.');
+        setTimeout(() => window.location.href = 'customers.html', 1500);
       }
     }
 
-    function addCounselorNote() {
-      const text = document.getElementById('new-note-text')?.value.trim();
-      if (!text) {
-        Utils.showToast('Please type a note first.', 'warning');
+    // Ensure initialization executes reliably regardless of readyState
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initCustomerDetails);
+    } else {
+      initCustomerDetails();
+    }
+
+    function refreshCustomerData() {
+      if (!currentCustomer) return;
+      currentCustomer = (Customers.getById && Customers.getById(currentCustomer.id)) || currentCustomer;
+      renderCustomerHero();
+      renderCustomerDetails();
+      loadTimelineTab();
+      loadNotesTab();
+      loadCallsTab();
+      loadFollowupsTab();
+      loadStageHistoryTab();
+      loadPaymentsTab();
+      updateTabBadges();
+    }
+
+    function renderCustomerHero() {
+      const c = currentCustomer;
+      if (!c) return;
+
+      const el = (id) => document.getElementById(id);
+
+      if (el('breadcrumb-cust-id')) el('breadcrumb-cust-id').textContent = `${c.id} (${c.name})`;
+      if (el('hero-cust-name')) el('hero-cust-name').textContent = c.name;
+      if (el('hero-subtitle')) el('hero-subtitle').textContent = `${c.id} • ${c.qualification || 'Lead'} • ${c.college || 'College'}, ${c.city || 'India'}`;
+      
+      const initials = (c.name || 'L').trim().split(/\s+/).map(w => w ? w[0] : '').slice(0, 2).join('').toUpperCase() || 'LD';
+      if (el('hero-avatar-init')) el('hero-avatar-init').textContent = initials;
+
+      if (el('hero-stage-badge')) el('hero-stage-badge').innerHTML = Utils.getStageBadge(c.stage);
+      if (el('hero-status-badge')) el('hero-status-badge').innerHTML = Utils.getStatusBadge(c.status);
+      if (el('hero-priority-badge')) el('hero-priority-badge').innerHTML = Utils.getPriorityBadge(c.priority);
+
+      if (el('meta-phone')) el('meta-phone').textContent = c.mobile || '—';
+      if (el('meta-email')) el('meta-email').textContent = c.email || '—';
+      if (el('meta-target-role')) el('meta-target-role').textContent = c.targetRole || 'Software Engineer';
+      if (el('meta-salesperson')) el('meta-salesperson').textContent = c.salespersonName || 'Unassigned';
+      if (el('meta-next-flw')) {
+        el('meta-next-flw').innerHTML = c.nextFollowUp 
+          ? `<span style="${new Date(c.nextFollowUp) < new Date() ? 'color: var(--danger-solid); font-weight: 700;' : ''}">${Utils.formatDateTime(c.nextFollowUp)}</span>` 
+          : 'None Scheduled';
+      }
+    }
+
+    function renderCustomerDetails() {
+      const c = currentCustomer;
+      if (!c) return;
+
+      const el = (id) => document.getElementById(id);
+
+      if (el('det-qualification')) el('det-qualification').textContent = c.qualification || '—';
+      if (el('det-college')) el('det-college').textContent = c.college || '—';
+      if (el('det-yop')) el('det-yop').textContent = c.passingYear || '—';
+      if (el('det-cgpa')) el('det-cgpa').textContent = c.cgpaOrPercentage || '—';
+      if (el('det-mobile')) el('det-mobile').textContent = c.mobile || '—';
+      if (el('det-alt-mobile')) el('det-alt-mobile').textContent = c.altMobile || '—';
+      if (el('det-email')) el('det-email').textContent = c.email || '—';
+      if (el('det-city-state')) el('det-city-state').textContent = `${c.city || '—'}, ${c.state || '—'}`;
+      if (el('det-address')) el('det-address').textContent = c.address || '—';
+
+      if (el('det-target-role')) el('det-target-role').textContent = c.targetRole || '—';
+      if (el('det-skills')) el('det-skills').textContent = c.skills || '—';
+      if (el('det-experience')) el('det-experience').textContent = c.experienceLevel || 'Fresher';
+      if (el('det-prefloc')) el('det-prefloc').textContent = c.preferredLocation || '—';
+      if (el('det-ctc')) el('det-ctc').textContent = c.expectedCtc || '—';
+      if (el('det-source')) el('det-source').textContent = c.source || 'Website Inquiry';
+      if (el('det-stage')) el('det-stage').innerHTML = Utils.getStageBadge(c.stage);
+      if (el('det-status')) el('det-status').innerHTML = Utils.getStatusBadge(c.status);
+      if (el('det-est-rev')) {
+        const estRevVal = c.estimatedRevenue || (c.stage === 'Pending Closure' ? c.totalFee || 45000 : null);
+        if (estRevVal || c.stage === 'Pending Closure') {
+          if (el('row-det-est-rev')) el('row-det-est-rev').style.display = '';
+          el('det-est-rev').textContent = Payments.formatCurrency(estRevVal || 0);
+        } else {
+          if (el('row-det-est-rev')) el('row-det-est-rev').style.display = 'none';
+        }
+      }
+      if (el('det-salesperson')) el('det-salesperson').textContent = c.salespersonName || 'Unassigned';
+      if (el('det-manager')) el('det-manager').textContent = c.managerName || 'Unassigned';
+      if (el('det-created')) el('det-created').textContent = Utils.formatDateTime(c.createdAt);
+
+      // Placement Fee Summary on Overview
+      const fee = Number(c.totalFee) || 0;
+      const paid = Number(c.paidAmount) || 0;
+      const pending = Math.max(0, fee - paid);
+      const pct = fee > 0 ? Math.round((paid / fee) * 100) : 0;
+
+      if (el('overview-fee-total')) el('overview-fee-total').textContent = Payments.formatCurrency(fee);
+      if (el('overview-fee-plan')) el('overview-fee-plan').textContent = `Plan: ${c.paymentPlan || '2 Installments'}`;
+      if (el('overview-fee-paid')) el('overview-fee-paid').textContent = Payments.formatCurrency(paid);
+      if (el('overview-fee-percent')) el('overview-fee-percent').textContent = `${pct}% collected`;
+      if (el('overview-fee-pending')) el('overview-fee-pending').textContent = Payments.formatCurrency(pending);
+      if (el('overview-fee-status')) {
+        const isPaid = pending === 0 && fee > 0;
+        const color = isPaid ? 'var(--success-solid)' : (paid > 0 ? '#b45309' : 'var(--danger-solid)');
+        el('overview-fee-status').innerHTML = `Status: <span style="font-weight: 700; color: ${color};">${c.paymentStatus || 'Pending'}</span>`;
+      }
+      if (el('overview-fee-bar')) el('overview-fee-bar').style.width = `${Math.min(100, pct)}%`;
+      if (el('overview-fee-installments-count')) {
+        const instCount = Array.isArray(c.installments) ? c.installments.length : 0;
+        el('overview-fee-installments-count').textContent = `${instCount} milestones in agreement`;
+      }
+    }
+
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      const tabPanes = document.querySelectorAll('.tab-pane');
+
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          tabPanes.forEach(p => p.style.display = 'none');
+
+          btn.classList.add('active');
+          const targetId = btn.getAttribute('data-tab');
+          const pane = document.getElementById(targetId);
+          if (pane) pane.style.display = 'block';
+
+          if (targetId === 'tab-timeline') loadTimelineTab();
+          if (targetId === 'tab-notes') loadNotesTab();
+          if (targetId === 'tab-calls') loadCallsTab();
+          if (targetId === 'tab-followups') loadFollowupsTab();
+          if (targetId === 'tab-stage-history') loadStageHistoryTab();
+          if (targetId === 'tab-payments') loadPaymentsTab();
+        });
+      });
+    }
+
+    function switchToPaymentsTab() {
+      const payBtn = document.getElementById('tab-btn-payments');
+      if (payBtn) payBtn.click();
+    }
+
+    function updateTabBadges() {
+      if (!currentCustomer) return;
+      const cid = currentCustomer.id;
+      const acts = Activities.getByCustomer(cid);
+      const notes = StorageService.getData(CRM_STORAGE_KEYS.NOTES, []).filter(n => n.customerId === cid);
+      const calls = Communication.getByCustomer(cid);
+      const flws = Followups.getByCustomer(cid);
+      const stages = Pipeline.getStageHistory(cid);
+
+      const el = (id) => document.getElementById(id);
+      if (el('tab-count-activities')) el('tab-count-activities').textContent = acts.length;
+      if (el('tab-count-notes')) el('tab-count-notes').textContent = notes.length;
+      if (el('tab-count-calls')) el('tab-count-calls').textContent = calls.length;
+      if (el('tab-count-followups')) el('tab-count-followups').textContent = flws.length;
+      if (el('tab-count-stages')) el('tab-count-stages').textContent = stages.length;
+
+      // Fee status badge
+      if (el('tab-badge-payment-status')) {
+        const fee = Number(currentCustomer.totalFee) || 0;
+        const paid = Number(currentCustomer.paidAmount) || 0;
+        const pending = Math.max(0, fee - paid);
+        if (pending === 0 && fee > 0) {
+          el('tab-badge-payment-status').textContent = '✓ Paid';
+          el('tab-badge-payment-status').style.background = '#ecfdf5';
+          el('tab-badge-payment-status').style.color = '#047857';
+        } else if (pending > 0) {
+          el('tab-badge-payment-status').textContent = `₹${pending.toLocaleString('en-IN')} Due`;
+          el('tab-badge-payment-status').style.background = paid > 0 ? '#fef3c7' : '#fee2e2';
+          el('tab-badge-payment-status').style.color = paid > 0 ? '#b45309' : '#b91c1c';
+        } else {
+          el('tab-badge-payment-status').textContent = 'Pending';
+          el('tab-badge-payment-status').style.background = '#f1f5f9';
+          el('tab-badge-payment-status').style.color = '#475569';
+        }
+      }
+    }
+
+    function setupActionButtons() {
+      const cid = currentCustomer ? currentCustomer.id : null;
+      if (!cid) return;
+
+      const callBtn = document.getElementById('btn-action-call');
+      if (callBtn) callBtn.onclick = () => Communication.initiateCall(cid);
+
+      const waBtn = document.getElementById('btn-action-wa');
+      if (waBtn) waBtn.onclick = () => Communication.openWhatsApp(cid);
+
+      const mailBtn = document.getElementById('btn-action-email');
+      if (mailBtn) mailBtn.onclick = () => Communication.initiateEmail(cid);
+
+      const recBtn = document.getElementById('btn-action-record-call');
+      if (recBtn) recBtn.onclick = () => Communication.openCallRecordModal(cid, refreshCustomerData);
+
+      const stageBtn = document.getElementById('btn-action-change-stage');
+      if (stageBtn) stageBtn.onclick = () => Pipeline.openStageModal(cid, null, refreshCustomerData);
+
+      const flwBtn = document.getElementById('btn-action-schedule-flw');
+      if (flwBtn) flwBtn.onclick = () => openScheduleModal();
+
+      const tabFlwBtn = document.getElementById('btn-tab-add-flw');
+      if (tabFlwBtn) tabFlwBtn.onclick = () => openScheduleModal();
+    }
+
+    /**
+     * Complete Edit Lead Modal Logic
+     */
+    function setupEditStudentModal() {
+      window.openEditLeadModal = window.openEditStudentModal = () => {
+        if (!currentCustomer) return;
+        const cust = currentCustomer;
+        const modal = document.getElementById('edit-lead-modal') || document.getElementById('edit-student-modal');
+        const errBox = document.getElementById('edit-stu-error');
+        errBox.style.display = 'none';
+
+        document.getElementById('edit-stu-id').value = cust.id;
+        document.getElementById('edit-stu-name').value = cust.name || '';
+        document.getElementById('edit-stu-email').value = cust.email || '';
+        document.getElementById('edit-stu-mobile').value = cust.mobile || '';
+        document.getElementById('edit-stu-alt-mobile').value = cust.altMobile || '';
+        document.getElementById('edit-stu-qualification').value = cust.qualification || '';
+        document.getElementById('edit-stu-college').value = cust.college || '';
+        document.getElementById('edit-stu-yop').value = cust.passingYear || '';
+        document.getElementById('edit-stu-exp').value = cust.experienceLevel || 'Fresher';
+        document.getElementById('edit-stu-cgpa').value = cust.cgpaOrPercentage || '';
+        document.getElementById('edit-stu-role').value = cust.targetRole || '';
+        document.getElementById('edit-stu-skills').value = cust.skills || '';
+        document.getElementById('edit-stu-city').value = cust.city || '';
+        document.getElementById('edit-stu-state').value = cust.state || '';
+        document.getElementById('edit-stu-prefloc').value = cust.preferredLocation || '';
+        document.getElementById('edit-stu-ctc').value = cust.expectedCtc || '';
+        document.getElementById('edit-stu-address').value = cust.address || '';
+        document.getElementById('edit-stu-stage').value = cust.stage === 'Converted' ? 'Enrolled' : (cust.stage || 'New Lead');
+        document.getElementById('edit-stu-status').value = cust.status === 'Converted' ? 'Enrolled' : (cust.status || 'Active');
+        document.getElementById('edit-stu-priority').value = cust.priority || 'Medium';
+        document.getElementById('edit-stu-source').value = cust.source || 'Website Inquiry';
+        document.getElementById('edit-stu-notes').value = cust.notes || '';
+        document.getElementById('edit-stu-fee').value = cust.totalFee !== undefined ? cust.totalFee : 45000;
+        document.getElementById('edit-stu-est-revenue').value = cust.estimatedRevenue || cust.totalFee || 45000;
+        document.getElementById('edit-stu-payplan').value = cust.paymentPlan || '2 Installments';
+        document.getElementById('edit-stu-paystatus').value = cust.paymentStatus || 'Pending';
+
+        const stageSelectEl = document.getElementById('edit-stu-stage');
+        const estRevGroupEl = document.getElementById('edit-stu-est-rev-group');
+        const updateEstRevVisibility = () => {
+          if (stageSelectEl.value === 'Pending Closure') {
+            estRevGroupEl.style.display = 'block';
+          } else {
+            estRevGroupEl.style.display = 'none';
+          }
+        };
+        stageSelectEl.onchange = updateEstRevVisibility;
+        updateEstRevVisibility();
+
+        // Managers select
+        const mgrSelect = document.getElementById('edit-stu-manager');
+        mgrSelect.innerHTML = '<option value="">-- Unassigned --</option>' +
+          Users.getManagers().map(m => `<option value="${m.id}" ${m.id === cust.managerId ? 'selected' : ''}>${Utils.escapeHtml(m.name)}</option>`).join('');
+
+        // Counselors select
+        const salesSelect = document.getElementById('edit-stu-salesperson');
+        salesSelect.innerHTML = '<option value="">-- Unassigned --</option>' +
+          Users.getSalespeople().map(s => `<option value="${s.id}" ${s.id === cust.salespersonId ? 'selected' : ''}>${Utils.escapeHtml(s.name)}</option>`).join('');
+
+        const hide = () => modal.classList.remove('show');
+        document.getElementById('edit-stu-close').onclick = hide;
+        document.getElementById('edit-stu-cancel').onclick = hide;
+
+        document.getElementById('edit-stu-save').onclick = () => {
+          const name = document.getElementById('edit-stu-name').value.trim();
+          const mobile = document.getElementById('edit-stu-mobile').value.trim();
+          const email = document.getElementById('edit-stu-email').value.trim();
+
+          if (!name) {
+            errBox.textContent = 'Lead name is required.';
+            errBox.style.display = 'block';
+            return;
+          }
+          if (!mobile || !Validation.isValidMobile(mobile)) {
+            errBox.textContent = 'Please enter a valid 10-digit mobile number.';
+            errBox.style.display = 'block';
+            return;
+          }
+
+          const updates = {
+            name,
+            mobile,
+            altMobile: document.getElementById('edit-stu-alt-mobile').value.trim(),
+            email,
+            qualification: document.getElementById('edit-stu-qualification').value.trim(),
+            college: document.getElementById('edit-stu-college').value.trim(),
+            passingYear: document.getElementById('edit-stu-yop').value.trim(),
+            experienceLevel: document.getElementById('edit-stu-exp').value,
+            cgpaOrPercentage: document.getElementById('edit-stu-cgpa').value.trim(),
+            targetRole: document.getElementById('edit-stu-role').value.trim(),
+            skills: document.getElementById('edit-stu-skills').value.trim(),
+            city: document.getElementById('edit-stu-city').value.trim(),
+            state: document.getElementById('edit-stu-state').value.trim(),
+            preferredLocation: document.getElementById('edit-stu-prefloc').value.trim(),
+            expectedCtc: document.getElementById('edit-stu-ctc').value.trim(),
+            address: document.getElementById('edit-stu-address').value.trim(),
+            stage: document.getElementById('edit-stu-stage').value,
+            status: document.getElementById('edit-stu-status').value,
+            priority: document.getElementById('edit-stu-priority').value,
+            source: document.getElementById('edit-stu-source').value,
+            notes: document.getElementById('edit-stu-notes').value.trim(),
+            estimatedRevenue: document.getElementById('edit-stu-stage').value === 'Pending Closure' || document.getElementById('edit-stu-est-revenue').value
+              ? Number(document.getElementById('edit-stu-est-revenue').value) || Number(document.getElementById('edit-stu-fee').value) || 45000
+              : (cust.estimatedRevenue || null),
+            totalFee: Number(document.getElementById('edit-stu-fee').value) || 0,
+            paymentPlan: document.getElementById('edit-stu-payplan').value,
+            paymentStatus: document.getElementById('edit-stu-paystatus').value,
+            pendingAmount: Math.max(0, (Number(document.getElementById('edit-stu-fee').value) || 0) - (Number(cust.paidAmount) || 0)),
+            managerId: mgrSelect.value || null,
+            salespersonId: salesSelect.value || null
+          };
+
+          const res = Customers.update(cust.id, updates);
+          if (!res.success) {
+            errBox.textContent = res.message;
+            errBox.style.display = 'block';
+            return;
+          }
+
+          Toast.success(`Lead profile for ${res.customer.name} updated successfully!`);
+          hide();
+          refreshCustomerData();
+        };
+
+        modal.classList.add('show');
+      };
+    }
+
+    function loadTimelineTab() {
+      if (!currentCustomer) return;
+      const activities = Activities.getByCustomer(currentCustomer.id);
+      const container = document.getElementById('customer-timeline-list');
+      if (!container) return;
+
+      if (!activities.length) {
+        container.innerHTML = `<div class="empty-state" style="padding: 2rem;"><div class="empty-state-title">No activity logged yet</div></div>`;
         return;
       }
-      Customers.addNote(activeStudent.id, text);
-      document.getElementById('new-note-text').value = '';
-      refreshPageData();
+
+      container.innerHTML = activities.map(act => `
+        <div style="display: flex; gap: 1rem; align-items: flex-start; padding-bottom: 1rem; border-bottom: 1px solid var(--border-light);">
+          <div style="width: 36px; height: 36px; border-radius: 50%; background-color: var(--primary-50); color: var(--primary-600); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; flex-shrink: 0;">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <div style="flex: 1;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+              <span style="font-weight: 600; font-size: 0.85rem; color: var(--slate-800);">${Utils.escapeHtml(act.action)}</span>
+              <span style="font-size: 0.75rem; color: var(--slate-400);">${Utils.formatRelativeTime(act.timestamp)}</span>
+            </div>
+            <div style="font-size: 0.85rem; color: var(--slate-600);">${Utils.escapeHtml(act.description)}</div>
+            <div style="font-size: 0.72rem; color: var(--slate-400); margin-top: 0.25rem;">By ${Utils.escapeHtml(act.userName || act.user || 'System')}</div>
+          </div>
+        </div>
+      `).join('');
     }
 
-    function callStudent() {
-      Communication.logCall(activeStudent.id, refreshPageData);
+    function setupNoteSection() {
+      const btn = document.getElementById('btn-save-note');
+      if (!btn) return;
+
+      btn.addEventListener('click', () => {
+        const text = document.getElementById('new-note-text').value.trim();
+        if (!text) {
+          Toast.warning('Please enter text for the counseling note.');
+          return;
+        }
+
+        const currentUser = Auth.getCurrentUser();
+        const noteRecord = {
+          id: StorageService.generateId('CRM-NOTE'),
+          customerId: currentCustomer.id,
+          text: text,
+          createdBy: currentUser ? currentUser.name : 'Counselor',
+          createdAt: new Date().toISOString()
+        };
+
+        const notes = StorageService.getData(CRM_STORAGE_KEYS.NOTES, []);
+        notes.unshift(noteRecord);
+        StorageService.saveData(CRM_STORAGE_KEYS.NOTES, notes);
+
+        Activities.log({
+          action: 'Note Added',
+          customerId: currentCustomer.id,
+          description: `Counseling note added by ${noteRecord.createdBy}: "${text.slice(0, 60)}..."`
+        });
+
+        document.getElementById('new-note-text').value = '';
+        Toast.success('Counseling note posted successfully.');
+        loadNotesTab();
+        updateTabBadges();
+      });
     }
 
-    function whatsAppStudent() {
-      Communication.sendWhatsApp(activeStudent.id, 'counseling');
+    function loadNotesTab() {
+      if (!currentCustomer) return;
+      const allNotes = StorageService.getData(CRM_STORAGE_KEYS.NOTES, []);
+      const notes = allNotes.filter(n => n.customerId === currentCustomer.id);
+      const container = document.getElementById('customer-notes-container');
+      if (!container) return;
+
+      if (!notes.length) {
+        container.innerHTML = `<div class="empty-state" style="padding: 2rem;"><div class="empty-state-title">No notes recorded</div><div class="empty-state-desc">Use the form above to record counseling feedback or interview guidance.</div></div>`;
+        return;
+      }
+
+      container.innerHTML = notes.map(n => `
+        <div style="padding: 1rem; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: #fff;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--slate-800);">
+              <i class="fa-solid fa-user-pen" style="color: var(--primary-500); margin-right: 0.4rem;"></i> ${Utils.escapeHtml(n.createdBy)}
+            </div>
+            <span style="font-size: 0.75rem; color: var(--slate-400);">${Utils.formatDateTime(n.createdAt)}</span>
+          </div>
+          <div style="font-size: 0.875rem; color: var(--slate-700); line-height: 1.5; white-space: pre-wrap;">${Utils.escapeHtml(n.text)}</div>
+        </div>
+      `).join('');
     }
 
-    function emailStudent() {
-      Communication.sendEmail(activeStudent.id);
+    function loadCallsTab() {
+      if (!currentCustomer) return;
+      const calls = Communication.getByCustomer(currentCustomer.id);
+      const tbody = document.getElementById('customer-calls-tbody');
+      if (!tbody) return;
+
+      if (!calls.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 2rem;">No calls recorded for this lead yet</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = calls.map(c => `
+        <tr>
+          <td><span class="badge ${c.outcome === 'Connected' ? 'badge-status-converted' : 'badge-priority-medium'}">${c.outcome}</span></td>
+          <td style="max-width: 250px;">${Utils.escapeHtml(c.notes || '—')}</td>
+          <td>${Utils.escapeHtml(c.nextAction || 'None')}</td>
+          <td>${Utils.escapeHtml(c.loggedBy || 'Counselor')}</td>
+          <td>${Utils.formatDateTime(c.timestamp)}</td>
+        </tr>
+      `).join('');
     }
 
-    function openScheduleFollowup() {
-      Followups.openScheduleModal(activeStudent.id, refreshPageData);
+    function loadFollowupsTab() {
+      if (!currentCustomer) return;
+      const flws = Followups.getByCustomer(currentCustomer.id);
+      const tbody = document.getElementById('customer-followups-tbody');
+      if (!tbody) return;
+
+      if (!flws.length) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 2rem;">No follow-ups scheduled for this lead</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = flws.map(f => `
+        <tr>
+          <td>
+            <span class="badge ${f.status === 'Completed' ? 'badge-status-converted' : 'badge-priority-high'}">
+              ${f.status}
+            </span>
+          </td>
+          <td>${Utils.formatDate(f.date)} at ${f.time}</td>
+          <td style="max-width: 250px;">${Utils.escapeHtml(f.purpose)}</td>
+          <td>${Utils.escapeHtml(f.salespersonName || 'Counselor')}</td>
+          <td>${Utils.escapeHtml(f.notes || '—')}</td>
+          <td style="text-align: right;">
+            ${f.status === 'Pending' ? `
+              <button class="btn btn-primary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="completeFollowup('${f.id}')">
+                Complete
+              </button>
+            ` : '<span style="color: var(--success-solid); font-size: 0.8rem;"><i class="fa-solid fa-check"></i> Done</span>'}
+          </td>
+        </tr>
+      `).join('');
     }
 
-    function openStageChange() {
-      Pipeline.openStageChangeModal(activeStudent.id, refreshPageData);
+    function completeFollowup(id) {
+      const notes = prompt('Enter follow-up completion notes / counseling summary:');
+      if (notes !== null) {
+        Followups.complete(id, notes);
+        refreshCustomerData();
+      }
     }
 
-    function openRecordPayment() {
-      Payments.openRecordModal(activeStudent.id, refreshPageData);
+    function loadStageHistoryTab() {
+      if (!currentCustomer) return;
+      const history = Pipeline.getStageHistory(currentCustomer.id);
+      const tbody = document.getElementById('customer-stage-history-tbody');
+      if (!tbody) return;
+
+      if (!history.length) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 2rem;">No stage movement history found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = history.map(h => `
+        <tr>
+          <td>${Utils.getStageBadge(h.fromStage)}</td>
+          <td>${Utils.getStageBadge(h.toStage)}</td>
+          <td style="max-width: 260px;">${Utils.escapeHtml(h.reason || '—')}</td>
+          <td><strong>${Utils.escapeHtml(h.changedBy)}</strong></td>
+          <td>${Utils.formatDateTime(h.changedAt)}</td>
+        </tr>
+      `).join('');
     }
 
-    function editStudent() {
-      UI.openAddLeadModal(activeStudent.id);
+    function setupFollowupModal() {
+      const modal = document.getElementById('schedule-followup-modal');
+      const dateInput = document.getElementById('flw-modal-date');
+      const timeInput = document.getElementById('flw-modal-time');
+      const purposeInput = document.getElementById('flw-modal-purpose');
+      const prioritySelect = document.getElementById('flw-modal-priority');
+      const saveBtn = document.getElementById('flw-modal-save');
+      const cancelBtn = document.getElementById('flw-modal-cancel');
+      const closeBtn = document.getElementById('flw-modal-close');
+
+      window.openScheduleModal = () => {
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateInput.value = tomorrow.toISOString().split('T')[0];
+        purposeInput.value = '';
+        modal.classList.add('show');
+      };
+
+      const hide = () => modal.classList.remove('show');
+      cancelBtn.onclick = hide;
+      closeBtn.onclick = hide;
+
+      saveBtn.onclick = () => {
+        const date = dateInput.value;
+        const time = timeInput.value;
+        const purpose = purposeInput.value.trim();
+        const priority = prioritySelect.value;
+
+        if (!date) {
+          Toast.error('Please pick a follow-up date.');
+          return;
+        }
+        if (!purpose) {
+          Toast.error('Please enter the purpose of this follow-up.');
+          return;
+        }
+
+        Followups.create({
+          customerId: currentCustomer.id,
+          date,
+          time,
+          purpose,
+          priority
+        });
+
+        hide();
+        refreshCustomerData();
+      };
     }
 
-    function refreshPageData() {
-      loadStudentDossier();
+    /**
+     * Placement Fee & Installment Payment Management
+     */
+    function loadPaymentsTab() {
+      if (!currentCustomer) return;
+      const c = currentCustomer;
+
+      const fee = Number(c.totalFee) || 0;
+      const paid = Number(c.paidAmount) || 0;
+      const pending = Math.max(0, fee - paid);
+      const pct = fee > 0 ? Math.round((paid / fee) * 100) : 0;
+
+      const el = (id) => document.getElementById(id);
+      if (el('pay-total-fee')) el('pay-total-fee').textContent = Payments.formatCurrency(fee);
+      if (el('pay-plan-type')) el('pay-plan-type').textContent = `Plan: ${c.paymentPlan || '2 Installments'}`;
+      if (el('pay-total-paid')) el('pay-total-paid').textContent = Payments.formatCurrency(paid);
+      if (el('pay-percent-collected')) el('pay-percent-collected').textContent = `${pct}% of total collected`;
+      if (el('pay-pending-balance')) el('pay-pending-balance').textContent = Payments.formatCurrency(pending);
+
+      // Find next due date
+      const installments = Array.isArray(c.installments) ? c.installments : [];
+      const pendingInst = installments.find(i => i.status !== 'Paid');
+      if (el('pay-next-due-date')) {
+        el('pay-next-due-date').textContent = pendingInst && pendingInst.dueDate ? `Next due: ${Utils.formatDate(pendingInst.dueDate)}` : (pending === 0 && fee > 0 ? 'All dues cleared' : 'No dues scheduled');
+      }
+
+      if (el('pay-status-pill')) {
+        const isPaid = pending === 0 && fee > 0;
+        const color = isPaid ? 'background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;' : (paid > 0 ? 'background:#fef3c7; color:#b45309; border:1px solid #fde68a;' : 'background:#fee2e2; color:#b91c1c; border:1px solid #fecaca;');
+        el('pay-status-pill').innerHTML = `<span class="badge" style="font-size:0.85rem; padding:0.35rem 0.75rem; border-radius:9999px; ${color}">${c.paymentStatus || (isPaid ? 'Fully Paid' : 'Pending')}</span>`;
+      }
+
+      if (el('pay-progress-text')) el('pay-progress-text').textContent = `${pct}% Realized (${Payments.formatCurrency(paid)} of ${Payments.formatCurrency(fee)})`;
+      if (el('pay-progress-bar')) el('pay-progress-bar').style.width = `${Math.min(100, pct)}%`;
+
+      // Render Installments Table
+      const instTbody = el('pay-installments-tbody');
+      if (instTbody) {
+        if (!installments.length) {
+          instTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 2rem;">No installment milestones scheduled for this candidate. Click "Edit Fee Plan" to set one.</td></tr>`;
+        } else {
+          const today = new Date().toISOString().split('T')[0];
+          instTbody.innerHTML = installments.map((inst, idx) => {
+            const isPaid = inst.status === 'Paid' || (Number(inst.paidAmount) || 0) >= (Number(inst.amount) || 0);
+            const isOverdue = !isPaid && inst.dueDate && inst.dueDate < today;
+            let statusBadge = '<span class="badge" style="background:#ecfdf5; color:#047857;">✓ Paid</span>';
+            if (isOverdue) {
+              statusBadge = '<span class="badge" style="background:#fee2e2; color:#b91c1c;"><i class="fa-solid fa-triangle-exclamation"></i> Overdue</span>';
+            } else if (!isPaid) {
+              statusBadge = inst.paidAmount > 0 
+                ? '<span class="badge" style="background:#fef3c7; color:#b45309;">Partially Paid</span>' 
+                : '<span class="badge" style="background:#f1f5f9; color:#475569;">Pending</span>';
+            }
+
+            return `
+              <tr>
+                <td><strong>${Utils.escapeHtml(inst.title || `Installment #${idx+1}`)}</strong></td>
+                <td>${inst.dueDate ? Utils.formatDate(inst.dueDate) : '—'}</td>
+                <td style="font-weight: 700; color: var(--slate-900);">${Payments.formatCurrency(inst.amount)}</td>
+                <td style="color: #047857; font-weight: 600;">${Payments.formatCurrency(inst.paidAmount || 0)}</td>
+                <td>${statusBadge}</td>
+                <td>
+                  ${!isPaid ? `
+                    <button class="btn btn-primary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.55rem; background: #10b981; border-color: #059669;" onclick="openRecordPaymentModal('${inst.id}')">
+                      <i class="fa-solid fa-hand-holding-dollar"></i> Collect
+                    </button>
+                  ` : `
+                    <span style="font-size: 0.75rem; color: #047857; font-weight: 600;"><i class="fa-solid fa-check-circle"></i> Settled</span>
+                  `}
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
+      }
+
+      // Render Transaction History Ledger
+      const trans = Payments.getByCustomerId(c.id);
+      const transTbody = el('pay-transactions-tbody');
+      if (el('pay-trans-count')) el('pay-trans-count').textContent = `${trans.length} receipt${trans.length === 1 ? '' : 's'}`;
+
+      if (transTbody) {
+        if (!trans.length) {
+          transTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 2rem;">No fee transactions recorded yet for this lead.</td></tr>`;
+        } else {
+          transTbody.innerHTML = trans.map(t => `
+            <tr>
+              <td style="font-family: monospace; font-weight: 700; color: var(--primary-700);">${t.id}</td>
+              <td>${Utils.formatDate(t.paymentDate)}</td>
+              <td style="font-weight: 800; color: #047857; font-size: 0.95rem;">${Payments.formatCurrency(t.amount)}</td>
+              <td>
+                <div style="font-weight: 600; font-size: 0.8rem;">${Utils.escapeHtml(t.paymentMode || 'UPI')}</div>
+                <div style="font-size: 0.72rem; color: var(--slate-400); font-family: monospace;">${Utils.escapeHtml(t.transactionRef || '—')}</div>
+              </td>
+              <td>${Utils.escapeHtml(t.receivedBy || 'Counselor')}</td>
+              <td>
+                <button class="btn btn-secondary btn-sm" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;" onclick="openReceiptModal('${t.id}')">
+                  <i class="fa-solid fa-receipt"></i> Receipt
+                </button>
+              </td>
+            </tr>
+          `).join('');
+        }
+      }
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      UI.init('customers');
-      loadStudentDossier();
-    });
+    /**
+     * Setup Payment & Receipt Modals
+     */
+    function setupPaymentModals() {
+      const payModal = document.getElementById('modal-record-payment');
+      const receiptModal = document.getElementById('modal-view-receipt');
+
+      const hidePay = () => payModal?.classList.remove('show');
+      const hideReceipt = () => receiptModal?.classList.remove('show');
+
+      document.getElementById('record-pay-close')?.addEventListener('click', hidePay);
+      document.getElementById('record-pay-cancel')?.addEventListener('click', hidePay);
+      document.getElementById('receipt-modal-close')?.addEventListener('click', hideReceipt);
+      document.getElementById('receipt-modal-done')?.addEventListener('click', hideReceipt);
+      document.getElementById('receipt-modal-print')?.addEventListener('click', () => printCurrentReceipt());
+
+      // Submit Payment
+      document.getElementById('record-pay-save')?.addEventListener('click', () => {
+        if (!currentCustomer) return;
+
+        const amount = Number(document.getElementById('pay-modal-amount').value);
+        const paymentDate = document.getElementById('pay-modal-date').value;
+        const paymentMode = document.getElementById('pay-modal-mode').value;
+        const transactionRef = document.getElementById('pay-modal-ref').value.trim();
+        const installmentSelect = document.getElementById('pay-modal-installment-select');
+        const installmentId = installmentSelect ? installmentSelect.value : null;
+        const installmentTitle = installmentSelect?.selectedOptions[0]?.text || 'Installment Payment';
+        const receivedBy = document.getElementById('pay-modal-received-by').value.trim();
+        const notes = document.getElementById('pay-modal-notes').value.trim();
+
+        if (isNaN(amount) || amount <= 0) {
+          Toast.error('Please enter a valid positive payment amount.');
+          return;
+        }
+        if (!paymentDate) {
+          Toast.error('Please select payment date.');
+          return;
+        }
+
+        const res = Payments.recordPayment({
+          customerId: currentCustomer.id,
+          amount,
+          paymentDate,
+          paymentMode,
+          transactionRef,
+          installmentId: (installmentId && installmentId !== 'custom') ? installmentId : null,
+          installmentTitle,
+          receivedBy,
+          notes
+        });
+
+        if (!res.success) {
+          Toast.error(res.message || 'Failed to record payment.');
+          return;
+        }
+
+        Toast.success(`Payment of ${Payments.formatCurrency(amount)} recorded successfully!`);
+        hidePay();
+        refreshCustomerData();
+
+        // Immediately open official receipt
+        if (res.payment) {
+          openReceiptModal(res.payment.id);
+        }
+      });
+    }
+
+    /**
+     * Open Record Payment Modal pre-filled
+     */
+    window.openRecordPaymentModal = (targetInstallmentId = null) => {
+      if (!currentCustomer) return;
+      const c = currentCustomer;
+      const payModal = document.getElementById('modal-record-payment');
+      if (!payModal) return;
+
+      document.getElementById('pay-modal-customer-id').value = c.id;
+      const leadNameEl = document.getElementById('pay-modal-lead-name') || document.getElementById('pay-modal-student-name');
+      if (leadNameEl) leadNameEl.value = `${c.name} (${c.id}) • ${c.qualification || 'Lead'}`;
+      document.getElementById('pay-modal-date').value = new Date().toISOString().split('T')[0];
+      document.getElementById('pay-modal-ref').value = `UPI-${Date.now().toString().slice(-6)}`;
+      document.getElementById('pay-modal-received-by').value = (Auth.getCurrentUser() || {}).name || c.salespersonName || 'Alexander Wright';
+      document.getElementById('pay-modal-notes').value = '';
+
+      // Populate installment milestones selector
+      const select = document.getElementById('pay-modal-installment-select');
+      const installments = Array.isArray(c.installments) ? c.installments : [];
+      let defaultAmount = 0;
+
+      let options = `<option value="custom">-- Custom Milestone / Direct Fee Deposit --</option>`;
+      installments.forEach(inst => {
+        const isPaid = inst.status === 'Paid';
+        const rem = Math.max(0, (Number(inst.amount) || 0) - (Number(inst.paidAmount) || 0));
+        const isSelected = targetInstallmentId ? inst.id === targetInstallmentId : (!isPaid && defaultAmount === 0);
+        if (isSelected) defaultAmount = rem;
+        options += `<option value="${inst.id}" ${isSelected ? 'selected' : ''}>${Utils.escapeHtml(inst.title)} (Due: ${Payments.formatCurrency(rem)}) ${isPaid ? '[Settled]' : ''}</option>`;
+      });
+      select.innerHTML = options;
+
+      document.getElementById('pay-modal-amount').value = defaultAmount > 0 ? defaultAmount : (Math.max(0, (Number(c.totalFee) || 0) - (Number(c.paidAmount) || 0)) || 20000);
+
+      select.onchange = () => {
+        const chosenId = select.value;
+        const inst = installments.find(i => i.id === chosenId);
+        if (inst) {
+          const rem = Math.max(0, (Number(inst.amount) || 0) - (Number(inst.paidAmount) || 0));
+          document.getElementById('pay-modal-amount').value = rem > 0 ? rem : inst.amount;
+        }
+      };
+
+      payModal.classList.add('show');
+    };
+
+    /**
+     * Open Printable Official Receipt Modal
+     */
+    window.openReceiptModal = (paymentId) => {
+      const allPayments = Payments.getAll();
+      const p = allPayments.find(pay => pay.id === paymentId);
+      if (!p) {
+        Toast.error('Payment receipt record not found.');
+        return;
+      }
+
+      const modal = document.getElementById('modal-view-receipt');
+      const content = document.getElementById('receipt-modal-content');
+      if (!modal || !content) return;
+
+      content.innerHTML = Payments.generateReceiptHtml(p, currentCustomer);
+      modal.classList.add('show');
+    };
+
+    /**
+     * Print the rendered receipt
+     */
+    window.printCurrentReceipt = () => {
+      const receiptEl = document.getElementById('printable-receipt');
+      if (!receiptEl) {
+        window.print();
+        return;
+      }
+      const printWin = window.open('', '_blank', 'width=800,height=700');
+      if (!printWin) {
+        window.print();
+        return;
+      }
+      printWin.document.open();
+      printWin.document.write(receiptEl.outerHTML);
+      printWin.document.close();
+      printWin.focus();
+      setTimeout(() => {
+        try {
+          printWin.print();
+          printWin.close();
+        } catch (e) {}
+      }, 300);
+    };
   </script>
 </body>
 </html>

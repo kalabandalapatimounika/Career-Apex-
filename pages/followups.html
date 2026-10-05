@@ -3,331 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Follow-up &amp; Task Agenda — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Follow-up Schedule — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Follow-up &amp; Task Agenda</h1>
-            <p class="page-subtitle">Counselor touchpoints, scheduled candidate counseling calls, fee reminder agendas, and task completion ledger.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Sales Follow-up Execution</h1>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Timely customer engagements, client callback tracking, and deadline enforcement.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-primary-purple" onclick="Followups.openScheduleModal(null, refreshPageData)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              + Schedule Follow-up
+          <div>
+            <button class="btn btn-primary btn-sm" id="btn-schedule-new-flw">
+              <i class="fa-solid fa-calendar-plus"></i> Schedule Follow-up
             </button>
           </div>
         </div>
 
-        <!-- Agenda Status Tabs (Overdue, Today, Upcoming, Completed) -->
-        <div class="enterprise-card" style="padding: 12px 16px; margin-bottom: 20px;">
-          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
-            <button type="button" class="btn-outline-sm" id="tab-all" onclick="selectTab('all')">
-              All Tasks <span class="badge" id="badge-count-all" style="margin-left: 4px; background: #f1f5f9; color: #475569;">0</span>
-            </button>
-            <button type="button" class="btn-outline-sm" id="tab-overdue" onclick="selectTab('overdue')" style="color: var(--red); border-color: #fca5a5;">
-              ⚠️ Overdue <span class="badge badge-lost" id="badge-count-overdue" style="margin-left: 4px;">0</span>
-            </button>
-            <button type="button" class="btn-outline-sm" id="tab-today" onclick="selectTab('today')" style="color: var(--amber); border-color: #fde68a;">
-              📅 Today <span class="badge" id="badge-count-today" style="margin-left: 4px; background: #fef3c7; color: #d97706;">0</span>
-            </button>
-            <button type="button" class="btn-outline-sm" id="tab-upcoming" onclick="selectTab('upcoming')" style="color: var(--primary);">
-              ⏳ Upcoming <span class="badge" id="badge-count-upcoming" style="margin-left: 4px; background: #eef2ff; color: #4f46e5;">0</span>
-            </button>
-            <button type="button" class="btn-outline-sm" id="tab-completed" onclick="selectTab('completed')" style="color: var(--green);">
-              ✅ Completed <span class="badge badge-converted" id="badge-count-completed" style="margin-left: 4px;">0</span>
-            </button>
-          </div>
+        <!-- Follow-up Category Tabs -->
+        <div class="nav-tabs" style="margin-bottom: 1.25rem;">
+          <button class="tab-btn active" data-tab="tab-today">
+            <i class="fa-solid fa-calendar-day"></i> Today's Follow-ups <span class="tab-badge" id="badge-count-today">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-overdue">
+            <i class="fa-solid fa-triangle-exclamation" style="color: var(--danger-solid);"></i> Overdue Follow-ups <span class="tab-badge" id="badge-count-overdue" style="background-color: var(--danger-bg); color: var(--danger-text);">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-upcoming">
+            <i class="fa-solid fa-calendar-week"></i> Upcoming Follow-ups <span class="tab-badge" id="badge-count-upcoming">0</span>
+          </button>
+          <button class="tab-btn" data-tab="tab-completed">
+            <i class="fa-solid fa-circle-check" style="color: var(--success-solid);"></i> Completed Follow-ups <span class="tab-badge" id="badge-count-completed">0</span>
+          </button>
         </div>
 
-        <!-- Filter & Search Toolbar -->
-        <div class="enterprise-card" style="margin-bottom: 20px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
-            <div style="flex: 1; min-width: 260px; position: relative;">
-              <input type="text" id="followup-search" class="filter-input" placeholder="Search by student name, ID, or task purpose..." style="width: 100%; padding-left: 36px;" oninput="applyFilters()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px;">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
+        <!-- Table Container -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Lead / Candidate</th>
+                    <th>Career Counselor</th>
+                    <th>Date & Time</th>
+                    <th>Purpose / Details</th>
+                    <th>Priority</th>
+                    <th>Status</th>
+                    <th>Notes / Remarks</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="followups-table-tbody"></tbody>
+              </table>
             </div>
 
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-              <select id="followup-counselor" class="filter-select" onchange="applyFilters()">
-                <option value="">All Counselors</option>
-                <option value="Arun Kumar">Arun Kumar</option>
-                <option value="Sneha Rao">Sneha Rao</option>
-                <option value="Vikram Singh">Vikram Singh</option>
-                <option value="Neha Gupta">Neha Gupta</option>
-                <option value="Rahul Mehta">Rahul Mehta</option>
-              </select>
-
-              <select id="followup-priority" class="filter-select" onchange="applyFilters()">
-                <option value="">All Priorities</option>
-                <option value="High">High Priority</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-
-              <button type="button" class="btn-outline-sm" onclick="resetFilters()">Reset</button>
+            <div id="followups-empty-state" class="empty-state" style="display: none;">
+              <div class="empty-state-icon"><i class="fa-solid fa-calendar-check"></i></div>
+              <div class="empty-state-title" id="empty-state-title">No follow-ups scheduled</div>
+              <div class="empty-state-desc" id="empty-state-desc">You are completely up to date with this section!</div>
             </div>
           </div>
         </div>
-
-        <!-- Follow-ups Table Card -->
-        <div class="enterprise-card" style="padding: 0; overflow: hidden;">
-          <div style="padding: 14px 20px; border-bottom: 1px solid var(--slate-200); background: #fafbfc; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-weight: 600; font-size: 13px; color: var(--navy-900);">
-              Agenda View: <span id="agenda-current-tab-text" style="color: var(--primary);">Today's Tasks</span>
-              (<span id="agenda-count">0</span> items)
-            </div>
-          </div>
-
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>Student Candidate</th>
-                  <th>Date &amp; Time</th>
-                  <th>Priority</th>
-                  <th>Purpose / Agenda Notes</th>
-                  <th>Assigned Counselor</th>
-                  <th>Status</th>
-                  <th>Completed Date / Notes</th>
-                  <th style="min-width: 170px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="followup-tbody">
-                <!-- Dynamically populated rows -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
       </main>
+    </div>
+  </div>
+
+  <!-- Complete Follow-up Modal -->
+  <div id="complete-flw-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-check" style="color: var(--success-solid); margin-right: 0.5rem;"></i>Complete Follow-up</h3>
+        <button class="modal-close-btn" id="comp-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Completion Notes / Outcome <span class="required">*</span></label>
+          <textarea id="comp-modal-notes" class="form-control" rows="3" placeholder="Summary of what transpired during the conversation..." required></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="comp-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="comp-modal-save">Mark Completed</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reschedule Follow-up Modal -->
+  <div id="reschedule-flw-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calendar-days" style="color: var(--warning-solid); margin-right: 0.5rem;"></i>Reschedule Follow-up</h3>
+        <button class="modal-close-btn" id="resched-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">New Follow-up Date <span class="required">*</span></label>
+          <input type="date" id="resched-modal-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Time</label>
+          <input type="time" id="resched-modal-time" class="form-control" value="10:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Reason for Rescheduling</label>
+          <textarea id="resched-modal-reason" class="form-control" rows="2" placeholder="e.g. Customer requested call-back tomorrow"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="resched-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="resched-modal-save">Save New Date</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Create New Follow-up Modal -->
+  <div id="create-flw-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-calendar-plus" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Schedule Follow-up</h3>
+        <button class="modal-close-btn" id="create-flw-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Select Customer <span class="required">*</span></label>
+          <select id="create-flw-customer" class="form-select"></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Follow-up Date <span class="required">*</span></label>
+          <input type="date" id="create-flw-date" class="form-control" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Time</label>
+          <input type="time" id="create-flw-time" class="form-control" value="10:00">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose / Objective <span class="required">*</span></label>
+          <textarea id="create-flw-purpose" class="form-control" rows="2" placeholder="Discussion objective..." required></textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Priority</label>
+          <select id="create-flw-priority" class="form-select">
+            <option value="High">High</option>
+            <option value="Medium" selected>Medium</option>
+            <option value="Low">Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="create-flw-cancel">Cancel</button>
+        <button class="btn btn-primary" id="create-flw-save">Schedule</button>
+      </div>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
+  <script src="../js/leads.js"></script>
   <script src="../js/pipeline.js"></script>
-  <script src="../js/payments.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    let activeTab = 'today';
-    let filteredFollowups = [];
-
-    function updateBadgeCounts() {
-      const all = Followups.getAll();
-      const todayStr = new Date().toISOString().split('T')[0];
-
-      const overdueCount = all.filter(f => f.status === 'Pending' && f.scheduledDate < todayStr).length;
-      const todayCount = all.filter(f => f.status === 'Pending' && f.scheduledDate === todayStr).length;
-      const upcomingCount = all.filter(f => f.status === 'Pending' && f.scheduledDate > todayStr).length;
-      const completedCount = all.filter(f => f.status === 'Completed').length;
-
-      document.getElementById('badge-count-all').textContent = all.length;
-      document.getElementById('badge-count-overdue').textContent = overdueCount;
-      document.getElementById('badge-count-today').textContent = todayCount;
-      document.getElementById('badge-count-upcoming').textContent = upcomingCount;
-      document.getElementById('badge-count-completed').textContent = completedCount;
-    }
-
-    function selectTab(tabKey) {
-      activeTab = tabKey;
-
-      ['all', 'overdue', 'today', 'upcoming', 'completed'].forEach(k => {
-        const btn = document.getElementById(`tab-${k}`);
-        if (btn) {
-          if (k === tabKey) {
-            btn.style.background = 'var(--primary)';
-            btn.style.color = '#fff';
-            btn.style.borderColor = 'var(--primary)';
-          } else {
-            btn.style.background = '#ffffff';
-            btn.style.color = 'var(--slate-700)';
-            btn.style.borderColor = 'var(--slate-200)';
-          }
-        }
-      });
-
-      const labelMap = {
-        all: 'All Follow-up Tasks',
-        overdue: '⚠️ Overdue Urgent Tasks',
-        today: '📅 Today’s Outreach Agenda',
-        upcoming: '⏳ Upcoming Scheduled Sessions',
-        completed: '✅ Completed Task Log'
-      };
-      document.getElementById('agenda-current-tab-text').textContent = labelMap[tabKey] || tabKey;
-
-      applyFilters();
-    }
-
-    function applyFilters() {
-      const search = (document.getElementById('followup-search')?.value || '').toLowerCase();
-      const counselor = document.getElementById('followup-counselor')?.value || '';
-      const priority = document.getElementById('followup-priority')?.value || '';
-
-      const todayStr = new Date().toISOString().split('T')[0];
-      let items = Followups.getAll();
-
-      // Role filter for counselor
-      const user = Auth.getCurrentUser();
-      if (user && user.role === 'counselor') {
-        items = items.filter(f => f.counselor === user.name);
-      }
-
-      // Tab filter
-      if (activeTab === 'overdue') {
-        items = items.filter(f => f.status === 'Pending' && f.scheduledDate < todayStr);
-      } else if (activeTab === 'today') {
-        items = items.filter(f => f.status === 'Pending' && f.scheduledDate === todayStr);
-      } else if (activeTab === 'upcoming') {
-        items = items.filter(f => f.status === 'Pending' && f.scheduledDate > todayStr);
-      } else if (activeTab === 'completed') {
-        items = items.filter(f => f.status === 'Completed');
-      }
-
-      filteredFollowups = items.filter(f => {
-        if (counselor && f.counselor !== counselor) return false;
-        if (priority && f.priority !== priority) return false;
-        if (search) {
-          const match = (f.studentName || '').toLowerCase().includes(search) ||
-                        (f.studentId || '').toLowerCase().includes(search) ||
-                        (f.purpose || '').toLowerCase().includes(search);
-          if (!match) return false;
-        }
-        return true;
-      });
-
-      renderTable();
-    }
-
-    function resetFilters() {
-      document.getElementById('followup-search').value = '';
-      document.getElementById('followup-counselor').value = '';
-      document.getElementById('followup-priority').value = '';
-      applyFilters();
-    }
-
-    function renderTable() {
-      const tbody = document.getElementById('followup-tbody');
-      const countEl = document.getElementById('agenda-count');
-      if (countEl) countEl.textContent = filteredFollowups.length;
-
-      const todayStr = new Date().toISOString().split('T')[0];
-
-      if (filteredFollowups.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--slate-400); padding: 40px;">No tasks found matching this agenda view.</td></tr>`;
-      } else {
-        tbody.innerHTML = filteredFollowups.map(f => {
-          const isOverdue = f.status === 'Pending' && f.scheduledDate < todayStr;
-          return `
-            <tr>
-              <td>
-                <a href="customer-details.html?id=${f.studentId}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
-                  ${Utils.escapeHtml(f.studentName)}
-                </a>
-                <div style="font-size: 11px; color: var(--slate-400); font-family: monospace;">${f.studentId}</div>
-              </td>
-              <td>
-                <div style="font-size: 12px; font-weight: 500; color: ${isOverdue ? 'var(--red)' : 'var(--navy-900)'};">
-                  ${f.scheduledDate} ${f.scheduledTime || ''}
-                </div>
-                ${isOverdue ? '<span class="badge badge-lost" style="font-size: 10px; padding: 1px 5px;">Overdue</span>' : ''}
-              </td>
-              <td>
-                <span class="badge ${f.priority === 'High' ? 'badge-interested' : (f.priority === 'Low' ? 'badge-new' : 'badge-contacted')}">
-                  ${f.priority || 'Normal'}
-                </span>
-              </td>
-              <td style="max-width: 240px; font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(f.purpose)}</td>
-              <td><span style="font-size: 12px; color: var(--slate-700);">${Utils.escapeHtml(f.counselor)}</span></td>
-              <td>
-                <span class="badge ${f.status === 'Completed' ? 'badge-converted' : 'badge-new'}">
-                  ${f.status}
-                </span>
-              </td>
-              <td style="font-size: 12px; color: var(--slate-600); max-width: 180px;">
-                ${f.status === 'Completed' ? `
-                  <div style="color: var(--green); font-weight: 600;">${f.completedDate || 'Completed'}</div>
-                  <div style="font-size: 11px; color: var(--slate-500);">${Utils.escapeHtml(f.outcomeNotes || '')}</div>
-                ` : '<span style="color: var(--slate-400);">-</span>'}
-              </td>
-              <td>
-                <div class="row-actions">
-                  <button class="btn-icon" onclick="Communication.logCall('${f.studentId}', refreshPageData)" title="Call">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendWhatsApp('${f.studentId}', 'followup')" title="WhatsApp">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendEmail('${f.studentId}')" title="Email">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  </button>
-                  ${f.status === 'Pending' ? `
-                    <button class="btn-icon" onclick="Followups.openCompleteModal('${f.id}', refreshPageData)" title="Complete Task">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                    </button>
-                    <button class="btn-icon" onclick="Followups.openScheduleModal('${f.id}', refreshPageData)" title="Edit Task">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                    </button>
-                  ` : ''}
-                  <button class="btn-icon" onclick="deleteFollowup('${f.id}')" title="Delete Task">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-    }
-
-    function deleteFollowup(id) {
-      if (confirm('Are you sure you want to delete this follow-up task?')) {
-        Followups.delete(id);
-        refreshPageData();
-      }
-    }
-
-    function refreshPageData() {
-      updateBadgeCounts();
-      applyFilters();
-    }
+    let activeTab = 'tab-today';
+    let currentCategorized = null;
 
     document.addEventListener('DOMContentLoaded', () => {
-      UI.init('followups');
+      if (!Auth.requireAuth(['admin', 'manager', 'sales'])) return;
+      App.init('followups');
 
-      // Check query param for preset filter
-      const params = Utils.parseQueryParams();
-      if (params.filter) {
-        selectTab(params.filter);
-      } else {
-        selectTab('today');
+      setupTabs();
+      setupModals();
+      loadFollowups();
+    });
+
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          activeTab = btn.getAttribute('data-tab');
+          renderActiveTabTable();
+        });
+      });
+    }
+
+    function loadFollowups() {
+      currentCategorized = Followups.getCategorized(true);
+
+      document.getElementById('badge-count-today').textContent = currentCategorized.today.length;
+      document.getElementById('badge-count-overdue').textContent = currentCategorized.overdue.length;
+      document.getElementById('badge-count-upcoming').textContent = currentCategorized.upcoming.length;
+      document.getElementById('badge-count-completed').textContent = currentCategorized.completed.length;
+
+      renderActiveTabTable();
+    }
+
+    function renderActiveTabTable() {
+      const tbody = document.getElementById('followups-table-tbody');
+      const emptyState = document.getElementById('followups-empty-state');
+
+      let items = [];
+      if (activeTab === 'tab-today') items = currentCategorized.today;
+      else if (activeTab === 'tab-overdue') items = currentCategorized.overdue;
+      else if (activeTab === 'tab-upcoming') items = currentCategorized.upcoming;
+      else if (activeTab === 'tab-completed') items = currentCategorized.completed;
+
+      if (!items.length) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'flex';
+        return;
       }
 
-      updateBadgeCounts();
-    });
+      emptyState.style.display = 'none';
+      tbody.innerHTML = items.map(f => {
+        const isOverdue = activeTab === 'tab-overdue';
+        const isCompleted = f.status === 'Completed';
+        const stu = Customers.getById(f.customerId);
+
+        return `
+          <tr>
+            <td>
+              <a href="customer-details.html?id=${f.customerId}" style="font-weight: 700; color: var(--slate-900); text-decoration: none;">
+                ${Utils.escapeHtml(f.customerName)}
+              </a>
+              <div style="font-size: 0.72rem; color: var(--slate-500);">${f.customerId} • ${Utils.escapeHtml(stu ? stu.qualification || 'Lead' : 'Lead')}</div>
+            </td>
+            <td>
+              <div style="font-size: 0.85rem; font-weight: 500; color: var(--slate-800);">${Utils.escapeHtml(f.salespersonName)}</div>
+            </td>
+            <td>
+              <div style="font-size: 0.85rem; font-weight: ${isOverdue ? '700; color: var(--danger-solid);' : '500; color: var(--slate-800);'}">
+                ${Utils.formatDate(f.date)}
+              </div>
+              <div style="font-size: 0.72rem; color: var(--slate-500);">${f.time || '10:00'}</div>
+            </td>
+            <td style="max-width: 280px; font-size: 0.85rem; line-height: 1.4;">
+              ${Utils.escapeHtml(f.purpose)}
+            </td>
+            <td>${Utils.getPriorityBadge(f.priority)}</td>
+            <td>
+              <span class="badge ${isCompleted ? 'badge-status-converted' : isOverdue ? 'badge-priority-high' : 'badge-priority-medium'}">
+                ${isCompleted ? 'Completed' : isOverdue ? 'Overdue' : 'Pending'}
+              </span>
+            </td>
+            <td style="font-size: 0.8rem; color: var(--slate-600); max-width: 200px;">
+              ${Utils.escapeHtml(f.notes || '—')}
+            </td>
+            <td style="text-align: right; white-space: nowrap;">
+              <div style="display: inline-flex; gap: 0.35rem;">
+                <button class="btn btn-icon btn-secondary" onclick="Communication.initiateCall('${f.customerId}')" title="Call Customer" style="padding: 0.3rem 0.5rem; color: var(--success-solid);">
+                  <i class="fa-solid fa-phone"></i>
+                </button>
+                <button class="btn btn-icon btn-secondary" onclick="Communication.openWhatsApp('${f.customerId}')" title="WhatsApp" style="padding: 0.3rem 0.5rem; color: #25d366;">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </button>
+                <a href="customer-details.html?id=${f.customerId}" class="btn btn-icon btn-secondary" title="Open Customer Profile" style="padding: 0.3rem 0.5rem;">
+                  <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                </a>
+                ${!isCompleted ? `
+                  <button class="btn btn-icon btn-secondary" onclick="openRescheduleModal('${f.id}', '${f.date}', '${f.time}')" title="Reschedule" style="padding: 0.3rem 0.5rem; color: var(--warning-solid);">
+                    <i class="fa-solid fa-calendar-days"></i>
+                  </button>
+                  <button class="btn btn-sm btn-primary" onclick="openCompleteModal('${f.id}')" title="Complete" style="font-size: 0.75rem; padding: 0.25rem 0.6rem;">
+                    <i class="fa-solid fa-check"></i>
+                  </button>
+                ` : ''}
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function setupModals() {
+      // Complete Modal
+      const compModal = document.getElementById('complete-flw-modal');
+      const compNotes = document.getElementById('comp-modal-notes');
+      let targetCompId = null;
+
+      window.openCompleteModal = (id) => {
+        targetCompId = id;
+        compNotes.value = '';
+        compModal.classList.add('show');
+      };
+
+      const hideComp = () => compModal.classList.remove('show');
+      document.getElementById('comp-modal-cancel').onclick = hideComp;
+      document.getElementById('comp-modal-close').onclick = hideComp;
+
+      document.getElementById('comp-modal-save').onclick = () => {
+        const notes = compNotes.value.trim();
+        if (!notes) {
+          Toast.warning('Please enter completion notes.');
+          return;
+        }
+        Followups.complete(targetCompId, notes);
+        hideComp();
+        loadFollowups();
+      };
+
+      // Reschedule Modal
+      const reschedModal = document.getElementById('reschedule-flw-modal');
+      const reschedDate = document.getElementById('resched-modal-date');
+      const reschedTime = document.getElementById('resched-modal-time');
+      const reschedReason = document.getElementById('resched-modal-reason');
+      let targetReschedId = null;
+
+      window.openRescheduleModal = (id, curDate, curTime) => {
+        targetReschedId = id;
+        reschedDate.value = curDate || '';
+        reschedTime.value = curTime || '10:00';
+        reschedReason.value = '';
+        reschedModal.classList.add('show');
+      };
+
+      const hideResched = () => reschedModal.classList.remove('show');
+      document.getElementById('resched-modal-cancel').onclick = hideResched;
+      document.getElementById('resched-modal-close').onclick = hideResched;
+
+      document.getElementById('resched-modal-save').onclick = () => {
+        const date = reschedDate.value;
+        const time = reschedTime.value;
+        const reason = reschedReason.value.trim();
+
+        if (!date) {
+          Toast.error('Please pick a new date.');
+          return;
+        }
+
+        Followups.reschedule(targetReschedId, date, time, reason);
+        hideResched();
+        loadFollowups();
+      };
+
+      // Create Modal
+      const createModal = document.getElementById('create-flw-modal');
+      const custSelect = document.getElementById('create-flw-customer');
+      const dateInput = document.getElementById('create-flw-date');
+      const timeInput = document.getElementById('create-flw-time');
+      const purposeInput = document.getElementById('create-flw-purpose');
+      const prioSelect = document.getElementById('create-flw-priority');
+
+      document.getElementById('btn-schedule-new-flw').onclick = () => {
+        const customers = Customers.getScopedCustomers();
+        custSelect.innerHTML = customers.map(c => `<option value="${c.id}">${Utils.escapeHtml(c.name)} (${c.id})</option>`).join('');
+
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        dateInput.value = tomorrow.toISOString().split('T')[0];
+        purposeInput.value = '';
+
+        createModal.classList.add('show');
+      };
+
+      const hideCreate = () => createModal.classList.remove('show');
+      document.getElementById('create-flw-cancel').onclick = hideCreate;
+      document.getElementById('create-flw-close').onclick = hideCreate;
+
+      document.getElementById('create-flw-save').onclick = () => {
+        const customerId = custSelect.value;
+        const date = dateInput.value;
+        const time = timeInput.value;
+        const purpose = purposeInput.value.trim();
+        const priority = prioSelect.value;
+
+        if (!customerId || !date || !purpose) {
+          Toast.error('Please fill in all required fields.');
+          return;
+        }
+
+        Followups.create({ customerId, date, time, purpose, priority });
+        hideCreate();
+        loadFollowups();
+      };
+    }
   </script>
 </body>
 </html>

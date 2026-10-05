@@ -1,0 +1,348 @@
+/* ==========================================================================
+   SALES CRM - DASHBOARD & PIPELINE CSS
+   KPI Cards, Chart Containers, Kanban Columns & Activity Feeds
+   ========================================================================== */
+
+/* KPI Cards Grid */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.kpi-card {
+  background-color: #fff;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-light);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.kpi-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--primary-500);
+}
+
+.kpi-card.kpi-primary::after { background-color: var(--primary-500); }
+.kpi-card.kpi-success::after { background-color: var(--success-solid); }
+.kpi-card.kpi-warning::after { background-color: var(--warning-solid); }
+.kpi-card.kpi-danger::after { background-color: var(--danger-solid); }
+.kpi-card.kpi-info::after { background-color: #0284c7; }
+.kpi-card.kpi-purple::after { background-color: #9333ea; }
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.35rem;
+}
+
+.kpi-value {
+  font-family: var(--font-heading);
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--slate-900);
+  line-height: 1.1;
+}
+
+.kpi-subtext {
+  font-size: 0.72rem;
+  color: var(--slate-400);
+  margin-top: 0.25rem;
+}
+
+.kpi-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.35rem;
+}
+
+.kpi-primary .kpi-icon-box { background-color: var(--primary-50); color: var(--primary-600); }
+.kpi-success .kpi-icon-box { background-color: var(--success-bg); color: var(--success-solid); }
+.kpi-warning .kpi-icon-box { background-color: var(--warning-bg); color: var(--warning-solid); }
+.kpi-danger .kpi-icon-box { background-color: var(--danger-bg); color: var(--danger-solid); }
+.kpi-info .kpi-icon-box { background-color: #e0f2fe; color: #0284c7; }
+.kpi-purple .kpi-icon-box { background-color: #f3e8ff; color: #9333ea; }
+
+/* Dashboard Grids */
+.dashboard-grid-2 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-grid-equal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.dashboard-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Chart Canvas Container */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 280px;
+}
+
+/* Activity Feed Timeline */
+.activity-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.activity-timeline::before {
+  content: '';
+  position: absolute;
+  top: 8px;
+  bottom: 8px;
+  left: 11px;
+  width: 2px;
+  background-color: var(--slate-200);
+}
+
+.activity-item {
+  position: relative;
+  margin-bottom: 1.25rem;
+}
+
+.activity-item:last-child {
+  margin-bottom: 0;
+}
+
+.activity-dot {
+  position: absolute;
+  left: -1.5rem;
+  top: 3px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid var(--primary-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--primary-600);
+  box-shadow: 0 0 0 3px #fff;
+}
+
+.activity-dot.dot-call { border-color: #10b981; color: #10b981; }
+.activity-dot.dot-whatsapp { border-color: #22c55e; color: #22c55e; }
+.activity-dot.dot-email { border-color: #3b82f6; color: #3b82f6; }
+.activity-dot.dot-stage { border-color: #8b5cf6; color: #8b5cf6; }
+.activity-dot.dot-user { border-color: #f59e0b; color: #f59e0b; }
+
+.activity-content {
+  background-color: var(--slate-50);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 1rem;
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.25rem;
+}
+
+.activity-user {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--slate-800);
+}
+
+.activity-time {
+  font-size: 0.72rem;
+  color: var(--slate-400);
+}
+
+.activity-desc {
+  font-size: 0.8rem;
+  color: var(--slate-600);
+}
+
+/* Kanban Pipeline Board */
+.pipeline-board {
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 1.5rem;
+  min-height: calc(100vh - 200px);
+}
+
+.pipeline-column {
+  flex: 0 0 290px;
+  width: 290px;
+  background-color: #f1f5f9;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 190px);
+  border: 1px solid var(--slate-200);
+}
+
+.pipeline-col-header {
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid transparent;
+  background-color: #fff;
+  border-top-left-radius: var(--radius-lg);
+  border-top-right-radius: var(--radius-lg);
+}
+
+.pipeline-col-header.col-new { border-bottom-color: #0369a1; }
+.pipeline-col-header.col-contacted { border-bottom-color: #3730a3; }
+.pipeline-col-header.col-interested { border-bottom-color: #6b21a8; }
+.pipeline-col-header.col-prospect { border-bottom-color: #92400e; }
+.pipeline-col-header.col-followup { border-bottom-color: #9a3412; }
+.pipeline-col-header.col-negotiation { border-bottom-color: #115e59; }
+.pipeline-col-header.col-converted { border-bottom-color: #065f46; }
+.pipeline-col-header.col-notinterested { border-bottom-color: #475569; }
+.pipeline-col-header.col-lost { border-bottom-color: #9f1239; }
+
+.pipeline-col-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.pipeline-col-count {
+  font-size: 0.72rem;
+  background-color: var(--slate-100);
+  color: var(--slate-700);
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  font-weight: 700;
+}
+
+.pipeline-col-cards {
+  padding: 0.75rem;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.pipeline-card {
+  background-color: #fff;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-light);
+  padding: 0.85rem;
+  box-shadow: var(--shadow-xs);
+  cursor: grab;
+  transition: all var(--transition-fast);
+}
+
+.pipeline-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+  border-color: var(--primary-200);
+}
+
+.pipeline-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.4rem;
+}
+
+.pipeline-card-id {
+  font-size: 0.72rem;
+  color: var(--slate-500);
+  font-weight: 600;
+}
+
+.pipeline-card-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--slate-900);
+  margin-bottom: 0.2rem;
+}
+
+.pipeline-card-company {
+  font-size: 0.78rem;
+  color: var(--slate-500);
+  margin-bottom: 0.6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pipeline-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--slate-100);
+  font-size: 0.75rem;
+}
+
+.pipeline-card-user {
+  color: var(--slate-600);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.pipeline-card-move-btn {
+  background: transparent;
+  border: none;
+  color: var(--primary-600);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: var(--radius-xs);
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.pipeline-card-move-btn:hover {
+  background-color: var(--primary-50);
+}

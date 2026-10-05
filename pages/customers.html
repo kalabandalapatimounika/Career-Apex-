@@ -3,369 +3,851 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Job Seekers Directory — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Leads Directory — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="crm-app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <!-- Main Content Area -->
+    <div class="crm-main-content">
+      <!-- Top Application Header -->
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
         <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Student Job Seekers Directory</h1>
-            <p class="page-subtitle">Centralized student candidate database with real-time academic records, counseling status, fee ledgers, and outreach tracking.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Leads Directory</h1>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Centralized directory of all registered leads, educational qualifications, job targets, and placement pipeline stages.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-header-action" onclick="Customers.exportCSV()" title="Export Filtered CSV">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Export CSV
+          <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" id="export-csv-btn">
+              <i class="fa-solid fa-file-csv" style="color: #107c41;"></i> Export CSV
             </button>
-            <a href="import-leads.html" class="btn-header-action" title="Bulk Import Candidates">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-              Import Leads
+            <a href="import-leads.html" class="btn btn-secondary btn-sm">
+              <i class="fa-solid fa-file-import"></i> Import CSV
             </a>
-            <button type="button" class="btn-primary-purple" onclick="UI.openAddLeadModal()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-              + Add Lead
+            <button class="btn btn-primary btn-sm" id="page-add-customer-btn">
+              <i class="fa-solid fa-user-plus"></i> Add Lead
             </button>
           </div>
         </div>
 
-        <!-- Filter & Search Toolbar -->
-        <div class="enterprise-card" style="margin-bottom: 20px;">
-          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
-            <!-- Search Input -->
-            <div style="flex: 1; min-width: 260px; position: relative;">
-              <input type="text" id="directory-search" class="filter-input" placeholder="Search by name, ID, college, degree, skills, mobile..." style="width: 100%; padding-left: 36px;" oninput="applyFilters()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px;">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
-              </svg>
+        <!-- Filter Card -->
+        <div class="card" style="margin-bottom: 1.25rem; padding: 1.25rem;">
+          <div style="display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 0.75rem; margin-bottom: 0.75rem;">
+            <div>
+              <label class="form-label">Search Keyword</label>
+              <div style="position: relative;">
+                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); color: var(--slate-400);"></i>
+                <input type="text" id="filter-search" class="form-control" placeholder="Search by lead, ID, college, degree, skills, mobile..." style="padding-left: 2.25rem;">
+              </div>
             </div>
 
-            <!-- Filters -->
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
-              <select id="filter-stage" class="filter-select" onchange="applyFilters()">
-                <option value="">All Stages</option>
-                <option value="Cold Calling">Cold Calling</option>
+            <div>
+              <label class="form-label">Pipeline Stage</label>
+              <select id="filter-stage" class="form-select">
+                <option value="all">All Stages</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Status</label>
+              <select id="filter-status" class="form-select">
+                <option value="all">All Statuses</option>
+                <option value="Active">Active</option>
+                <option value="In Discussion">In Discussion</option>
+                <option value="Placed / Hired">Placed / Hired</option>
+                <option value="Dropped / Inactive">Dropped / Inactive</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Priority</label>
+              <select id="filter-priority" class="form-select">
+                <option value="all">All Priorities</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.2fr 1fr 1fr 1fr 1fr auto; gap: 0.75rem; align-items: flex-end;">
+            <div>
+              <label class="form-label">Career Counselor</label>
+              <select id="filter-salesperson" class="form-select">
+                <option value="all">All Counselors</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Passing Year (YOP)</label>
+              <select id="filter-yop" class="form-select">
+                <option value="all">All Years</option>
+                <option value="2026">2026</option>
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+                <option value="2022">2022</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">City</label>
+              <select id="filter-city" class="form-select">
+                <option value="all">All Cities</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Placement Fee Status</label>
+              <select id="filter-fee-status" class="form-select">
+                <option value="all">All Fee Statuses</option>
+                <option value="Fully Paid">Fully Paid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Overdue">Has Overdue Due</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="form-label">Rows per page</label>
+              <select id="filter-page-size" class="form-select">
+                <option value="10" selected>10 per page</option>
+                <option value="25">25 per page</option>
+                <option value="50">50 per page</option>
+              </select>
+            </div>
+
+            <div>
+              <button class="btn btn-secondary" id="clear-filters-btn" title="Reset all filters">
+                <i class="fa-solid fa-filter-circle-xmark"></i> Clear Filters
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lead List Table Card -->
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-weight: 700; font-size: 1rem; color: var(--slate-900);">
+              Lead Records (<span id="total-count-badge">0</span>)
+            </div>
+            <div id="table-summary-info" style="font-size: 0.8rem; color: var(--slate-500);"></div>
+          </div>
+
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Lead ID</th>
+                    <th>Candidate & Degree</th>
+                    <th>College / University</th>
+                    <th>Target Role & Skills</th>
+                    <th>Mobile Phone</th>
+                    <th>Stage</th>
+                    <th>Placement Fee & Dues</th>
+                    <th>Status</th>
+                    <th>Priority</th>
+                    <th>Counselor</th>
+                    <th>Next Follow-up</th>
+                    <th style="text-align: right;">Quick Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="customers-table-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Empty State Container -->
+            <div id="customers-empty-state" class="empty-state" style="display: none;">
+              <div class="empty-state-icon"><i class="fa-solid fa-user-graduate"></i></div>
+              <div class="empty-state-title">No leads found</div>
+              <div class="empty-state-desc">Try clearing your filters or adding a new lead.</div>
+              <button class="btn btn-primary btn-sm" onclick="document.getElementById('global-add-customer-btn').click()">
+                <i class="fa-solid fa-user-plus"></i> Add Lead
+              </button>
+            </div>
+          </div>
+
+          <!-- Pagination Footer -->
+          <div class="card-footer" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <div style="font-size: 0.85rem; color: var(--slate-500);" id="pagination-info">
+              Showing 0 to 0 of 0 leads
+            </div>
+            <div style="display: flex; gap: 0.4rem;" id="pagination-controls">
+              <!-- Dynamically generated page buttons -->
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Edit Lead Modal -->
+  <div id="edit-customer-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-pen" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Edit Lead Profile</h3>
+        <button class="modal-close-btn" id="edit-modal-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-customer-form">
+          <input type="hidden" id="edit-cust-id">
+          
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-id-card"></i> Candidate Details
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Lead Full Name <span class="required">*</span></label>
+              <input type="text" class="form-control" id="edit-cust-name" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="edit-cust-email">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Mobile Number <span class="required">*</span></label>
+              <input type="tel" class="form-control" id="edit-cust-mobile" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Alternate Mobile / WhatsApp</label>
+              <input type="tel" class="form-control" id="edit-cust-alt-mobile">
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-graduation-cap"></i> Academic Background
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Degree / Qualification</label>
+              <input type="text" class="form-control" id="edit-cust-qualification">
+            </div>
+            <div class="form-group">
+              <label class="form-label">College / University</label>
+              <input type="text" class="form-control" id="edit-cust-college">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Passing Year (YOP)</label>
+              <input type="text" class="form-control" id="edit-cust-yop">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Experience Level</label>
+              <select class="form-select" id="edit-cust-exp">
+                <option value="Fresher">Fresher (0 yrs)</option>
+                <option value="0-1 yr">0 - 1 yr</option>
+                <option value="1-2 yrs">1 - 2 yrs</option>
+                <option value="2+ yrs">2+ yrs</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">CGPA / %</label>
+              <input type="text" class="form-control" id="edit-cust-cgpa">
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-briefcase"></i> Job Preferences & Skills
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Target Job Role</label>
+              <input type="text" class="form-control" id="edit-cust-role">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Key Technical Skills</label>
+              <input type="text" class="form-control" id="edit-cust-skills">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">City</label>
+              <input type="text" class="form-control" id="edit-cust-city">
+            </div>
+            <div class="form-group">
+              <label class="form-label">State</label>
+              <input type="text" class="form-control" id="edit-cust-state">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Preferred Location</label>
+              <input type="text" class="form-control" id="edit-cust-prefloc">
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Expected CTC</label>
+              <input type="text" class="form-control" id="edit-cust-ctc" placeholder="e.g. 5.5 LPA">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Permanent Address</label>
+              <input type="text" class="form-control" id="edit-cust-address" placeholder="Flat, Street, Area">
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-sliders"></i> Pipeline, Status & Assignment
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Pipeline Stage <span class="required">*</span></label>
+              <select class="form-select" id="edit-cust-stage">
+                <option value="Cold Calling">Cold Calling (Raw Data - Uncalled)</option>
+                <option value="Not Connected">Not Connected</option>
                 <option value="New Lead">New Lead</option>
                 <option value="Contacted">Contacted</option>
                 <option value="Interested">Interested</option>
                 <option value="Prospect">Prospect</option>
                 <option value="Follow-up">Follow-up</option>
                 <option value="Negotiation">Negotiation</option>
-                <option value="Converted">Converted</option>
+                <option value="Pending Closure">Pending Closure</option>
+                <option value="Enrolled">Enrolled</option>
                 <option value="Not Interested">Not Interested</option>
                 <option value="Lost">Lost</option>
               </select>
-
-              <select id="filter-manager" class="filter-select" onchange="applyFilters()">
-                <option value="">All Managers</option>
-                <option value="Rajesh Sharma">Rajesh Sharma</option>
-                <option value="Priya Patel">Priya Patel</option>
-                <option value="Amit Verma">Amit Verma</option>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Placement Status</label>
+              <select class="form-select" id="edit-cust-status">
+                <option value="Active">Active</option>
+                <option value="Pending Closure">Pending Closure</option>
+                <option value="Enrolled">Enrolled</option>
+                <option value="Not Connected">Not Connected</option>
+                <option value="Not Interested">Not Interested</option>
+                <option value="Lost">Lost</option>
               </select>
-
-              <select id="filter-counselor" class="filter-select" onchange="applyFilters()">
-                <option value="">All Counselors</option>
-                <option value="Arun Kumar">Arun Kumar</option>
-                <option value="Sneha Rao">Sneha Rao</option>
-                <option value="Vikram Singh">Vikram Singh</option>
-                <option value="Neha Gupta">Neha Gupta</option>
-                <option value="Rahul Mehta">Rahul Mehta</option>
-              </select>
-
-              <select id="filter-priority" class="filter-select" onchange="applyFilters()">
-                <option value="">All Priorities</option>
-                <option value="High">High Priority</option>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Priority</label>
+              <select class="form-select" id="edit-cust-priority">
+                <option value="High">High</option>
                 <option value="Medium">Medium</option>
                 <option value="Low">Low</option>
               </select>
+            </div>
+          </div>
 
-              <select id="filter-payment" class="filter-select" onchange="applyFilters()">
-                <option value="">All Fee Statuses</option>
-                <option value="Paid">Fully Paid</option>
-                <option value="Partially Paid">Partially Paid</option>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Lead Source</label>
+              <select class="form-select" id="edit-cust-source">
+                <option value="Cold Calling / Raw Database">Cold Calling / Raw Database</option>
+                <option value="Excel / CSV Upload">Excel / CSV Upload</option>
+                <option value="College Placement Cell">College Placement Cell</option>
+                <option value="Walk-in / Campus Drive">Walk-in / Campus Drive</option>
+                <option value="Job Portal / Naukri">Job Portal / Naukri</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Website Inquiry">Website Inquiry</option>
+                <option value="Referral">Referral</option>
+                <option value="Social Media / Instagram">Social Media / Instagram</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Manager</label>
+              <select class="form-select" id="edit-cust-manager"></select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Assigned Counselor</label>
+              <select class="form-select" id="edit-cust-salesperson"></select>
+            </div>
+          </div>
+
+          <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-700); text-transform: uppercase; letter-spacing: 0.05em; margin: 1rem 0 0.65rem; border-bottom: 1px solid var(--border-light); padding-bottom: 0.25rem;">
+            <i class="fa-solid fa-indian-rupee-sign"></i> Placement Fee & Payment Plan
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 0.75rem;">
+            <div class="form-group">
+              <label class="form-label">Agreed Placement Fee (₹)</label>
+              <input type="number" class="form-control" id="edit-cust-fee" min="0" step="500">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Plan</label>
+              <select class="form-select" id="edit-cust-payplan">
+                <option value="Full Payment Upfront">Full Payment Upfront (1 Installment)</option>
+                <option value="2 Installments">2 Installments</option>
+                <option value="3 Installments">3 Installments</option>
+                <option value="4 Installments">4 Installments</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Payment Status</label>
+              <select class="form-select" id="edit-cust-paystatus">
                 <option value="Pending">Pending</option>
-                <option value="Overdue">Overdue</option>
-              </select>
-
-              <button type="button" class="btn-outline-sm" onclick="resetFilters()">Reset</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Table Card with Summary and Pagination -->
-        <div class="enterprise-card" style="padding: 0; overflow: hidden;">
-          <div style="padding: 16px 20px; border-bottom: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; background: #fafbfc;">
-            <div style="font-size: 13px; font-weight: 600; color: var(--navy-900);">
-              Showing <span id="count-filtered">36</span> candidates
-              <span id="filter-active-tag" style="display: none; margin-left: 8px;" class="badge badge-cold">Filters Applied</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 12px; color: var(--slate-500);">Per page:</span>
-              <select id="items-per-page" class="filter-select" style="padding: 4px 8px; font-size: 12px;" onchange="changePageSize(this.value)">
-                <option value="25" selected>25</option>
-                <option value="50">50</option>
-                <option value="100">100</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Fully Paid">Fully Paid</option>
               </select>
             </div>
           </div>
 
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th style="width: 100px;">Lead ID</th>
-                  <th>Student Name</th>
-                  <th>Mobile</th>
-                  <th>Email</th>
-                  <th>College</th>
-                  <th>Degree</th>
-                  <th>Skills</th>
-                  <th>Stage</th>
-                  <th>Counselor</th>
-                  <th>Manager</th>
-                  <th>Total Fee</th>
-                  <th>Paid</th>
-                  <th>Pending</th>
-                  <th>Payment Status</th>
-                  <th>Last Contacted</th>
-                  <th>Next Follow-up</th>
-                  <th style="min-width: 190px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="directory-tbody">
-                <!-- Dynamically populated rows -->
-              </tbody>
-            </table>
+          <div class="form-group" style="margin-bottom: 0.5rem;">
+            <label class="form-label">Counseling Notes & Career Aspirations</label>
+            <textarea class="form-control" id="edit-cust-notes" rows="2" placeholder="Lead background, immediate availability, preferred interview timings..."></textarea>
           </div>
 
-          <!-- Pagination Bar -->
-          <div style="padding: 12px 20px; border-top: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
-            <div style="font-size: 12px; color: var(--slate-500);" id="pagination-info">
-              Showing 1-25 of 36 records
-            </div>
-            <div style="display: flex; gap: 6px;" id="pagination-controls">
-              <!-- Rendered via JS -->
-            </div>
-          </div>
-        </div>
-
-      </main>
+          <div id="edit-cust-error" style="display: none; padding: 0.75rem; border-radius: var(--radius-md); background: var(--danger-bg); color: var(--danger-text); border: 1px solid var(--danger-border); font-size: 0.85rem; margin-top: 0.5rem;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="edit-modal-cancel">Cancel</button>
+        <button class="btn btn-primary" id="edit-modal-save">Update Lead</button>
+      </div>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
-  <script src="../js/followups.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
-  <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
     let currentPage = 1;
-    let pageSize = 25;
-    let filteredStudents = [];
+    let filteredList = [];
 
-    function applyFilters() {
-      const search = (document.getElementById('directory-search')?.value || '').toLowerCase();
-      const stage = document.getElementById('filter-stage')?.value || '';
-      const manager = document.getElementById('filter-manager')?.value || '';
-      const counselor = document.getElementById('filter-counselor')?.value || '';
-      const priority = document.getElementById('filter-priority')?.value || '';
-      const payment = document.getElementById('filter-payment')?.value || '';
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.requireAuth();
+      if (!user) return;
 
-      const isFiltered = search || stage || manager || counselor || priority || payment;
-      const filterTag = document.getElementById('filter-active-tag');
-      if (filterTag) filterTag.style.display = isFiltered ? 'inline-flex' : 'none';
+      App.initCommon(user, 'customers');
+      initFilterOptions();
+      loadCustomerTable();
+      setupEventListeners();
+    });
 
-      let students = Customers.getAll();
-
-      // Check role scoping
-      const user = Auth.getCurrentUser();
-      if (user && (user.role === 'COUNSELOR' || user.role === 'counselor')) {
-        students = students.filter(s => s.counselor === user.name);
-      } else if (user && (user.role === 'MANAGER' || user.role === 'manager')) {
-        students = students.filter(s => s.manager === user.name);
-      }
-
-      filteredStudents = students.filter(s => {
-        if (stage && s.stage !== stage) return false;
-        if (manager && s.manager !== manager) return false;
-        if (counselor && s.counselor !== counselor) return false;
-        if (priority && s.priority !== priority) return false;
-        if (payment && s.paymentStatus !== payment) return false;
-
-        if (search) {
-          const match = (s.name || '').toLowerCase().includes(search) ||
-                        (s.id || '').toLowerCase().includes(search) ||
-                        (s.mobile || '').includes(search) ||
-                        (s.email || '').toLowerCase().includes(search) ||
-                        (s.college || '').toLowerCase().includes(search) ||
-                        (s.degree || '').toLowerCase().includes(search) ||
-                        (s.skills || '').toLowerCase().includes(search);
-          if (!match) return false;
-        }
-        return true;
+    function initFilterOptions() {
+      // Stage options
+      const stageSelect = document.getElementById('filter-stage');
+      Pipeline.getStages().forEach(st => {
+        const opt = document.createElement('option');
+        opt.value = st;
+        opt.textContent = st;
+        stageSelect.appendChild(opt);
       });
 
-      currentPage = 1;
-      renderTable();
+      // Counselor options
+      const repSelect = document.getElementById('filter-salesperson');
+      const reps = Users.getSalespeople();
+      reps.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = `${r.name} (${r.managerName || 'No Mgr'})`;
+        repSelect.appendChild(opt);
+      });
+
+      // City options
+      const citySelect = document.getElementById('filter-city');
+      const allCustomers = Customers.getAll();
+      const cities = [...new Set(allCustomers.map(c => c.city).filter(Boolean))].sort();
+      cities.forEach(city => {
+        const opt = document.createElement('option');
+        opt.value = city;
+        opt.textContent = city;
+        citySelect.appendChild(opt);
+      });
     }
 
-    function resetFilters() {
-      if (document.getElementById('directory-search')) document.getElementById('directory-search').value = '';
-      if (document.getElementById('filter-stage')) document.getElementById('filter-stage').value = '';
-      if (document.getElementById('filter-manager')) document.getElementById('filter-manager').value = '';
-      if (document.getElementById('filter-counselor')) document.getElementById('filter-counselor').value = '';
-      if (document.getElementById('filter-priority')) document.getElementById('filter-priority').value = '';
-      if (document.getElementById('filter-payment')) document.getElementById('filter-payment').value = '';
-      applyFilters();
+    function setupEventListeners() {
+      const triggerReload = () => {
+        currentPage = 1;
+        loadCustomerTable();
+      };
+
+      document.getElementById('filter-search').addEventListener('input', Utils.debounce(triggerReload, 300));
+      document.getElementById('filter-stage').addEventListener('change', triggerReload);
+      document.getElementById('filter-status').addEventListener('change', triggerReload);
+      document.getElementById('filter-priority').addEventListener('change', triggerReload);
+      document.getElementById('filter-salesperson').addEventListener('change', triggerReload);
+      document.getElementById('filter-yop').addEventListener('change', triggerReload);
+      document.getElementById('filter-city').addEventListener('change', triggerReload);
+      document.getElementById('filter-fee-status').addEventListener('change', triggerReload);
+      document.getElementById('filter-page-size').addEventListener('change', triggerReload);
+
+      document.getElementById('clear-filters-btn').addEventListener('click', () => {
+        document.getElementById('filter-search').value = '';
+        document.getElementById('filter-stage').value = 'all';
+        document.getElementById('filter-status').value = 'all';
+        document.getElementById('filter-priority').value = 'all';
+        document.getElementById('filter-salesperson').value = 'all';
+        document.getElementById('filter-yop').value = 'all';
+        document.getElementById('filter-city').value = 'all';
+        document.getElementById('filter-fee-status').value = 'all';
+        currentPage = 1;
+        loadCustomerTable();
+      });
+
+      document.getElementById('page-add-customer-btn').addEventListener('click', () => {
+        document.getElementById('global-add-customer-btn').click();
+      });
+
+      document.getElementById('export-csv-btn').addEventListener('click', exportCustomersToCsv);
     }
 
-    function changePageSize(size) {
-      pageSize = Number(size);
-      currentPage = 1;
-      renderTable();
+    function loadCustomerTable() {
+      const search = document.getElementById('filter-search').value.trim();
+      const stage = document.getElementById('filter-stage').value;
+      const status = document.getElementById('filter-status').value;
+      const priority = document.getElementById('filter-priority').value;
+      const salespersonId = document.getElementById('filter-salesperson').value;
+      const passingYear = document.getElementById('filter-yop').value;
+      const city = document.getElementById('filter-city').value;
+      const paymentStatus = document.getElementById('filter-fee-status').value;
+      const pageSize = parseInt(document.getElementById('filter-page-size').value, 10);
+
+      filteredList = Customers.filter({
+        search,
+        stage,
+        status,
+        priority,
+        salespersonId,
+        passingYear,
+        city,
+        paymentStatus
+      });
+
+      document.getElementById('total-count-badge').textContent = filteredList.length;
+
+      const paginated = Customers.paginate(filteredList, currentPage, pageSize);
+      renderTableRows(paginated.items);
+      renderPagination(paginated);
+    }
+
+    function renderTableRows(items) {
+      const tbody = document.getElementById('customers-table-tbody');
+      const emptyState = document.getElementById('customers-empty-state');
+      const currentUser = Auth.getCurrentUser();
+
+      if (!items.length) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'flex';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      tbody.innerHTML = items.map(c => `
+        <tr>
+          <td>
+            <a href="customer-details.html?id=${c.id}" style="font-weight: 700; color: var(--primary-600); text-decoration: none; font-size: 0.85rem;">
+              ${c.id}
+            </a>
+          </td>
+          <td>
+            <div style="font-weight: 700; color: var(--slate-900); font-size: 0.875rem;">
+              <a href="customer-details.html?id=${c.id}" style="color: inherit; text-decoration: none;">
+                ${Utils.escapeHtml(c.name)}
+              </a>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--slate-500);">${Utils.escapeHtml(c.qualification || '—')}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.85rem; font-weight: 500; color: var(--slate-800);">${Utils.escapeHtml(c.college || '—')}</div>
+            <div style="font-size: 0.75rem; color: var(--slate-500);">YOP: ${c.passingYear || '—'} • ${Utils.escapeHtml(c.city || '—')}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.825rem; font-weight: 600; color: var(--slate-800);">${Utils.escapeHtml(c.targetRole || '—')}</div>
+            <div style="font-size: 0.72rem; color: var(--primary-700); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${Utils.escapeHtml(c.skills || '')}">${Utils.escapeHtml(c.skills || '—')}</div>
+          </td>
+          <td>
+            <span style="font-family: monospace; font-size: 0.825rem; color: var(--slate-800);">${c.mobile}</span>
+          </td>
+          <td>${Utils.getStageBadge(c.stage)}</td>
+          <td>
+            <div style="font-weight: 700; font-size: 0.825rem; color: var(--slate-900);">
+              ${Payments.formatCurrency(c.totalFee || 0)}
+            </div>
+            <div style="font-size: 0.725rem; color: ${c.pendingAmount > 0 ? 'var(--warning-text)' : 'var(--success-text)'};">
+              Paid: ${Payments.formatCurrency(c.paidAmount || 0)}
+            </div>
+            <div style="margin-top: 0.2rem;">
+              ${Utils.getPaymentStatusBadge(c.paymentStatus, c)}
+            </div>
+          </td>
+          <td>${Utils.getStatusBadge(c.status)}</td>
+          <td>${Utils.getPriorityBadge(c.priority)}</td>
+          <td>
+            <div style="font-size: 0.8rem; font-weight: 500; color: var(--slate-800);">${Utils.escapeHtml(c.salespersonName || 'Unassigned')}</div>
+            <div style="font-size: 0.7rem; color: var(--slate-400);">Mgr: ${Utils.escapeHtml(c.managerName || '—')}</div>
+          </td>
+          <td>
+            <div style="font-size: 0.78rem; font-weight: ${c.nextFollowUp && new Date(c.nextFollowUp) < new Date() ? '700; color: var(--danger-solid);' : '500; color: var(--slate-700);'}">
+              ${c.nextFollowUp ? Utils.formatDate(c.nextFollowUp) : '<span style="color: var(--slate-400);">None</span>'}
+            </div>
+          </td>
+          <td style="text-align: right; white-space: nowrap;">
+            <div style="display: inline-flex; gap: 0.35rem;">
+              <a href="customer-details.html?id=${c.id}" class="btn btn-icon btn-secondary" title="View Lead Profile" style="padding: 0.35rem 0.5rem; font-size: 0.8rem;">
+                <i class="fa-solid fa-eye"></i>
+              </a>
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal('${c.id}')" title="Edit All Lead Details" style="padding: 0.25rem 0.6rem; font-size: 0.78rem; font-weight: 600; color: var(--primary-700); background-color: var(--primary-50); border-color: var(--primary-200);">
+                <i class="fa-solid fa-pen-to-square"></i> Edit
+              </button>
+              <button class="btn btn-icon btn-secondary" onclick="Communication.initiateCall('${c.id}')" title="Call Lead" style="padding: 0.35rem 0.5rem; font-size: 0.8rem; color: var(--success-solid);">
+                <i class="fa-solid fa-phone"></i>
+              </button>
+              <button class="btn btn-icon btn-secondary" onclick="Communication.openWhatsApp('${c.id}')" title="WhatsApp" style="padding: 0.35rem 0.5rem; font-size: 0.8rem; color: #25d366;">
+                <i class="fa-brands fa-whatsapp"></i>
+              </button>
+              <button class="btn btn-icon btn-secondary" onclick="Communication.initiateEmail('${c.id}')" title="Email" style="padding: 0.35rem 0.5rem; font-size: 0.8rem; color: var(--primary-600);">
+                <i class="fa-solid fa-envelope"></i>
+              </button>
+              ${currentUser.role === 'admin' ? `
+                <button class="btn btn-icon btn-secondary" onclick="confirmDelete('${c.id}', '${Utils.escapeHtml(c.name)}')" title="Delete Lead Record (Admin)" style="padding: 0.35rem 0.5rem; font-size: 0.8rem; color: var(--danger-solid);">
+                  <i class="fa-solid fa-trash-can"></i>
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderPagination(paginated) {
+      const infoEl = document.getElementById('pagination-info');
+      const controlsEl = document.getElementById('pagination-controls');
+
+      if (!paginated.total) {
+        infoEl.textContent = 'Showing 0 to 0 of 0 leads';
+        controlsEl.innerHTML = '';
+        return;
+      }
+
+      const start = (paginated.page - 1) * paginated.pageSize + 1;
+      const end = Math.min(start + paginated.pageSize - 1, paginated.total);
+      infoEl.textContent = `Showing ${start} to ${end} of ${paginated.total} leads`;
+
+      let buttonsHtml = '';
+      buttonsHtml += `
+        <button class="btn btn-secondary btn-sm" ${!paginated.hasPrev ? 'disabled' : ''} onclick="goToPage(${paginated.page - 1})">
+          <i class="fa-solid fa-chevron-left"></i>
+        </button>
+      `;
+
+      for (let p = 1; p <= paginated.totalPages; p++) {
+        buttonsHtml += `
+          <button class="btn ${p === paginated.page ? 'btn-primary' : 'btn-secondary'} btn-sm" onclick="goToPage(${p})">
+            ${p}
+          </button>
+        `;
+      }
+
+      buttonsHtml += `
+        <button class="btn btn-secondary btn-sm" ${!paginated.hasNext ? 'disabled' : ''} onclick="goToPage(${paginated.page + 1})">
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+      `;
+
+      controlsEl.innerHTML = buttonsHtml;
     }
 
     function goToPage(page) {
       currentPage = page;
-      renderTable();
+      loadCustomerTable();
     }
 
-    function renderTable() {
-      const tbody = document.getElementById('directory-tbody');
-      const countEl = document.getElementById('count-filtered');
-      if (countEl) countEl.textContent = filteredStudents.length;
-
-      const total = filteredStudents.length;
-      const start = (currentPage - 1) * pageSize;
-      const end = Math.min(start + pageSize, total);
-      const pageItems = filteredStudents.slice(start, end);
-
-      if (pageItems.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="17" style="text-align: center; color: var(--slate-400); padding: 40px;">No students match the criteria.</td></tr>`;
-      } else {
-        tbody.innerHTML = pageItems.map(s => {
-          const stageBadge = Utils.getStageBadge(s.stage);
-          const paymentBadge = Utils.getPaymentBadge(s.paymentStatus);
-          const skillsList = (s.skills || '').split(',').map(sk => `<span style="display: inline-block; font-size: 10px; background: #f1f5f9; color: #475569; padding: 1px 5px; border-radius: 4px; margin: 1px;">${Utils.escapeHtml(sk.trim())}</span>`).join('');
-
-          return `
-            <tr>
-              <td><span style="font-family: monospace; font-size: 11px; color: var(--slate-600);">${s.id}</span></td>
-              <td>
-                <a href="customer-details.html?id=${s.id}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
-                  ${Utils.escapeHtml(s.name)}
-                </a>
-              </td>
-              <td><span style="font-size: 12px; color: var(--slate-700);">${Utils.escapeHtml(s.mobile)}</span></td>
-              <td><span style="font-size: 12px; color: var(--slate-500);">${Utils.escapeHtml(s.email)}</span></td>
-              <td><span style="font-size: 12px; color: var(--navy-800);">${Utils.escapeHtml(s.college || '-')}</span></td>
-              <td><span style="font-size: 12px; color: var(--slate-600);">${Utils.escapeHtml(s.degree || '-')}</span></td>
-              <td style="max-width: 140px;">${skillsList || '-'}</td>
-              <td>${stageBadge}</td>
-              <td><span style="font-size: 12px; color: var(--slate-700);">${Utils.escapeHtml(s.counselor || 'Unassigned')}</span></td>
-              <td><span style="font-size: 12px; color: var(--slate-500);">${Utils.escapeHtml(s.manager || 'Rajesh Sharma')}</span></td>
-              <td style="font-weight: 500; color: var(--navy-900);">${Utils.formatINR(s.placementFee || 0)}</td>
-              <td style="font-weight: 500; color: var(--green);">${Utils.formatINR(s.paidAmount || 0)}</td>
-              <td style="font-weight: 500; color: var(--amber);">${Utils.formatINR(s.pendingAmount || 0)}</td>
-              <td>${paymentBadge}</td>
-              <td><span style="font-size: 11px; color: var(--slate-500);">${s.lastContacted || 'Never'}</span></td>
-              <td><span style="font-size: 11px; color: var(--navy-800); font-weight: 500;">${s.nextFollowup || 'None'}</span></td>
-              <td>
-                <div class="row-actions">
-                  <a href="customer-details.html?id=${s.id}" class="btn-icon" title="View Dossier">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </a>
-                  <button class="btn-icon" onclick="UI.openAddLeadModal('${s.id}')" title="Edit Student">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.logCall('${s.id}', refreshPageData)" title="Call">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendWhatsApp('${s.id}', 'welcome')" title="WhatsApp">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Communication.sendEmail('${s.id}')" title="Email">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Followups.openScheduleModal('${s.id}', refreshPageData)" title="Follow-up">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Payments.openRecordModal('${s.id}', refreshPageData)" title="Payment">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                  </button>
-                  <button class="btn-icon" onclick="Pipeline.openStageChangeModal('${s.id}', refreshPageData)" title="Stage">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
-                  </button>
-                </div>
-              </td>
-            </tr>
-          `;
-        }).join('');
-      }
-
-      // Update Pagination Controls
-      const infoEl = document.getElementById('pagination-info');
-      if (infoEl) infoEl.textContent = total > 0 ? `Showing ${start + 1}-${end} of ${total} records` : '0 records';
-
-      const controls = document.getElementById('pagination-controls');
-      const totalPages = Math.ceil(total / pageSize) || 1;
-      let paginationHtml = `
-        <button class="btn-outline-sm" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">Prev</button>
-      `;
-      for (let p = 1; p <= totalPages; p++) {
-        paginationHtml += `
-          <button class="btn-outline-sm ${p === currentPage ? 'active' : ''}" style="${p === currentPage ? 'background: var(--primary); color: #fff; border-color: var(--primary);' : ''}" onclick="goToPage(${p})">${p}</button>
-        `;
-      }
-      paginationHtml += `
-        <button class="btn-outline-sm" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next</button>
-      `;
-      if (controls) controls.innerHTML = paginationHtml;
+    function confirmDelete(id, name) {
+      ConfirmModal.show({
+        title: 'Delete Lead Record',
+        message: `Are you sure you want to permanently delete lead "${name}" (${id})? This action cannot be undone.`,
+        confirmText: 'Delete Lead',
+        confirmVariant: 'danger',
+        onConfirm: () => {
+          const res = Customers.delete(id);
+          if (res.success) {
+            Toast.success(`Lead ${name} deleted.`);
+            loadCustomerTable();
+          } else {
+            Toast.error(res.message);
+          }
+        }
+      });
     }
 
-    function refreshPageData() {
-      applyFilters();
+    // Edit modal handler
+    function openEditModal(customerId) {
+      const cust = Customers.getById(customerId);
+      if (!cust) return;
+
+      const modal = document.getElementById('edit-customer-modal');
+      const errBox = document.getElementById('edit-cust-error');
+      errBox.style.display = 'none';
+
+      document.getElementById('edit-cust-id').value = cust.id;
+      document.getElementById('edit-cust-name').value = cust.name;
+      document.getElementById('edit-cust-email').value = cust.email || '';
+      document.getElementById('edit-cust-mobile').value = cust.mobile;
+      document.getElementById('edit-cust-alt-mobile').value = cust.altMobile || '';
+      document.getElementById('edit-cust-qualification').value = cust.qualification || '';
+      document.getElementById('edit-cust-college').value = cust.college || '';
+      document.getElementById('edit-cust-yop').value = cust.passingYear || '';
+      document.getElementById('edit-cust-exp').value = cust.experienceLevel || 'Fresher';
+      document.getElementById('edit-cust-cgpa').value = cust.cgpaOrPercentage || '';
+      document.getElementById('edit-cust-role').value = cust.targetRole || '';
+      document.getElementById('edit-cust-skills').value = cust.skills || '';
+      document.getElementById('edit-cust-city').value = cust.city || '';
+      document.getElementById('edit-cust-state').value = cust.state || '';
+      document.getElementById('edit-cust-prefloc').value = cust.preferredLocation || '';
+      document.getElementById('edit-cust-ctc').value = cust.expectedCtc || '';
+      document.getElementById('edit-cust-address').value = cust.address || '';
+      document.getElementById('edit-cust-stage').value = cust.stage === 'Converted' ? 'Enrolled' : (cust.stage || 'New Lead');
+      document.getElementById('edit-cust-status').value = cust.status === 'Converted' ? 'Enrolled' : (cust.status || 'Active');
+      document.getElementById('edit-cust-priority').value = cust.priority || 'Medium';
+      document.getElementById('edit-cust-source').value = cust.source || 'Website Inquiry';
+      document.getElementById('edit-cust-notes').value = cust.notes || '';
+      document.getElementById('edit-cust-fee').value = cust.totalFee !== undefined ? cust.totalFee : 45000;
+      document.getElementById('edit-cust-payplan').value = cust.paymentPlan || '2 Installments';
+      document.getElementById('edit-cust-paystatus').value = cust.paymentStatus || 'Pending';
+
+      // Managers select
+      const mgrSelect = document.getElementById('edit-cust-manager');
+      mgrSelect.innerHTML = '<option value="">-- Unassigned --</option>' +
+        Users.getManagers().map(m => `<option value="${m.id}" ${m.id === cust.managerId ? 'selected' : ''}>${Utils.escapeHtml(m.name)}</option>`).join('');
+
+      // Counselors select
+      const salesSelect = document.getElementById('edit-cust-salesperson');
+      salesSelect.innerHTML = '<option value="">-- Unassigned --</option>' +
+        Users.getSalespeople().map(s => `<option value="${s.id}" ${s.id === cust.salespersonId ? 'selected' : ''}>${Utils.escapeHtml(s.name)}</option>`).join('');
+
+      const hide = () => modal.classList.remove('show');
+      document.getElementById('edit-modal-close').onclick = hide;
+      document.getElementById('edit-modal-cancel').onclick = hide;
+
+      document.getElementById('edit-modal-save').onclick = () => {
+        const name = document.getElementById('edit-cust-name').value.trim();
+        const mobile = document.getElementById('edit-cust-mobile').value.trim();
+        const email = document.getElementById('edit-cust-email').value.trim();
+
+        if (!name) {
+          errBox.textContent = 'Lead name is required.';
+          errBox.style.display = 'block';
+          return;
+        }
+        if (!mobile || !Validation.isValidMobile(mobile)) {
+          errBox.textContent = 'Please enter a valid 10-digit mobile number.';
+          errBox.style.display = 'block';
+          return;
+        }
+
+        const feeVal = Number(document.getElementById('edit-cust-fee').value);
+        const payPlan = document.getElementById('edit-cust-payplan').value;
+        const payStatus = document.getElementById('edit-cust-paystatus').value;
+
+        const updates = {
+          name,
+          mobile,
+          altMobile: document.getElementById('edit-cust-alt-mobile').value.trim(),
+          email,
+          qualification: document.getElementById('edit-cust-qualification').value.trim(),
+          college: document.getElementById('edit-cust-college').value.trim(),
+          passingYear: document.getElementById('edit-cust-yop').value.trim(),
+          experienceLevel: document.getElementById('edit-cust-exp').value,
+          cgpaOrPercentage: document.getElementById('edit-cust-cgpa').value.trim(),
+          targetRole: document.getElementById('edit-cust-role').value.trim(),
+          skills: document.getElementById('edit-cust-skills').value.trim(),
+          city: document.getElementById('edit-cust-city').value.trim(),
+          state: document.getElementById('edit-cust-state').value.trim(),
+          preferredLocation: document.getElementById('edit-cust-prefloc').value.trim(),
+          expectedCtc: document.getElementById('edit-cust-ctc').value.trim(),
+          address: document.getElementById('edit-cust-address').value.trim(),
+          stage: document.getElementById('edit-cust-stage').value,
+          status: document.getElementById('edit-cust-status').value,
+          priority: document.getElementById('edit-cust-priority').value,
+          source: document.getElementById('edit-cust-source').value,
+          notes: document.getElementById('edit-cust-notes').value.trim(),
+          managerId: mgrSelect.value || null,
+          salespersonId: salesSelect.value || null,
+          totalFee: isNaN(feeVal) || feeVal < 0 ? 45000 : feeVal,
+          paymentPlan: payPlan,
+          paymentStatus: payStatus
+        };
+
+        const res = Customers.update(cust.id, updates);
+        if (!res.success) {
+          errBox.textContent = res.message;
+          errBox.style.display = 'block';
+          return;
+        }
+
+        Toast.success(`Lead ${res.customer.name} updated.`);
+        hide();
+        loadCustomerTable();
+      };
+
+      modal.classList.add('show');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      UI.init('customers');
+    function exportCustomersToCsv() {
+      if (!filteredList.length) {
+        Toast.warning('No lead records to export.');
+        return;
+      }
+      const exportData = filteredList.map(c => ({
+        LeadID: c.id,
+        Name: c.name,
+        Qualification: c.qualification || '',
+        College: c.college || '',
+        PassingYear: c.passingYear || '',
+        Skills: c.skills || '',
+        TargetRole: c.targetRole || '',
+        ExperienceLevel: c.experienceLevel || '',
+        Mobile: c.mobile,
+        AlternateMobile: c.altMobile || '',
+        Email: c.email || '',
+        City: c.city || '',
+        State: c.state || '',
+        PreferredLocation: c.preferredLocation || '',
+        ExpectedCTC: c.expectedCtc || '',
+        Stage: c.stage,
+        Status: c.status,
+        Priority: c.priority,
+        EstimatedRevenue: c.estimatedRevenue || (c.stage === 'Pending Closure' ? c.totalFee || 0 : ''),
+        PlacementFee: c.totalFee || 0,
+        PaidAmount: c.paidAmount || 0,
+        PendingDue: c.pendingAmount || 0,
+        PaymentPlan: c.paymentPlan || '',
+        PaymentStatus: c.paymentStatus || '',
+        Counselor: c.salespersonName || '',
+        Manager: c.managerName || '',
+        Source: c.source || '',
+        CreatedDate: Utils.formatDate(c.createdAt),
+        LastContacted: Utils.formatDate(c.lastContacted),
+        NextFollowUp: Utils.formatDate(c.nextFollowUp)
+      }));
 
-      // Check URL parameters for preset filters (e.g., ?counselor=... or ?stage=...)
-      const params = Utils.parseQueryParams();
-      if (params.counselor) {
-        const cSelect = document.getElementById('filter-counselor');
-        if (cSelect) cSelect.value = decodeURIComponent(params.counselor);
-      }
-      if (params.stage) {
-        const sSelect = document.getElementById('filter-stage');
-        if (sSelect) sSelect.value = decodeURIComponent(params.stage);
-      }
-      if (params.search) {
-        const searchInput = document.getElementById('directory-search');
-        if (searchInput) searchInput.value = decodeURIComponent(params.search);
-      }
-
-      applyFilters();
-    });
+      Utils.exportToCsv('Lead_Directory_Export.csv', exportData);
+      Toast.success('Exported lead directory to CSV.');
+    }
   </script>
 </body>
 </html>

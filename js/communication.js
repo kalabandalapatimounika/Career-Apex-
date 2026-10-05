@@ -1,194 +1,322 @@
 /**
- * Career Apex CRM - Communication Module
- * Unified Call Logger with Modal & tel: trigger, WhatsApp templates (wa.me), and Email Dispatcher.
+ * SALES CRM - COMMUNICATION MODULE
+ * Initiates Call (tel:), WhatsApp (wa.me), Email (mailto:), and Call Outcome Recording Form
  */
 
 const Communication = {
-  logCall(studentIdOrPayload, onSuccess = null) {
-    let studentId = typeof studentIdOrPayload === 'string' ? studentIdOrPayload : studentIdOrPayload.studentId;
-    const student = Customers.getById(studentId);
-    if (!student) {
-      Utils.showToast('Student lead required to log call', 'error');
-      return null;
+  CALL_OUTCOMES: [
+    'Connected',
+    'No Answer',
+    'Busy',
+    'Switched Off',
+    'Wrong Number',
+    'Call Back Requested',
+    'Interested',
+    'Not Interested'
+  ],
+
+  /**
+   * Initiate phone call using tel: protocol
+   */
+  initiateCall(customerId, promptRecordModal = true) {
+    const customer = Customers.getById(customerId);
+    if (!customer || !customer.mobile) {
+      Toast.error('Customer phone number not available.');
+      return;
     }
 
-    // If direct payload provided
-    if (typeof studentIdOrPayload === 'object' && studentIdOrPayload.outcome) {
-      return this.saveCallRecord(student, studentIdOrPayload, onSuccess);
+    const cleanNumber = Utils.cleanPhoneNumber(customer.mobile);
+    const telUrl = `tel:+91${cleanNumber.slice(-10)}`;
+
+    Activities.log({
+      action: 'Call Initiated',
+      customerId: customer.id,
+      description: `Outbound call initiated to ${customer.name} (${customer.mobile})`
+    });
+
+    // Trigger device dialer safely without navigating away
+    try {
+      const a = document.createElement('a');
+      a.href = telUrl;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => document.body.removeChild(a), 50);
+    } catch (e) {
+      window.location.href = telUrl;
     }
 
-    // Trigger phone link
-    const phoneNum = student.mobile || student.phone || '';
-    const cleanNum = Utils.cleanPhone(phoneNum);
-    if (cleanNum) {
-      const telUrl = `tel:+91${cleanNum}`;
-      // Trigger tel in hidden iframe or gentle link
-      const tempLink = document.createElement('a');
-      tempLink.href = telUrl;
-      tempLink.style.display = 'none';
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      document.body.removeChild(tempLink);
+    // Prompt call outcome recording modal
+    if (promptRecordModal) {
+      setTimeout(() => {
+        this.openCallRecordModal(customerId);
+      }, 800);
     }
-
-    // Open Call Logging Dialog
-    this.openCallModal(student, onSuccess);
   },
 
-  openCallModal(student, onSuccess = null) {
-    let modal = document.getElementById('modal-call-global');
-    if (!modal) {
-      modal = document.createElement('div');
-      modal.id = 'modal-call-global';
-      modal.className = 'modal-backdrop';
-      document.body.appendChild(modal);
+  /**
+   * Open WhatsApp conversation with Template selection and attachment options
+   */
+  openWhatsApp(customerId, promptTemplate = true, onSent = null) {
+    const customer = Customers.getById(customerId);
+    if (!customer || !customer.mobile) {
+      if (window.Toast) Toast.error('Customer phone number not available.');
+      return;
     }
 
-    modal.innerHTML = `
-      <div class="modal-dialog" style="max-width: 500px;">
-        <div class="modal-header">
-          <div class="modal-title-group">
-            <h3 class="modal-title">Log Call: ${student.name}</h3>
-            <span class="modal-subtitle">Tel: ${student.mobile || student.phone} • ${student.stage}</span>
+    if (promptTemplate && window.Templates && typeof Templates.openSendModal === 'function') {
+      Templates.openSendModal({ customerId, type: 'whatsapp', onSent });
+      return;
+    }
+
+    const cleanNumber = Utils.cleanPhoneNumber(customer.mobile);
+    const waUrl = `https://wa.me/91${cleanNumber.slice(-10)}`;
+
+    Activities.log({
+      action: 'WhatsApp Opened',
+      customerId: customer.id,
+      description: `WhatsApp conversation opened for ${customer.name} (+91${cleanNumber.slice(-10)})`
+    });
+
+    window.open(waUrl, '_blank', 'noopener,noreferrer');
+    if (window.Toast) Toast.info(`Opened WhatsApp chat for ${customer.name}`);
+    if (typeof onSent === 'function') onSent();
+  },
+
+  /**
+   * Open Email composer with Template selection and attachment options
+   */
+  initiateEmail(customerId, promptTemplate = true, onSent = null) {
+    const customer = Customers.getById(customerId);
+    if (!customer || !customer.email) {
+      if (window.Toast) Toast.error('Customer email address not available.');
+      return;
+    }
+
+    if (promptTemplate && window.Templates && typeof Templates.openSendModal === 'function') {
+      Templates.openSendModal({ customerId, type: 'email', onSent });
+      return;
+    }
+
+    const mailUrl = `mailto:${customer.email}?subject=${encodeURIComponent(`Career Placement follow-up for ${customer.name}`)}`;
+
+    Activities.log({
+      action: 'Email Initiated',
+      customerId: customer.id,
+      description: `Email composer opened for ${customer.name} (${customer.email})`
+    });
+
+    try {
+      const a = document.createElement('a');
+      a.href = mailUrl;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => document.body.removeChild(a), 50);
+    } catch (e) {
+      window.location.href = mailUrl;
+    }
+    if (window.Toast) Toast.info(`Drafting email to ${customer.email}`);
+    if (typeof onSent === 'function') onSent();
+  },
+
+  /**
+   * Open modal to record call outcome
+   */
+  openCallRecordModal(customerId, onSaved = () => {}) {
+    const customer = Customers.getById(customerId);
+    if (!customer) {
+      Toast.error('Customer not found.');
+      return;
+    }
+
+    let modal = document.getElementById('call-record-modal');
+    if (!modal) {
+      modal = document.createElement('div');
+      modal.id = 'call-record-modal';
+      modal.className = 'modal-backdrop';
+      modal.innerHTML = `
+        <div class="modal-dialog">
+          <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-phone-volume" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Record Call Outcome</h3>
+            <button class="modal-close-btn" id="call-modal-close"><i class="fa-solid fa-xmark"></i></button>
           </div>
-          <button class="modal-close-btn" onclick="document.getElementById('modal-call-global').classList.remove('open')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <form id="form-call-dialog">
           <div class="modal-body">
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Customer</label>
+                <input type="text" class="form-control" id="call-modal-cust" disabled>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Call Outcome <span class="required">*</span></label>
+                <select class="form-select" id="call-modal-outcome"></select>
+              </div>
+            </div>
+
             <div class="form-group">
-              <label class="form-label">Call Outcome <span class="required">*</span></label>
-              <select id="call-dlg-outcome" class="form-control" required>
-                <option value="Connected - Interested">Connected - Interested</option>
-                <option value="Connected - Not Interested">Connected - Not Interested</option>
-                <option value="Call Back Requested">Call Back Requested</option>
-                <option value="No Answer">No Answer</option>
-                <option value="Busy">Busy</option>
-                <option value="Invalid Number">Invalid Number</option>
+              <label class="form-label">Call Notes / Discussion Summary <span class="required">*</span></label>
+              <textarea class="form-control" id="call-modal-notes" rows="3" placeholder="Key points discussed during the call..."></textarea>
+            </div>
+
+            <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="form-group">
+                <label class="form-label">Next Action</label>
+                <select class="form-select" id="call-modal-next-action">
+                  <option value="None">None</option>
+                  <option value="Schedule Follow-up" selected>Schedule Follow-up</option>
+                  <option value="Send Email Proposal">Send Email Proposal</option>
+                  <option value="Share Product Demo">Share Product Demo</option>
+                  <option value="Escalate to Manager">Escalate to Manager</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Next Follow-up Date/Time</label>
+                <input type="datetime-local" class="form-control" id="call-modal-followup-date">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Optionally Update Lead Stage</label>
+              <select class="form-select" id="call-modal-stage">
+                <option value="">Keep current stage</option>
               </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Call Duration</label>
-              <select id="call-dlg-duration" class="form-control">
-                <option value="1-2 mins">1–2 mins (Brief update)</option>
-                <option value="5-10 mins" selected>5–10 mins (Initial qualification)</option>
-                <option value="15-20 mins">15–20 mins (Detailed counseling)</option>
-                <option value="30+ mins">30+ mins (Fee & enrollment discussion)</option>
-                <option value="0 mins">0 mins (Unconnected / No answer)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Counselor Discussion Notes <span class="required">*</span></label>
-              <textarea id="call-dlg-notes" class="form-control" rows="3" placeholder="Key points discussed, candidate interest level, next action agreed upon..." required></textarea>
-            </div>
-
-            <div class="form-group" style="margin-top: 10px;">
-              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer; color: var(--text-main);">
-                <input type="checkbox" id="call-dlg-schedule-followup" checked>
-                <span>Schedule immediate follow-up task after saving call</span>
-              </label>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn-secondary" onclick="document.getElementById('modal-call-global').classList.remove('open')">Cancel</button>
-            <button type="submit" class="btn-primary-purple">Save Call Record</button>
+            <button class="btn btn-secondary" id="call-modal-cancel">Cancel</button>
+            <button class="btn btn-primary" id="call-modal-save">Save Call Outcome</button>
           </div>
-        </form>
-      </div>
-    `;
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
 
-    document.getElementById('form-call-dialog').onsubmit = (e) => {
-      e.preventDefault();
-      const outcome = document.getElementById('call-dlg-outcome').value;
-      const duration = document.getElementById('call-dlg-duration').value;
-      const notes = document.getElementById('call-dlg-notes').value;
-      const createFollowup = document.getElementById('call-dlg-schedule-followup').checked;
+    const custInput = document.getElementById('call-modal-cust');
+    const outcomeSelect = document.getElementById('call-modal-outcome');
+    const notesInput = document.getElementById('call-modal-notes');
+    const actionSelect = document.getElementById('call-modal-next-action');
+    const followDateInput = document.getElementById('call-modal-followup-date');
+    const stageSelect = document.getElementById('call-modal-stage');
+    const saveBtn = document.getElementById('call-modal-save');
+    const cancelBtn = document.getElementById('call-modal-cancel');
+    const closeBtn = document.getElementById('call-modal-close');
 
-      this.saveCallRecord(student, { outcome, duration, notes }, () => {
-        modal.classList.remove('open');
-        if (typeof onSuccess === 'function') onSuccess();
-        else if (typeof window.refreshPageData === 'function') window.refreshPageData();
+    custInput.value = `${customer.name} (${customer.mobile})`;
+    notesInput.value = '';
 
-        if (createFollowup) {
-          Followups.openScheduleModal(student.id, onSuccess);
-        }
+    // Populate outcomes
+    outcomeSelect.innerHTML = this.CALL_OUTCOMES
+      .map(o => `<option value="${o}">${o}</option>`)
+      .join('');
+
+    // Pre-populate follow-up date to tomorrow 10am
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(10, 0, 0, 0);
+    followDateInput.value = tomorrow.toISOString().slice(0, 16);
+
+    // Populate stages
+    stageSelect.innerHTML = '<option value="">-- Keep Current Stage (' + customer.stage + ') --</option>' +
+      Pipeline.getStages().map(st => `<option value="${st}">${st}</option>`).join('');
+
+    const hide = () => modal.classList.remove('show');
+
+    const handleSave = () => {
+      const outcome = outcomeSelect.value;
+      const notes = notesInput.value.trim();
+      const nextAction = actionSelect.value;
+      const followupDate = followDateInput.value;
+      const newStage = stageSelect.value;
+
+      if (!notes) {
+        Validation.setError(notesInput, 'Please record notes or remarks about this call.');
+        return;
+      }
+      Validation.clearError(notesInput);
+
+      hide();
+
+      // 1. Record call
+      const currentUser = Auth.getCurrentUser();
+      const now = new Date().toISOString();
+      const callRecord = {
+        id: StorageService.generateId('CRM-CALL'),
+        customerId: customer.id,
+        customerName: customer.name,
+        salespersonId: currentUser ? currentUser.id : customer.salespersonId,
+        salespersonName: currentUser ? currentUser.name : customer.salespersonName,
+        outcome,
+        notes,
+        nextAction,
+        nextFollowUpDate: followupDate || '',
+        timestamp: now
+      };
+
+      const callsList = StorageService.getData(CRM_STORAGE_KEYS.CALLS, []);
+      callsList.unshift(callRecord);
+      StorageService.saveData(CRM_STORAGE_KEYS.CALLS, callsList);
+
+      // 2. Update Customer's lastContacted
+      const custUpdates = {
+        lastContacted: now
+      };
+
+      // 3. Create follow-up if selected & date provided
+      if (nextAction === 'Schedule Follow-up' && followupDate) {
+        const parts = followupDate.split('T');
+        Followups.create({
+          customerId: customer.id,
+          date: parts[0],
+          time: parts[1] || '10:00',
+          purpose: `Follow-up after call: ${notes.slice(0, 80)}...`,
+          priority: customer.priority || 'Medium'
+        });
+      }
+
+      Customers.update(customer.id, custUpdates);
+
+      // 4. Optionally update stage
+      if (newStage && newStage !== customer.stage) {
+        Pipeline.changeStage(customer.id, newStage, `Call outcome: ${outcome} - ${notes.slice(0, 50)}`);
+      }
+
+      // 5. Activity log
+      Activities.log({
+        action: 'Call Recorded',
+        customerId: customer.id,
+        description: `Recorded call with ${customer.name}. Outcome: ${outcome}. Remarks: ${notes}`
       });
+
+      Toast.success(`Call record saved for ${customer.name}`);
+      if (typeof onSaved === 'function') onSaved();
+      cleanup();
     };
 
-    modal.classList.add('open');
-  },
-
-  saveCallRecord(student, { outcome, duration = '5-10 mins', notes = '' }, callback = null) {
-    const calls = StorageService.get(CRM_KEYS.CALLS) || [];
-    const author = Auth.getSession()?.name || 'Counselor';
-    const today = new Date().toISOString().split('T')[0];
-
-    const newCall = {
-      id: 'CALL-' + Date.now(),
-      studentId: student.id,
-      studentName: student.name,
-      counselor: author,
-      duration,
-      outcome,
-      notes: notes.trim(),
-      date: today,
-      createdAt: new Date().toISOString()
+    const handleCancel = () => {
+      hide();
+      cleanup();
     };
 
-    calls.unshift(newCall);
-    StorageService.set(CRM_KEYS.CALLS, calls);
-
-    // Update student's lastContacted date
-    Customers.update(student.id, { lastContacted: today });
-    Customers.addNote(student.id, `[Call Logged: ${outcome} (${duration})] ${notes}`);
-
-    // Log Activity
-    Activities.log('Call Logged', `Call (${duration}) with outcome "${outcome}". Notes: ${notes.slice(0, 60)}...`, student.id, student.name);
-    Utils.showToast(`Call record logged for ${student.name}!`, 'success');
-
-    if (callback) callback(newCall);
-    return newCall;
-  },
-
-  sendWhatsApp(studentId, templateKey = 'welcome', customText = null) {
-    const student = Customers.getById(studentId);
-    if (!student) {
-      Utils.showToast('Student lead not found', 'error');
-      return;
-    }
-
-    const defaultTexts = {
-      welcome: `Hi ${student.name}, Greetings from Career Apex! We have reviewed your profile for our premium software placement program. When is a convenient time today for your 1-on-1 counseling call?`,
-      followup: `Hi ${student.name}, this is following up on our recent counseling discussion regarding your placement roadmap at Career Apex. Are you available for a quick sync?`,
-      fee: `Hi ${student.name}, please find attached the details for your placement fee payment installment schedule at Career Apex. Feel free to reach out if you have any questions.`
+    const cleanup = () => {
+      saveBtn.removeEventListener('click', handleSave);
+      cancelBtn.removeEventListener('click', handleCancel);
+      closeBtn.removeEventListener('click', handleCancel);
     };
 
-    const messageText = customText || defaultTexts[templateKey] || defaultTexts.welcome;
-    const cleanPhone = Utils.cleanPhone(student.mobile || student.phone);
-    const waUrl = `https://wa.me/91${cleanPhone}?text=${encodeURIComponent(messageText)}`;
+    saveBtn.addEventListener('click', handleSave);
+    cancelBtn.addEventListener('click', handleCancel);
+    closeBtn.addEventListener('click', handleCancel);
 
-    Activities.log('WhatsApp Initiated', `WhatsApp outreach dispatched: "${messageText.slice(0, 60)}..."`, student.id, student.name);
-    window.open(waUrl, '_blank');
-    Utils.showToast('WhatsApp conversation initiated and logged', 'success');
+    modal.classList.add('show');
   },
 
-  sendEmail(studentId, subject = null, body = null) {
-    const student = Customers.getById(studentId);
-    if (!student) {
-      Utils.showToast('Student lead not found', 'error');
-      return;
-    }
-
-    const sub = subject || `Career Apex — Candidate Counseling & Placement Program (${student.name})`;
-    const b = body || `Dear ${student.name},\n\nThank you for connecting with Career Apex regarding our Student Placement & Career Counseling program.\n\nPlease let us know your preferred time slot for your next counseling session.\n\nBest regards,\nCareer Apex Admissions Team\nsupport@careerapex.com`;
-
-    const mailto = `mailto:${student.email || ''}?subject=${encodeURIComponent(sub)}&body=${encodeURIComponent(b)}`;
-    Activities.log('Email Initiated', `Email sent to ${student.email || student.name}: "${sub}"`, student.id, student.name);
-    window.open(mailto, '_blank');
-    Utils.showToast('Email client opened & activity logged', 'success');
+  /**
+   * Get calls list for a customer
+   */
+  getByCustomer(customerId) {
+    if (!customerId) return [];
+    const calls = StorageService.getData(CRM_STORAGE_KEYS.CALLS, []);
+    return calls.filter(c => c.customerId === customerId);
   }
 };
 

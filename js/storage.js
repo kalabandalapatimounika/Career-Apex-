@@ -1,106 +1,108 @@
 /**
- * Career Apex CRM - StorageService
- * Authoritative frontend persistence layer using localStorage.
- * Centralized key management and subscription events.
+ * SALES CRM - STORAGE MODULE
+ * Centralized localStorage Management & ID Generator
  */
 
-const STORAGE_KEYS = {
-  SESSION: 'crm_session',
+const CRM_STORAGE_KEYS = {
   USERS: 'crm_users',
-  STUDENTS: 'crm_students',
-  PAYMENTS: 'crm_payments',
-  INSTALLMENTS: 'crm_installments',
+  CUSTOMERS: 'crm_customers',
+  LEADS: 'crm_leads',
   FOLLOWUPS: 'crm_followups',
-  CALLS: 'crm_calls',
   ACTIVITIES: 'crm_activities',
-  STAGE_HISTORY: 'crm_stage_history',
-  TARGETS: 'crm_targets',
-  EMPLOYEE_TARGETS: 'crm_employee_targets',
+  CALLS: 'crm_calls',
   NOTES: 'crm_notes',
-  SETTINGS: 'crm_settings'
+  STAGE_HISTORY: 'crm_stage_history',
+  SETTINGS: 'crm_settings',
+  CURRENT_USER: 'crm_current_user',
+  COUNTERS: 'crm_counters',
+  PAYMENTS: 'crm_payments',
+  TARGETS: 'crm_targets',
+  TEMPLATES: 'crm_templates'
 };
 
-class StorageServiceClass {
-  constructor() {
-    this.subscribers = {};
-  }
-
-  get(key, defaultValue = null) {
+const StorageService = {
+  /**
+   * Retrieve parsed data from localStorage with fallback
+   */
+  getData(key, defaultValue = []) {
     try {
       const item = localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    } catch (e) {
-      console.error(`StorageService.get error for ${key}:`, e);
+      if (item === null || item === undefined) {
+        return defaultValue;
+      }
+      return JSON.parse(item);
+    } catch (error) {
+      console.error(`Error reading key "${key}" from localStorage:`, error);
       return defaultValue;
     }
-  }
+  },
 
-  set(key, value) {
+  /**
+   * Save data into localStorage as JSON string
+   */
+  saveData(key, data) {
     try {
-      localStorage.setItem(key, JSON.stringify(value));
-      this.emit(key, value);
-    } catch (e) {
-      console.error(`StorageService.set error for ${key}:`, e);
+      localStorage.setItem(key, JSON.stringify(data));
+      return true;
+    } catch (error) {
+      console.error(`Error saving key "${key}" to localStorage:`, error);
+      return false;
     }
-  }
+  },
 
-  remove(key) {
+  /**
+   * Update data using an updater function
+   */
+  updateData(key, updateFn) {
+    try {
+      const current = this.getData(key, []);
+      const updated = updateFn(current);
+      this.saveData(key, updated);
+      return updated;
+    } catch (error) {
+      console.error(`Error updating key "${key}" in localStorage:`, error);
+      return null;
+    }
+  },
+
+  /**
+   * Remove item from localStorage
+   */
+  deleteData(key) {
     try {
       localStorage.removeItem(key);
-      this.emit(key, null);
-    } catch (e) {
-      console.error(`StorageService.remove error for ${key}:`, e);
+      return true;
+    } catch (error) {
+      console.error(`Error deleting key "${key}" from localStorage:`, error);
+      return false;
     }
-  }
+  },
 
-  clear() {
-    try {
-      localStorage.clear();
-      this.emit('*', null);
-    } catch (e) {
-      console.error('StorageService.clear error:', e);
-    }
-  }
+  /**
+   * Clear all CRM data keys
+   */
+  clearData() {
+    Object.values(CRM_STORAGE_KEYS).forEach(key => {
+      localStorage.removeItem(key);
+    });
+  },
 
-  subscribe(event, callback) {
-    if (!this.subscribers[event]) {
-      this.subscribers[event] = [];
-    }
-    this.subscribers[event].push(callback);
-    return () => {
-      this.subscribers[event] = this.subscribers[event].filter(cb => cb !== callback);
-    };
-  }
+  /**
+   * Generate sequential human-readable CRM IDs
+   * Example: SM-LD-0001, CRM-ACT-000001, CRM-FLW-000001
+   */
+  generateId(prefix = 'SM-LD') {
+    const counters = this.getData(CRM_STORAGE_KEYS.COUNTERS, {});
+    const currentCount = (counters[prefix] || 0) + 1;
+    counters[prefix] = currentCount;
+    this.saveData(CRM_STORAGE_KEYS.COUNTERS, counters);
 
-  emit(event, data) {
-    if (this.subscribers[event]) {
-      this.subscribers[event].forEach(cb => {
-        try { cb(data); } catch (err) { console.error(`Error in subscriber for ${event}:`, err); }
-      });
-    }
-    if (this.subscribers['*']) {
-      this.subscribers['*'].forEach(cb => {
-        try { cb({ event, data }); } catch (err) { console.error('Error in wildcard subscriber:', err); }
-      });
-    }
+    const padLength = (prefix.toUpperCase() === 'SM-LD' || prefix.toLowerCase() === 'sm-ld') ? 4 : 6;
+    const paddedNumber = String(currentCount).padStart(padLength, '0');
+    return `${prefix}-${paddedNumber}`;
   }
+};
 
-  getStats() {
-    let totalBytes = 0;
-    for (let key in localStorage) {
-      if (localStorage.hasOwnProperty(key)) {
-        totalBytes += (localStorage[key].length + key.length) * 2;
-      }
-    }
-    return {
-      kilobytes: (totalBytes / 1024).toFixed(2),
-      studentsCount: (this.get(STORAGE_KEYS.STUDENTS) || []).length,
-      paymentsCount: (this.get(STORAGE_KEYS.PAYMENTS) || []).length,
-      followupsCount: (this.get(STORAGE_KEYS.FOLLOWUPS) || []).length,
-      activitiesCount: (this.get(STORAGE_KEYS.ACTIVITIES) || []).length
-    };
-  }
-}
-
-window.StorageService = new StorageServiceClass();
-window.CRM_KEYS = STORAGE_KEYS;
+// Global export for vanilla JS environment
+window.CRM_STORAGE_KEYS = CRM_STORAGE_KEYS;
+window.StorageService = StorageService;

@@ -3,96 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Career Apex CRM — Sign In</title>
-  <meta name="description" content="Career Apex CRM: Student Placement & Career Counseling Sales CRM">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <title>Career Apex CRM — Enterprise Sales Operations</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body class="auth-page-wrapper">
-
-  <div class="auth-card">
-    <div class="auth-brand-center">
-      <div class="auth-brand-logo">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
-          <polyline points="16 7 22 7 22 13"></polyline>
-        </svg>
-      </div>
-      <h1 class="auth-title">CAREER APEX</h1>
-      <span class="auth-subtitle">STUDENT PLACEMENT &amp; COUNSELING CRM</span>
-      <p style="font-size: 13px; color: var(--text-muted); margin-top: 8px;">Enter your enterprise credentials to access sales workspace</p>
+<body style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: var(--bg-app);">
+  <div style="text-align: center;">
+    <div style="width: 56px; height: 56px; margin: 0 auto 1.5rem; background: var(--primary-gradient); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.75rem; box-shadow: 0 8px 24px var(--primary-glow);">
+      <i class="fa-solid fa-arrow-trend-up"></i>
     </div>
-
-    <form id="form-login">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <input type="email" id="login-email" class="form-control" value="admin@careerapex.com" placeholder="admin@careerapex.com" required>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Password</label>
-        <input type="password" id="login-password" class="form-control" value="password123" placeholder="••••••••" required>
-      </div>
-
-      <div style="display: flex; justify-content: space-between; align-items: center; margin: 12px 0 20px 0; font-size: 12.5px;">
-        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
-          <input type="checkbox" id="login-remember" checked>
-          <span>Remember Me</span>
-        </label>
-        <a href="javascript:void(0)" onclick="Utils.showToast('Demo environment: Use 1-click role logins below', 'info')" style="color: var(--primary); font-weight: 600;">Forgot Password?</a>
-      </div>
-
-      <button type="submit" class="btn-primary-purple" style="width: 100%; justify-content: center; padding: 11px;">
-        Sign In
-      </button>
-    </form>
-
-    <!-- 1-Click Role Login Shortcuts -->
-    <div class="demo-login-box">
-      <div class="demo-login-label">Quick Demo Access</div>
-      <div class="demo-buttons-grid">
-        <button type="button" class="btn-demo-role" onclick="quickLogin('ADMIN')">
-          Demo Admin
-        </button>
-        <button type="button" class="btn-demo-role" onclick="quickLogin('MANAGER')">
-          Demo Manager
-        </button>
-        <button type="button" class="btn-demo-role" onclick="quickLogin('COUNSELOR')">
-          Demo Counselor
-        </button>
-      </div>
-    </div>
+    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.5rem;">Career Apex CRM</h2>
+    <p style="color: var(--slate-500); font-size: 0.95rem;">Loading enterprise sales workspace...</p>
   </div>
 
-  <!-- Core Scripts -->
   <script src="js/storage.js"></script>
-  <script src="js/seed.js"></script>
   <script src="js/utils.js"></script>
+  <script src="js/notifications.js"></script>
+  <script src="js/validation.js"></script>
+  <script src="js/seed-data.js"></script>
+  <script src="js/users.js"></script>
+  <script src="js/activities.js"></script>
   <script src="js/auth.js"></script>
-
   <script>
-    // Form submission
-    document.getElementById('form-login').addEventListener('submit', (e) => {
-      e.preventDefault();
-      const email = document.getElementById('login-email').value.trim();
-      const password = document.getElementById('login-password').value;
-      const res = Auth.login(email, password);
-
-      if (res.success) {
-        Utils.showToast(`Welcome back, ${res.user.name}!`, 'success');
-        setTimeout(() => {
-          if (res.user.role === 'ADMIN') window.location.href = 'pages/admin-dashboard.html';
-          else if (res.user.role === 'MANAGER') window.location.href = 'pages/manager-dashboard.html';
-          else window.location.href = 'pages/salesperson-dashboard.html';
-        }, 300);
+    document.addEventListener('DOMContentLoaded', () => {
+      if (Auth.isAuthenticated()) {
+        const user = Auth.getCurrentUser();
+        window.location.replace(Auth.getDashboardUrl(user.role));
       } else {
-        Utils.showToast(res.message, 'error');
+        window.location.replace('pages/login.html');
       }
     });
-
-    function quickLogin(role) {
-      Auth.switchRole(role);
-    }
   </script>
 </body>
 </html>

@@ -1,134 +1,288 @@
 /**
- * Career Apex CRM - Pipeline Module
- * Pipeline.updateStage(), Pipeline.getStages(), Pipeline.getStageCounts()
+ * SALES CRM - PIPELINE MODULE
+ * Kanban board stage transitions, stage change history, drag-and-drop, and stage modal
  */
 
 const Pipeline = {
-  stages: [
-    'Cold Calling', 'Not Connected', 'New Lead', 'Contacted',
-    'Interested', 'Prospect', 'Follow-up', 'Negotiation',
-    'Pending Closure', 'Enrolled', 'Not Interested', 'Lost'
+  STAGES: [
+    'Cold Calling',
+    'Not Connected',
+    'New Lead',
+    'Contacted',
+    'Interested',
+    'Prospect',
+    'Follow-up',
+    'Negotiation',
+    'Pending Closure',
+    'Enrolled',
+    'Not Interested',
+    'Lost'
   ],
 
   getStages() {
-    return this.stages;
-  },
+    const settings = StorageService.getData(CRM_STORAGE_KEYS.SETTINGS, {});
+    let stages = settings.leadStages || this.STAGES;
+    // Map legacy 'Converted' to 'Enrolled'
+    stages = stages.map(s => s === 'Converted' ? 'Enrolled' : s);
 
-  getStageCounts(customStudents = null) {
-    const students = customStudents || Customers.getAll();
-    const counts = { all: students.length, 'All Leads': students.length };
-    this.stages.forEach(st => {
-      counts[st] = students.filter(s => {
-        if (s.stage === st) return true;
-        if (st === 'Enrolled' && s.stage === 'Converted') return true;
-        if (st === 'Converted' && s.stage === 'Enrolled') return true;
-        return false;
-      }).length;
-    });
-    counts['Converted'] = counts['Enrolled'];
-    return counts;
-  },
-
-  updateStage(studentId, newStage, reason = '') {
-    if (!reason || !reason.trim()) {
-      Utils.showToast('Stage change reason is mandatory', 'warning');
-      return false;
+    if (!stages.includes('Cold Calling')) {
+      stages = ['Cold Calling', ...stages];
+    }
+    if (!stages.includes('Not Connected')) {
+      const coldIdx = stages.indexOf('Cold Calling');
+      if (coldIdx !== -1) {
+        stages.splice(coldIdx + 1, 0, 'Not Connected');
+      } else {
+        stages.unshift('Not Connected');
+      }
+    }
+    if (!stages.includes('Pending Closure')) {
+      const enrollIdx = stages.indexOf('Enrolled');
+      if (enrollIdx !== -1) {
+        stages.splice(enrollIdx, 0, 'Pending Closure');
+      } else {
+        stages.push('Pending Closure');
+      }
     }
 
-    const student = Customers.getById(studentId);
-    if (!student) return false;
-
-    const oldStage = student.stage;
-    const author = Auth.getSession()?.name || 'Staff';
-
-    // Append to stage history
-    const stageHistory = StorageService.get(CRM_KEYS.STAGE_HISTORY) || [];
-    stageHistory.unshift({
-      id: 'STG-' + Date.now(),
-      studentId: student.id,
-      fromStage: oldStage,
-      toStage: newStage,
-      reason: reason.trim(),
-      counselor: author,
-      timestamp: new Date().toISOString()
-    });
-    StorageService.set(CRM_KEYS.STAGE_HISTORY, stageHistory);
-
-    // Update student
-    Customers.update(studentId, {
-      stage: newStage,
-      lastContacted: new Date().toISOString().split('T')[0]
-    });
-
-    Activities.log('Stage Changed', `Moved from "${oldStage}" to "${newStage}". Reason: ${reason}`, student.id, student.name);
-    Utils.showToast(`Candidate moved to "${newStage}"`, 'success');
-    return true;
+    if (settings.leadStages) {
+      settings.leadStages = stages;
+      StorageService.saveData(CRM_STORAGE_KEYS.SETTINGS, settings);
+    }
+    return stages;
   },
 
-  openStageChangeModal(studentId, onSuccess = null) {
-    const student = Customers.getById(studentId);
-    if (!student) return;
+  /**
+   * Execute stage change with history recording and activity logging
+   */
+  changeStage(customerId, toStage, reason = '', estimatedRevenue = null) {
+    const customer = Customers.getById(customerId);
+    if (!customer) {
+      return { success: false, message: 'Customer not found.' };
+    }
 
-    let modal = document.getElementById('modal-stage-change-global');
+    const fromStage = customer.stage;
+    const isStageSame = fromStage === toStage;
+    const isEstRevUpdating = toStage === 'Pending Closure' && estimatedRevenue !== null;
+
+    if (isStageSame && !isEstRevUpdating) {
+      return { success: true, customer }; // No change
+    }
+
+    const currentUser = Auth.getCurrentUser();
+    const changedByName = currentUser ? currentUser.name : 'System';
+    const now = new Date().toISOString();
+
+    // Map stage to appropriate status
+    let newStatus = 'Active';
+    if (toStage === 'Enrolled' || toStage === 'Converted') newStatus = 'Enrolled';
+    else if (toStage === 'Pending Closure') newStatus = 'Pending Closure';
+    else if (toStage === 'Not Connected') newStatus = 'Not Connected';
+    else if (toStage === 'Lost') newStatus = 'Lost';
+    else if (toStage === 'Not Interested') newStatus = 'Not Interested';
+
+    const updates = {
+      stage: toStage,
+      status: newStatus
+    };
+
+    if (toStage === 'Pending Closure') {
+      const revNum = estimatedRevenue !== null && estimatedRevenue !== undefined && estimatedRevenue !== ''
+        ? Number(estimatedRevenue)
+        : (customer.estimatedRevenue || customer.totalFee || 45000);
+      updates.estimatedRevenue = revNum;
+    }
+
+    // 1. Create stage history record
+    const historyId = StorageService.generateId('CRM-STAGE');
+    const historyRecord = {
+      id: historyId,
+      customerId: customer.id,
+      customerName: customer.name,
+      fromStage: fromStage,
+      toStage: toStage,
+      changedBy: changedByName,
+      changedAt: now,
+      reason: reason ? reason.trim() : 'Manual stage transition',
+      estimatedRevenue: updates.estimatedRevenue || customer.estimatedRevenue || null
+    };
+
+    const historyList = StorageService.getData(CRM_STORAGE_KEYS.STAGE_HISTORY, []);
+    historyList.unshift(historyRecord);
+    StorageService.saveData(CRM_STORAGE_KEYS.STAGE_HISTORY, historyList);
+
+    // 2. Update customer record
+    const updateRes = Customers.update(customerId, updates);
+    if (!updateRes.success) return updateRes;
+
+    // 3. Log activity
+    const estRevText = updates.estimatedRevenue
+      ? ` [Estimated Revenue: ₹${Number(updates.estimatedRevenue).toLocaleString('en-IN')}]`
+      : '';
+    Activities.log({
+      action: 'Stage Changed',
+      customerId: customer.id,
+      description: `Stage changed for ${customer.name} from "${fromStage}" to "${toStage}"${estRevText}. Reason: ${historyRecord.reason}`
+    });
+
+    Toast.success(`Stage updated to ${toStage} for ${customer.name}.`);
+    return { success: true, customer: updateRes.customer };
+  },
+
+  /**
+   * Get stage transition history for a specific customer
+   */
+  getStageHistory(customerId) {
+    if (!customerId) return [];
+    const list = StorageService.getData(CRM_STORAGE_KEYS.STAGE_HISTORY, []);
+    return list.filter(h => h.customerId === customerId);
+  },
+
+  /**
+   * Open Stage Change Modal with dynamic Estimated Revenue input for Pending Closure
+   */
+  openStageModal(customerId, preselectedNewStage = null, onSaved = () => {}) {
+    const customer = Customers.getById(customerId);
+    if (!customer) {
+      Toast.error('Lead record not found');
+      return;
+    }
+
+    let modal = document.getElementById('stage-change-modal');
     if (!modal) {
       modal = document.createElement('div');
-      modal.id = 'modal-stage-change-global';
+      modal.id = 'stage-change-modal';
       modal.className = 'modal-backdrop';
-      document.body.appendChild(modal);
-    }
-
-    modal.innerHTML = `
-      <div class="modal-dialog">
-        <div class="modal-header">
-          <div class="modal-title-group">
-            <h3 class="modal-title">Move Pipeline Stage</h3>
-            <span class="modal-subtitle">Document candidate qualification progression</span>
+      modal.innerHTML = `
+        <div class="modal-dialog modal-sm">
+          <div class="modal-header">
+            <h3 class="modal-title"><i class="fa-solid fa-arrows-split-up-and-left" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Change Lead Stage</h3>
+            <button class="modal-close-btn" id="stage-modal-close"><i class="fa-solid fa-xmark"></i></button>
           </div>
-          <button class="modal-close-btn" onclick="document.getElementById('modal-stage-change-global').classList.remove('open')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-        <form id="form-stage-change-dialog">
           <div class="modal-body">
-            <div style="margin-bottom: 14px;">
-              <span class="dossier-label">Candidate:</span>
-              <h4 style="font-size: 16px; font-weight: 700;">${student.name} (${student.id})</h4>
-              <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 2px;">Current Stage: <span class="badge badge-purple">${student.stage}</span></p>
+            <div class="form-group" style="margin-bottom: 0.85rem;">
+              <label class="form-label" style="font-weight: 600;">Lead</label>
+              <input type="text" class="form-control" id="stage-modal-cust-name" disabled style="background: var(--slate-100); font-weight: 700;">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.85rem;">
+              <label class="form-label" style="font-weight: 600;">Current Stage</label>
+              <input type="text" class="form-control" id="stage-modal-current-stage" disabled style="background: var(--slate-100);">
+            </div>
+            <div class="form-group" style="margin-bottom: 0.85rem;">
+              <label class="form-label" style="font-weight: 600;">New Stage <span class="required">*</span></label>
+              <select class="form-select" id="stage-modal-new-stage"></select>
+            </div>
+
+            <!-- Dynamic Estimated Revenue Field for Pending Closure -->
+            <div class="form-group" id="stage-modal-est-rev-group" style="display: none; margin-bottom: 0.85rem; background: #fefce8; padding: 0.75rem; border-radius: var(--radius-md); border: 1px solid #fef08a;">
+              <label class="form-label" style="font-weight: 700; color: #854d0e; display: flex; align-items: center; justify-content: space-between;">
+                <span><i class="fa-solid fa-indian-rupee-sign" style="margin-right: 0.25rem;"></i> Estimated Revenue</span>
+                <span class="required" style="font-size: 0.75rem;">Required for Pending Closure</span>
+              </label>
+              <div style="position: relative;">
+                <span style="position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-weight: 700; color: #b45309;">₹</span>
+                <input type="number" min="0" step="500" class="form-control" id="stage-modal-est-revenue" placeholder="e.g. 45000" style="padding-left: 2rem; font-weight: 700; background: #fff;">
+              </div>
+              <small style="font-size: 0.72rem; color: #92400e; margin-top: 0.35rem; display: block;">
+                Enter projected enrollment revenue expected upon final closure.
+              </small>
             </div>
 
             <div class="form-group">
-              <label class="form-label">Select Target Stage <span class="required">*</span></label>
-              <select id="stage-dialog-new" class="form-control" required>
-                ${this.stages.map(st => `<option value="${st}" ${st === student.stage ? 'selected' : ''}>${st}</option>`).join('')}
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Mandatory Progression Reason <span class="required">*</span></label>
-              <textarea id="stage-dialog-reason" class="form-control" rows="3" placeholder="Provide qualification notes, interview feedback, or closing justification..." required></textarea>
+              <label class="form-label" style="font-weight: 600;">Reason / Transition Notes <span class="required">*</span></label>
+              <textarea class="form-control" id="stage-modal-reason" rows="2" placeholder="Explain why the lead stage is being updated..."></textarea>
             </div>
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn-secondary" onclick="document.getElementById('modal-stage-change-global').classList.remove('open')">Cancel</button>
-            <button type="submit" class="btn-primary-purple">Confirm Stage Move</button>
+            <button class="btn btn-secondary" id="stage-modal-cancel">Cancel</button>
+            <button class="btn btn-primary" id="stage-modal-save">Update Stage</button>
           </div>
-        </form>
-      </div>
-    `;
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
 
-    document.getElementById('form-stage-change-dialog').onsubmit = (e) => {
-      e.preventDefault();
-      const newStage = document.getElementById('stage-dialog-new').value;
-      const reason = document.getElementById('stage-dialog-reason').value;
-      const ok = this.updateStage(studentId, newStage, reason);
-      if (ok) {
-        modal.classList.remove('open');
-        if (typeof onSuccess === 'function') onSuccess();
-        else if (typeof window.refreshPageData === 'function') window.refreshPageData();
+    const nameInput = document.getElementById('stage-modal-cust-name');
+    const currentInput = document.getElementById('stage-modal-current-stage');
+    const newSelect = document.getElementById('stage-modal-new-stage');
+    const estRevGroup = document.getElementById('stage-modal-est-rev-group');
+    const estRevInput = document.getElementById('stage-modal-est-revenue');
+    const reasonInput = document.getElementById('stage-modal-reason');
+    const saveBtn = document.getElementById('stage-modal-save');
+    const cancelBtn = document.getElementById('stage-modal-cancel');
+    const closeBtn = document.getElementById('stage-modal-close');
+
+    nameInput.value = `${customer.name} (${customer.id})`;
+    currentInput.value = customer.stage;
+    reasonInput.value = '';
+
+    // Populate stage options
+    const targetStage = preselectedNewStage || customer.stage;
+    newSelect.innerHTML = this.getStages()
+      .map(stage => `<option value="${stage}" ${stage === targetStage ? 'selected' : ''}>${stage}</option>`)
+      .join('');
+
+    const toggleEstRevenue = () => {
+      if (newSelect.value === 'Pending Closure') {
+        estRevGroup.style.display = 'block';
+        if (!estRevInput.value) {
+          estRevInput.value = customer.estimatedRevenue || customer.totalFee || 45000;
+        }
+      } else {
+        estRevGroup.style.display = 'none';
       }
     };
 
-    modal.classList.add('open');
+    newSelect.onchange = toggleEstRevenue;
+    toggleEstRevenue();
+
+    const hide = () => modal.classList.remove('show');
+
+    const handleSave = () => {
+      const selectedStage = newSelect.value;
+      const reason = reasonInput.value.trim();
+
+      if (!reason) {
+        Validation.setError(reasonInput, 'Please provide a reason for the stage transition.');
+        return;
+      }
+      Validation.clearError(reasonInput);
+
+      let estRev = null;
+      if (selectedStage === 'Pending Closure') {
+        estRev = Number(estRevInput.value);
+        if (isNaN(estRev) || estRev <= 0) {
+          Validation.setError(estRevInput, 'Please enter a valid estimated revenue amount.');
+          return;
+        }
+        Validation.clearError(estRevInput);
+      }
+
+      hide();
+      const res = this.changeStage(customerId, selectedStage, reason, estRev);
+      if (res.success && typeof onSaved === 'function') {
+        onSaved(res.customer);
+      }
+      cleanup();
+    };
+
+    const handleCancel = () => {
+      hide();
+      cleanup();
+    };
+
+    const cleanup = () => {
+      saveBtn.removeEventListener('click', handleSave);
+      cancelBtn.removeEventListener('click', handleCancel);
+      closeBtn.removeEventListener('click', handleCancel);
+      newSelect.onchange = null;
+    };
+
+    saveBtn.addEventListener('click', handleSave);
+    cancelBtn.addEventListener('click', handleCancel);
+    closeBtn.addEventListener('click', handleCancel);
+
+    modal.classList.add('show');
   }
 };
 

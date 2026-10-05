@@ -3,251 +3,339 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sales Team &amp; Counselor Roster — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Sales Team & Hierarchy — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Sales Team &amp; Counselor Roster</h1>
-            <p class="page-subtitle">Counseling staff directory, lead quota allocation, conversion performance benchmarks, and student portfolio reassignment.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Placement Team & Counseling Hierarchy</h1>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Manage counseling managers, career advisors, placement officers, status, and reporting structures.</p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-header-action" onclick="Team.openReassignModal(refreshPageData)" title="Reassign Leads Between Counselors">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
-              Reassign Leads
-            </button>
-            <button type="button" class="btn-primary-purple" onclick="Team.openTargetModal(refreshPageData)">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-              Set / Update Targets
+          <div id="admin-actions-bar">
+            <button class="btn btn-primary btn-sm" id="btn-add-user">
+              <i class="fa-solid fa-user-plus"></i> Add Team Member
             </button>
           </div>
         </div>
 
-        <!-- Team Summary KPIs Strip -->
-        <div class="candidate-kpi-grid">
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #eff6ff; color: #3b82f6;">Team Headcount</div>
-            <div class="stat-card-num" id="stat-team-size">5</div>
-            <div class="stat-card-title">Active Counselors</div>
-            <div class="stat-card-subtitle">Branch Sales Operations</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #eef2ff; color: #6366f1;">Total Pipeline</div>
-            <div class="stat-card-num val-purple" id="stat-team-leads">36</div>
-            <div class="stat-card-title">Distributed Leads</div>
-            <div class="stat-card-subtitle">Active student portfolio</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Realized Revenue</div>
-            <div class="stat-card-num val-green" id="stat-team-revenue">₹6,03,500</div>
-            <div class="stat-card-title">Collected Fees</div>
-            <div class="stat-card-subtitle">Across all counselors</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-card-badge" style="background: #fef3c7; color: #d97706;">Efficiency</div>
-            <div class="stat-card-num val-amber" id="stat-team-conversion">11.1%</div>
-            <div class="stat-card-title">Average Conversion</div>
-            <div class="stat-card-subtitle">Lead to enrolled student</div>
-          </div>
+        <!-- Filter / Tabs -->
+        <div class="nav-tabs" style="margin-bottom: 1.25rem;">
+          <button class="tab-btn active" data-role="all">
+            <i class="fa-solid fa-users"></i> All Counselors <span class="tab-badge" id="count-all-users">0</span>
+          </button>
+          <button class="tab-btn" data-role="manager">
+            <i class="fa-solid fa-user-tie"></i> Counseling Managers <span class="tab-badge" id="count-managers">0</span>
+          </button>
+          <button class="tab-btn" data-role="sales">
+            <i class="fa-solid fa-user-graduate"></i> Placement Counselors <span class="tab-badge" id="count-sales">0</span>
+          </button>
         </div>
 
-        <!-- Counselor Roster Table Card -->
-        <div class="enterprise-card" style="padding: 0; overflow: hidden; margin-top: 24px;">
-          <div style="padding: 16px 20px; border-bottom: 1px solid var(--slate-200); background: #fafbfc; display: flex; justify-content: space-between; align-items: center;">
-            <div style="font-weight: 600; font-size: 13px; color: var(--navy-900);">Career Counseling Staff Performance Ledger</div>
-            <span class="card-pill-badge" id="roster-month-badge">October 2026 Target Cycle</span>
-          </div>
-
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>Counselor Details</th>
-                  <th>Manager</th>
-                  <th>Assigned Leads</th>
-                  <th>Calls Made</th>
-                  <th>Follow-ups</th>
-                  <th>Converted</th>
-                  <th>Realized Revenue (₹)</th>
-                  <th>Conversion Rate</th>
-                  <th style="min-width: 140px;">Monthly Quota Progress</th>
-                  <th style="min-width: 130px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="roster-tbody">
-                <!-- Dynamically populated rows -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Management & Leadership Hierarchy Card -->
-        <div class="enterprise-card" style="margin-top: 24px;">
-          <div class="card-header-bar">
-            <div class="card-heading">Organizational Sales Structure</div>
-            <span class="card-pill-badge">Branch Leadership</span>
-          </div>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;">
-            <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="width: 44px; height: 44px; border-radius: 10px; background: #6366f1; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                  AW
-                </div>
-                <div>
-                  <div style="font-weight: 600; color: var(--navy-900);">Alexander Wright</div>
-                  <div style="font-size: 12px; color: var(--primary); font-weight: 500;">Senior Director &amp; Admin</div>
-                </div>
-              </div>
-              <div style="margin-top: 12px; font-size: 12px; color: var(--slate-600); line-height: 1.5;">
-                Full platform governance, settings control, target configuration, and company-wide financial audit oversight.
-              </div>
-            </div>
-
-            <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="width: 44px; height: 44px; border-radius: 10px; background: #7c3aed; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                  RS
-                </div>
-                <div>
-                  <div style="font-weight: 600; color: var(--navy-900);">Rajesh Sharma</div>
-                  <div style="font-size: 12px; color: #7c3aed; font-weight: 500;">Branch Head &amp; Manager</div>
-                </div>
-              </div>
-              <div style="margin-top: 12px; font-size: 12px; color: var(--slate-600); line-height: 1.5;">
-                Supervises Arun Kumar &amp; Sneha Rao. Manages candidate acquisition, calling velocity, and monthly sales quota.
-              </div>
-            </div>
-
-            <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="width: 44px; height: 44px; border-radius: 10px; background: #3b82f6; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                  PP
-                </div>
-                <div>
-                  <div style="font-weight: 600; color: var(--navy-900);">Priya Patel</div>
-                  <div style="font-size: 12px; color: #2563eb; font-weight: 500;">Branch Head &amp; Manager</div>
-                </div>
-              </div>
-              <div style="margin-top: 12px; font-size: 12px; color: var(--slate-600); line-height: 1.5;">
-                Supervises Vikram Singh &amp; Neha Gupta. Focuses on tech placement, corporate hiring, and fee realization.
-              </div>
-            </div>
-
-            <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-              <div style="display: flex; gap: 12px; align-items: center;">
-                <div style="width: 44px; height: 44px; border-radius: 10px; background: #059669; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700;">
-                  AV
-                </div>
-                <div>
-                  <div style="font-weight: 600; color: var(--navy-900);">Amit Verma</div>
-                  <div style="font-size: 12px; color: #059669; font-weight: 500;">Branch Head &amp; Manager</div>
-                </div>
-              </div>
-              <div style="margin-top: 12px; font-size: 12px; color: var(--slate-600); line-height: 1.5;">
-                Supervises Rahul Mehta. Oversees candidate interviews, campus partnerships, and placement pipelines.
-              </div>
+        <!-- Team Table Card -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>User / Name</th>
+                    <th>Email Address</th>
+                    <th>Phone</th>
+                    <th>Role</th>
+                    <th>Reports To (Manager)</th>
+                    <th>Status</th>
+                    <th>Revenue Target (4 Wks)</th>
+                    <th>Leads Assigned</th>
+                    <th>Created Date</th>
+                    <th style="text-align: right;">Action</th>
+                  </tr>
+                </thead>
+                <tbody id="team-table-tbody"></tbody>
+              </table>
             </div>
           </div>
         </div>
-
       </main>
+    </div>
+  </div>
+
+  <!-- Add User Modal -->
+  <div id="add-user-modal" class="modal-backdrop">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-user-plus" style="color: var(--primary-600); margin-right: 0.5rem;"></i>Add CRM User</h3>
+        <button class="modal-close-btn" id="add-user-close"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="add-user-form">
+          <div class="form-group">
+            <label class="form-label">Full Name <span class="required">*</span></label>
+            <input type="text" id="user-name" class="form-control" placeholder="e.g. Anand Mahindra" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address <span class="required">*</span></label>
+            <input type="email" id="user-email" class="form-control" placeholder="name@crm.local" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Mobile Number</label>
+            <input type="tel" id="user-mobile" class="form-control" placeholder="10-digit number">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Role <span class="required">*</span></label>
+            <select id="user-role" class="form-select">
+              <option value="sales" selected>Sales Team Member</option>
+              <option value="manager">Sales Manager</option>
+            </select>
+          </div>
+          <div class="form-group" id="group-assign-manager">
+            <label class="form-label">Reporting Manager</label>
+            <select id="user-manager" class="form-select"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Status</label>
+            <select id="user-status" class="form-select">
+              <option value="Active" selected>Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div id="user-error" style="display: none; padding: 0.6rem; border-radius: var(--radius-md); background: var(--danger-bg); color: var(--danger-text); font-size: 0.8rem; margin-top: 0.5rem;"></div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="add-user-cancel">Cancel</button>
+        <button class="btn btn-primary" id="add-user-save">Create User</button>
+      </div>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
-  <script src="../js/pipeline.js"></script>
   <script src="../js/payments.js"></script>
+  <script src="../js/leads.js"></script>
+  <script src="../js/pipeline.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    function refreshPageData() {
-      const roster = Team.getRoster();
-      const students = Customers.getAll();
-      const totalRevenue = roster.reduce((sum, r) => sum + r.revenue, 0);
-      const totalConverted = roster.reduce((sum, r) => sum + r.convertedCount, 0);
-      const avgConversion = students.length > 0 ? ((totalConverted / students.length) * 100).toFixed(1) : '0.0';
+    let filterRole = 'all';
 
-      document.getElementById('stat-team-size').textContent = roster.length;
-      document.getElementById('stat-team-leads').textContent = students.length;
-      document.getElementById('stat-team-revenue').textContent = Utils.formatINR(totalRevenue);
-      document.getElementById('stat-team-conversion').textContent = avgConversion + '%';
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!Auth.requireAuth(['admin', 'manager'])) return;
+      App.init('team');
 
-      const tbody = document.getElementById('roster-tbody');
-      tbody.innerHTML = roster.map(c => {
-        const quotaPct = c.target > 0 ? Math.min(100, ((c.revenue / c.target) * 100)).toFixed(1) : '0.0';
+      const currentUser = Auth.getCurrentUser();
+      if (currentUser.role !== 'admin') {
+        document.getElementById('admin-actions-bar').style.display = 'none';
+      }
+
+      setupTabs();
+      setupModal();
+      loadTeam();
+    });
+
+    function setupTabs() {
+      const tabBtns = document.querySelectorAll('.tab-btn');
+      tabBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          filterRole = btn.getAttribute('data-role');
+          loadTeam();
+        });
+      });
+    }
+
+    function loadTeam() {
+      const currentUser = Auth.getCurrentUser();
+      let users = Users.getAll();
+
+      // Manager can view their team members
+      if (currentUser.role === 'manager') {
+        users = users.filter(u => u.id === currentUser.id || u.managerId === currentUser.id);
+      }
+
+      document.getElementById('count-all-users').textContent = users.length;
+      document.getElementById('count-managers').textContent = users.filter(u => u.role === 'manager').length;
+      document.getElementById('count-sales').textContent = users.filter(u => u.role === 'sales').length;
+
+      if (filterRole !== 'all') {
+        users = users.filter(u => u.role === filterRole);
+      }
+
+      renderTeamTable(users);
+    }
+
+    function renderTeamTable(users) {
+      const tbody = document.getElementById('team-table-tbody');
+      const currentUser = Auth.getCurrentUser();
+      const isAdmin = currentUser.role === 'admin';
+      const allCustomers = StorageService.getData(CRM_STORAGE_KEYS.CUSTOMERS, []);
+
+      if (!users.length) {
+        tbody.innerHTML = `<tr><td colspan="9" style="text-align: center; color: var(--slate-400); padding: 2rem;">No users found</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = users.map(u => {
+        const assignedCount = allCustomers.filter(c => c.salespersonId === u.id || (u.role === 'manager' && c.managerId === u.id)).length;
+        const isActive = u.status === 'Active';
+
         return `
           <tr>
             <td>
-              <div style="display: flex; gap: 10px; align-items: center;">
-                <div style="width: 36px; height: 36px; border-radius: 8px; background: #eef2ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">
-                  ${Utils.getInitials(c.name)}
-                </div>
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <img src="${u.avatar}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">
                 <div>
-                  <div style="font-weight: 600; color: var(--navy-900);">${Utils.escapeHtml(c.name)}</div>
-                  <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(c.email)}</div>
+                  <div style="font-weight: 700; color: var(--slate-900); font-size: 0.875rem;">${Utils.escapeHtml(u.name)}</div>
+                  <div style="font-size: 0.72rem; color: var(--slate-400);">${u.id}</div>
                 </div>
               </div>
             </td>
-            <td><span style="font-size: 12px; color: var(--slate-600);">${Utils.escapeHtml(c.manager)}</span></td>
-            <td><span class="badge" style="background: #f1f5f9; color: #334155; font-weight: 600;">${c.assignedCount}</span></td>
-            <td><span style="font-size: 13px; color: var(--navy-800);">${c.calls}</span></td>
-            <td><span style="font-size: 13px; color: var(--navy-800);">${c.followups}</span></td>
-            <td><span class="badge badge-converted">${c.convertedCount}</span></td>
-            <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(c.revenue)}</td>
-            <td><strong style="color: var(--primary);">${c.conversionRate}%</strong></td>
+            <td><span style="font-size: 0.85rem; color: var(--slate-700);">${Utils.escapeHtml(u.email)}</span></td>
+            <td><span style="font-size: 0.85rem; color: var(--slate-600);">${u.mobile || '—'}</span></td>
+            <td>${Utils.getRoleBadge(u.role)}</td>
             <td>
-              <div style="display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 3px;">
-                <span style="font-weight: 600; color: var(--primary);">${quotaPct}%</span>
-                <span style="color: var(--slate-400);">Goal: ${Utils.formatINR(c.target)}</span>
-              </div>
-              <div class="kpi-progress-bar-track" style="height: 6px;">
-                <div class="kpi-progress-bar-fill" style="width: ${quotaPct}%;"></div>
-              </div>
+              <span style="font-size: 0.8rem; color: var(--slate-600);">
+                ${u.managerName ? Utils.escapeHtml(u.managerName) : u.role === 'admin' ? 'Root Admin' : u.role === 'manager' ? 'Executive' : '—'}
+              </span>
             </td>
             <td>
-              <div class="row-actions">
-                <a href="customers.html?counselor=${encodeURIComponent(c.name)}" class="btn-outline-sm" style="font-size: 11px; padding: 3px 8px; text-decoration: none;">
-                  View Leads
-                </a>
-                <button class="btn-icon" onclick="Team.openEmployeeTargetModal('${c.name}', refreshPageData)" title="Update Employee Target">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              <span class="badge ${isActive ? 'badge-status-active' : 'badge-priority-low'}">
+                ${u.status}
+              </span>
+            </td>
+            <td>
+              ${(u.role === 'sales' || u.role === 'manager') && window.Targets ? (() => {
+                const t = Targets.getTargetForUser(u.id);
+                return `
+                  <div>
+                    <span style="font-weight: 700; color: var(--slate-900); font-size: 0.85rem;">${Targets.formatCurrency(t.monthlyRevenueTarget)}</span>
+                    <div style="font-size: 0.7rem; color: var(--slate-500); margin-top: 0.1rem;">
+                      W1: ${Targets.formatCurrency(t.week1Target)} • W2: ${Targets.formatCurrency(t.week2Target)}
+                    </div>
+                  </div>
+                `;
+              })() : '<span style="color: var(--slate-400);">—</span>'}
+            </td>
+            <td>
+              <strong>${assignedCount}</strong>
+            </td>
+            <td><span style="font-size: 0.75rem; color: var(--slate-500);">${Utils.formatDate(u.createdAt)}</span></td>
+            <td style="text-align: right;">
+              ${isAdmin && (u.role === 'sales' || u.role === 'manager') && window.Targets ? `
+                <button class="btn btn-secondary btn-sm" onclick="Targets.openUpdateModal('${u.id}', () => loadTeam())" style="font-size: 0.72rem; padding: 0.2rem 0.5rem; margin-right: 0.35rem;" title="Set or Update Revenue Target">
+                  <i class="fa-solid fa-bullseye" style="color: #4f46e5;"></i> Target
                 </button>
-                <button class="btn-icon" onclick="Team.openReassignModal(refreshPageData)" title="Reassign Leads">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
+              ` : ''}
+              ${isAdmin && u.id !== currentUser.id ? `
+                <button class="btn btn-secondary btn-sm" onclick="toggleUserStatus('${u.id}')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                  ${isActive ? '<i class="fa-solid fa-user-slash" style="color: var(--danger-solid);"></i> Deactivate' : '<i class="fa-solid fa-user-check" style="color: var(--success-solid);"></i> Activate'}
                 </button>
-              </div>
+              ` : '—'}
             </td>
           </tr>
         `;
       }).join('');
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      UI.init('team');
-      refreshPageData();
-    });
+    function toggleUserStatus(id) {
+      const u = Users.getById(id);
+      if (!u) return;
+
+      ConfirmModal.show({
+        title: `${u.status === 'Active' ? 'Deactivate' : 'Activate'} User`,
+        message: `Are you sure you want to change status of ${u.name} to ${u.status === 'Active' ? 'Inactive' : 'Active'}?`,
+        confirmText: 'Confirm',
+        confirmVariant: u.status === 'Active' ? 'danger' : 'primary',
+        onConfirm: () => {
+          Users.toggleStatus(id);
+          Toast.success(`User status updated.`);
+          loadTeam();
+        }
+      });
+    }
+
+    function setupModal() {
+      const modal = document.getElementById('add-user-modal');
+      const form = document.getElementById('add-user-form');
+      const roleSelect = document.getElementById('user-role');
+      const mgrSelect = document.getElementById('user-manager');
+      const mgrGroup = document.getElementById('group-assign-manager');
+      const errorDiv = document.getElementById('user-error');
+
+      const populateManagers = () => {
+        mgrSelect.innerHTML = '<option value="">-- No Direct Manager --</option>' +
+          Users.getManagers().map(m => `<option value="${m.id}">${Utils.escapeHtml(m.name)}</option>`).join('');
+      };
+
+      roleSelect.addEventListener('change', () => {
+        mgrGroup.style.display = roleSelect.value === 'sales' ? 'block' : 'none';
+      });
+
+      document.getElementById('btn-add-user')?.addEventListener('click', () => {
+        form.reset();
+        errorDiv.style.display = 'none';
+        populateManagers();
+        modal.classList.add('show');
+      });
+
+      const hide = () => modal.classList.remove('show');
+      document.getElementById('add-user-close').onclick = hide;
+      document.getElementById('add-user-cancel').onclick = hide;
+
+      document.getElementById('add-user-save').onclick = () => {
+        const name = document.getElementById('user-name').value.trim();
+        const email = document.getElementById('user-email').value.trim();
+        const mobile = document.getElementById('user-mobile').value.trim();
+        const role = roleSelect.value;
+        const managerId = mgrSelect.value || null;
+        const status = document.getElementById('user-status').value;
+
+        if (!name || !email) {
+          errorDiv.textContent = 'Name and email are required.';
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        const res = Users.create({ name, email, mobile, role, managerId, status });
+        if (!res.success) {
+          errorDiv.textContent = res.message;
+          errorDiv.style.display = 'block';
+          return;
+        }
+
+        Toast.success(`User ${name} created successfully.`);
+        hide();
+        loadTeam();
+      };
+    }
   </script>
 </body>
 </html>

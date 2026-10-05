@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .login-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 10% 20%, rgba(79, 70, 229, 0.08) 0%, rgba(248, 250, 252, 1) 90%);
+      padding: 1.5rem;
+    }
+
+    .login-card {
+      width: 100%;
+      max-width: 440px;
+      background: #ffffff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-xl);
+      padding: 2.25rem;
+      animation: fadeIn 0.4s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .demo-persona-card {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background-color: var(--slate-50);
+      margin-bottom: 0.5rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all var(--transition-fast);
+    }
+
+    .demo-persona-card:hover {
+      background-color: #fff;
+      border-color: var(--primary-500);
+      box-shadow: var(--shadow-sm);
+      transform: translateX(4px);
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <div style="width: 48px; height: 48px; margin: 0 auto 1rem; background: var(--primary-gradient); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.5rem; box-shadow: 0 4px 14px var(--primary-glow);">
+          <i class="fa-solid fa-arrow-trend-up"></i>
+        </div>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">Career Apex CRM</h1>
+        <p style="color: var(--slate-500); font-size: 0.875rem; margin-top: 0.25rem;">Enterprise Pipeline & Lead Intelligence</p>
+      </div>
+
+      <div id="login-error-alert" style="display: none; padding: 0.75rem 1rem; border-radius: var(--radius-md); background-color: var(--danger-bg); border: 1px solid var(--danger-border); color: var(--danger-text); font-size: 0.85rem; margin-bottom: 1.25rem;">
+        <i class="fa-solid fa-circle-exclamation" style="margin-right: 0.4rem;"></i> <span id="login-error-text"></span>
+      </div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">Email Address</label>
+          <div style="position: relative;">
+            <i class="fa-regular fa-envelope" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--slate-400);"></i>
+            <input type="email" id="login-email" class="form-control" placeholder="name@crm.local" style="padding-left: 2.5rem;" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">Password</label>
+          <div style="position: relative;">
+            <i class="fa-solid fa-lock" style="position: absolute; left: 1rem; top: 50%; transform: translateY(-50%); color: var(--slate-400);"></i>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" style="padding-left: 2.5rem;" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; justify-content: center; padding: 0.75rem; font-size: 0.95rem; margin-top: 0.5rem;">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to CRM
+        </button>
+      </form>
+
+      <div style="margin-top: 2rem; border-top: 1px solid var(--border-light); padding-top: 1.5rem;">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.75rem; display: flex; align-items: center; justify-content: space-between;">
+          <span>1-Click Demo Login</span>
+          <span style="font-weight: 400; text-transform: none; color: var(--slate-400);">Select a persona</span>
+        </div>
+
+        <div class="demo-persona-card" id="demo-btn-admin">
+          <div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--slate-900);">Alexander Wright</div>
+            <div style="font-size: 0.75rem; color: var(--slate-500);">admin@crm.local • admin123</div>
+          </div>
+          <span class="badge badge-role-admin">Admin</span>
+        </div>
+
+        <div class="demo-persona-card" id="demo-btn-manager">
+          <div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--slate-900);">Rajesh Sharma</div>
+            <div style="font-size: 0.75rem; color: var(--slate-500);">manager@crm.local • manager123</div>
+          </div>
+          <span class="badge badge-role-manager">Manager</span>
+        </div>
+
+        <div class="demo-persona-card" id="demo-btn-sales">
+          <div>
+            <div style="font-weight: 600; font-size: 0.85rem; color: var(--slate-900);">Arun Kumar</div>
+            <div style="font-size: 0.75rem; color: var(--slate-500);">sales@crm.local • sales123</div>
+          </div>
+          <span class="badge badge-role-sales">Sales Rep</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/auth.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // If already logged in, redirect
+      if (Auth.isAuthenticated()) {
+        const user = Auth.getCurrentUser();
+        window.location.href = Auth.getDashboardUrl(user.role);
+        return;
+      }
+
+      const form = document.getElementById('login-form');
+      const emailInput = document.getElementById('login-email');
+      const passwordInput = document.getElementById('login-password');
+      const errorAlert = document.getElementById('login-error-alert');
+      const errorText = document.getElementById('login-error-text');
+
+      const performLogin = (email, password) => {
+        errorAlert.style.display = 'none';
+        const res = Auth.login(email, password);
+        if (!res.success) {
+          errorText.textContent = res.message;
+          errorAlert.style.display = 'block';
+        } else {
+          window.location.href = Auth.getDashboardUrl(res.user.role);
+        }
+      };
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        performLogin(emailInput.value, passwordInput.value);
+      });
+
+      document.getElementById('demo-btn-admin').addEventListener('click', () => {
+        emailInput.value = 'admin@crm.local';
+        passwordInput.value = 'admin123';
+        performLogin('admin@crm.local', 'admin123');
+      });
+
+      document.getElementById('demo-btn-manager').addEventListener('click', () => {
+        emailInput.value = 'manager@crm.local';
+        passwordInput.value = 'manager123';
+        performLogin('manager@crm.local', 'manager123');
+      });
+
+      document.getElementById('demo-btn-sales').addEventListener('click', () => {
+        emailInput.value = 'sales@crm.local';
+        passwordInput.value = 'sales123';
+        performLogin('sales@crm.local', 'sales123');
+      });
+    });
+  </script>
+</body>
+</html>

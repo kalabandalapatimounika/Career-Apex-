@@ -3,595 +3,1616 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bulk Lead Import Engine — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>Bulk Import Leads (Excel / CSV) — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- SheetJS Library for Excel (.xlsx, .xls) & CSV parsing -->
+  <script src="../lib/xlsx.full.min.js"></script>
+  <script>
+    if (typeof XLSX === 'undefined') {
+      const cdnScript = document.createElement('script');
+      cdnScript.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      document.head.appendChild(cdnScript);
+    }
+  </script>
+
+  <style>
+    .upload-zone {
+      border: 2px dashed var(--slate-300);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem 2rem;
+      text-align: center;
+      background-color: var(--slate-50);
+      cursor: pointer;
+      transition: all var(--transition-normal);
+      position: relative;
+    }
+
+    .upload-zone:hover, .upload-zone.dragover {
+      border-color: var(--primary-500);
+      background-color: var(--primary-50);
+    }
+
+    .upload-zone-icon {
+      font-size: 2.5rem;
+      color: var(--primary-600);
+      margin-bottom: 0.75rem;
+    }
+
+    .file-badge-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.35rem 0.85rem;
+      background: #e0f2fe;
+      color: #0369a1;
+      border: 1px solid #bae6fd;
+      border-radius: 9999px;
+      font-size: 0.825rem;
+      font-weight: 600;
+      margin-top: 0.75rem;
+    }
+
+    .config-card-section {
+      background: #fff;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+
+    .config-pill-title {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--primary-700);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .badge-stage-cold {
+      background-color: #ecfeff;
+      color: #0e7490;
+      border: 1px solid #a5f3fc;
+    }
+
+    .table-preview-fixed {
+      font-size: 0.825rem;
+      white-space: nowrap;
+    }
+
+    .table-preview-fixed th {
+      background-color: var(--slate-100);
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      color: var(--slate-600);
+    }
+
+    .dist-strategy-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .dist-strategy-card {
+      border: 1.5px solid var(--border-light);
+      border-radius: var(--radius-lg);
+      padding: 0.9rem 1rem;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      background: white;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .dist-strategy-card:hover {
+      border-color: var(--primary-400);
+      background: var(--primary-50);
+    }
+
+    .dist-strategy-card.selected {
+      border-color: var(--primary-600);
+      background: #eff6ff;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
+
+    .employee-check-card {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      padding: 0.6rem 0.85rem;
+      border: 1px solid var(--border-light);
+      border-radius: var(--radius-md);
+      background: #fff;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      user-select: none;
+    }
+
+    .employee-check-card:hover {
+      background: var(--slate-50);
+      border-color: var(--slate-300);
+    }
+
+    .employee-check-card.checked {
+      background: #f0fdf4;
+      border-color: #86efac;
+    }
+  </style>
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
         <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">Bulk Student Lead Import Engine</h1>
-            <p class="page-subtitle">Client-side spreadsheet import (.xlsx, .xls, .csv) with duplicate phone detection, column mapping, and counselor distribution.</p>
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <div style="display: flex; align-items: center; gap: 0.65rem;">
+              <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">
+                Bulk Import Leads
+              </h1>
+              <span class="badge" style="background-color: #e0f2fe; color: #0284c7; font-weight: 700; border: 1px solid #bae6fd;">
+                <i class="fa-solid fa-file-excel"></i> Excel & CSV Supported
+              </span>
+            </div>
+            <p style="color: var(--slate-500); font-size: 0.875rem; margin-top: 0.25rem;">
+              Ingest raw lead databases, campus drive lists, or job portal sheets directly into <strong>Cold Calling (Raw Data)</strong> or any pipeline stage with team assignment.
+            </p>
           </div>
-          <div class="page-actions-group">
-            <button type="button" class="btn-header-action" onclick="downloadSampleTemplate()">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-              Download Sample CSV
+          <div style="display: flex; gap: 0.65rem; flex-wrap: wrap;">
+            <button class="btn btn-secondary btn-sm" id="btn-download-sample-xlsx">
+              <i class="fa-solid fa-file-excel" style="color: #107c41;"></i> Download Sample Excel (.xlsx)
             </button>
-            <a href="customers.html" class="btn-outline-sm" style="text-decoration: none; padding: 8px 14px;">
-              View Directory
+            <button class="btn btn-secondary btn-sm" id="btn-download-sample-csv">
+              <i class="fa-solid fa-file-csv" style="color: #0284c7;"></i> Download Sample CSV (.csv)
+            </button>
+            <button class="btn btn-secondary btn-sm" id="btn-quick-sample-load" style="color: var(--primary-700); background: var(--primary-50); border-color: var(--primary-200);">
+              <i class="fa-solid fa-bolt"></i> Load Sample Raw Data
+            </button>
+            <a href="pipeline.html" class="btn btn-outline btn-sm">
+              <i class="fa-solid fa-table-cells"></i> View Pipeline
             </a>
           </div>
         </div>
 
-        <!-- Stepper Progress Bar -->
-        <div class="enterprise-card" style="padding: 16px 24px; margin-bottom: 24px;">
-          <div style="display: flex; justify-content: space-between; position: relative;">
-            <div style="display: flex; align-items: center; gap: 8px;" id="step-nav-1">
-              <span class="badge" style="background: var(--primary); color: #fff; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">1</span>
-              <strong style="color: var(--navy-900); font-size: 13px;">Upload File</strong>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;" id="step-nav-2">
-              <span class="badge" style="background: #e2e8f0; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">2</span>
-              <span style="color: var(--slate-600); font-size: 13px;">Column Mapping</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;" id="step-nav-3">
-              <span class="badge" style="background: #e2e8f0; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">3</span>
-              <span style="color: var(--slate-600); font-size: 13px;">Validation &amp; Duplicates</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;" id="step-nav-4">
-              <span class="badge" style="background: #e2e8f0; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">4</span>
-              <span style="color: var(--slate-600); font-size: 13px;">Counselor Assignment</span>
-            </div>
-            <div style="display: flex; align-items: center; gap: 8px;" id="step-nav-5">
-              <span class="badge" style="background: #e2e8f0; color: #64748b; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">5</span>
-              <span style="color: var(--slate-600); font-size: 13px;">Summary Report</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Step 1: Upload Card -->
-        <div class="enterprise-card" id="step-1-card">
-          <div class="card-header-bar">
-            <div class="card-heading">Step 1: Select or Drop Spreadsheet File</div>
-            <span class="card-pill-badge">Supports .XLSX, .XLS, .CSV</span>
+        <!-- 1. Destination & Counselor Assignment Configuration Card -->
+        <div class="config-card-section">
+          <div class="config-pill-title">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Step 1: Choose Import Target Pipeline Stage & Lead Distribution Strategy</span>
           </div>
 
-          <div style="border: 2px dashed #cbd5e1; border-radius: 12px; padding: 48px 24px; text-align: center; background: #fafbfc; cursor: pointer; transition: all 0.2s;" id="drop-zone" onclick="document.getElementById('file-input').click()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="1.75" style="width: 56px; height: 56px; margin: 0 auto 12px auto; display: block;">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/>
-            </svg>
-            <div style="font-size: 16px; font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Click to select file or drag &amp; drop here</div>
-            <div style="font-size: 13px; color: var(--slate-500); margin-bottom: 16px;">Accepts Excel (.xlsx, .xls) and CSV up to 10MB</div>
-            <button type="button" class="btn-primary-purple" style="pointer-events: none;">Browse Files</button>
-            <input type="file" id="file-input" accept=".xlsx,.xls,.csv" style="display: none;" onchange="handleFileSelected(event)">
-          </div>
-
-          <div style="margin-top: 20px; display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 12px 16px; border-radius: 8px;">
-            <div style="font-size: 12px; color: var(--slate-600);">
-              💡 <strong>Tip:</strong> Need test data? Click "Download Sample CSV" above to get pre-formatted mock leads with all required fields.
-            </div>
-            <button type="button" class="btn-outline-sm" onclick="loadDemoDataset()">Load Sample 10 Leads</button>
-          </div>
-        </div>
-
-        <!-- Step 2: Column Mapping Card (Hidden Initially) -->
-        <div class="enterprise-card" id="step-2-card" style="display: none;">
-          <div class="card-header-bar">
-            <div class="card-heading">Step 2: Map Spreadsheet Columns to Career Apex Fields</div>
-            <span class="card-pill-badge" id="detected-columns-count">8 Columns Detected</span>
-          </div>
-
-          <p style="font-size: 13px; color: var(--slate-600); margin-bottom: 16px;">
-            Verify the auto-detected mapping between your file columns and student CRM fields.
-          </p>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px;" id="mapping-fields-grid">
-            <!-- Dynamic Selects -->
-          </div>
-
-          <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-outline-sm" onclick="goToStep(1)">Back</button>
-            <button type="button" class="btn-primary-purple" onclick="processValidation()">Proceed to Validation →</button>
-          </div>
-        </div>
-
-        <!-- Step 3: Validation & Duplicate Detection Card (Hidden Initially) -->
-        <div class="enterprise-card" id="step-3-card" style="display: none;">
-          <div class="card-header-bar">
-            <div class="card-heading">Step 3: Data Quality &amp; Duplicate Audit</div>
-            <span class="card-pill-badge">Phone &amp; Email Inspection</span>
-          </div>
-
-          <div class="kpi-four-grid" style="margin-bottom: 20px;">
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">TOTAL ROWS PARSED</div>
-              <div class="kpi-subcard-value" id="val-total-rows">0</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">VALID READY LEADS</div>
-              <div class="kpi-subcard-value val-green" id="val-valid-rows">0</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">DUPLICATE PHONES</div>
-              <div class="kpi-subcard-value val-amber" id="val-duplicate-rows">0</div>
-              <div class="kpi-subcard-footer">Will be skipped safely</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">INVALID RECORDS</div>
-              <div class="kpi-subcard-value val-red" id="val-invalid-rows">0</div>
-              <div class="kpi-subcard-footer">Missing mandatory name/phone</div>
-            </div>
-          </div>
-
-          <!-- Preview Table -->
-          <div style="font-weight: 600; font-size: 13px; color: var(--navy-900); margin-bottom: 8px;">Pre-Import Inspection (First 10 Rows)</div>
-          <div class="table-responsive">
-            <table class="crm-table">
-              <thead>
-                <tr>
-                  <th>Status</th>
-                  <th>Student Name</th>
-                  <th>Mobile</th>
-                  <th>Email</th>
-                  <th>College &amp; Degree</th>
-                  <th>Target Role</th>
-                  <th>Audit Note</th>
-                </tr>
-              </thead>
-              <tbody id="validation-preview-tbody">
-                <!-- Preview items -->
-              </tbody>
-            </table>
-          </div>
-
-          <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-outline-sm" onclick="goToStep(2)">Back to Mapping</button>
-            <button type="button" class="btn-primary-purple" onclick="goToStep(4)">Proceed to Assignment →</button>
-          </div>
-        </div>
-
-        <!-- Step 4: Counselor Assignment (Hidden Initially) -->
-        <div class="enterprise-card" id="step-4-card" style="display: none;">
-          <div class="card-header-bar">
-            <div class="card-heading">Step 4: Lead Distribution &amp; Counselor Allocation</div>
-            <span class="card-pill-badge">Intelligent Routing</span>
-          </div>
-
-          <div style="display: flex; flex-direction: column; gap: 16px; max-width: 600px;">
-            <label style="font-size: 13px; font-weight: 600; color: var(--navy-900);">Select Lead Allocation Strategy</label>
-            
-            <div style="display: flex; gap: 16px;">
-              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
-                <input type="radio" name="assign-strategy" value="round-robin" checked onchange="toggleAssignStrategy('round-robin')">
-                <strong>Round-Robin (Balanced Distribution)</strong>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.25rem; margin-bottom: 1.25rem;">
+            <!-- Target Pipeline Stage Selector -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-weight: 700;">
+                Target Pipeline Stage <span class="required">*</span>
               </label>
-              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
-                <input type="radio" name="assign-strategy" value="manual" onchange="toggleAssignStrategy('manual')">
-                <strong>Manual Assign to Specific Counselor</strong>
-              </label>
+              <select class="form-select" id="import-target-stage" style="font-weight: 600; border-color: var(--primary-400);">
+                <option value="Cold Calling" selected>❄️ Cold Calling (Raw Data - Uncalled Leads)</option>
+                <option value="Not Connected">📵 Not Connected (Call Unanswered / Unreachable)</option>
+                <option value="New Lead">✨ New Lead (Fresh Candidate Inquiries)</option>
+                <option value="Contacted">📞 Contacted (First Outreach Complete)</option>
+                <option value="Interested">🔥 Interested (Profile & Course Discussed)</option>
+                <option value="Prospect">🎯 Prospect (Shortlisted for Drive / Batch)</option>
+                <option value="Follow-up">⏰ Follow-up (Counseling Callback Scheduled)</option>
+                <option value="Negotiation">🤝 Negotiation (Fee / Scholarship Discussion)</option>
+                <option value="Pending Closure">⏳ Pending Closure (Finalizing Enrollment)</option>
+                <option value="Enrolled">🏆 Enrolled (Enrolled / Placed)</option>
+              </select>
+              <div style="font-size: 0.75rem; color: var(--slate-500); margin-top: 0.35rem;">
+                <i class="fa-solid fa-circle-info"></i> Raw uncontacted leads go into <strong>Cold Calling</strong> so counselors know they haven't been called yet.
+              </div>
             </div>
 
-            <div id="manual-counselor-select-box" style="display: none; margin-top: 12px;">
-              <label class="form-label">Assign All Valid Leads To:</label>
-              <select id="import-target-counselor" class="filter-select" style="width: 100%;">
-                <option value="Arun Kumar">Arun Kumar (Senior Counselor - Rajesh Sharma Team)</option>
-                <option value="Sneha Rao">Sneha Rao (Counselor - Rajesh Sharma Team)</option>
-                <option value="Vikram Singh">Vikram Singh (Technical Counselor - Priya Patel Team)</option>
-                <option value="Neha Gupta">Neha Gupta (Enterprise Counselor - Priya Patel Team)</option>
-                <option value="Rahul Mehta">Rahul Mehta (Placement Associate - Amit Verma Team)</option>
+            <!-- Lead Source Tag -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-weight: 700;">Lead / Database Source</label>
+              <select class="form-select" id="import-source">
+                <option value="Cold Calling / Raw Database" selected>Cold Calling / Raw Database</option>
+                <option value="Excel / CSV Upload">Excel / CSV Upload</option>
+                <option value="College Placement Cell">College Placement Cell</option>
+                <option value="Walk-in / Campus Drive">Walk-in / Campus Drive</option>
+                <option value="Job Portal / Naukri">Job Portal / Naukri</option>
+                <option value="LinkedIn">LinkedIn</option>
+                <option value="Website Inquiry">Website Inquiry</option>
+                <option value="Referral">Referral</option>
               </select>
             </div>
 
-            <div id="round-robin-info-box" style="background: #eef2ff; padding: 12px 16px; border-radius: 8px; border: 1px solid #c7d2fe; font-size: 13px; color: #3730a3;">
-              <strong>Round-Robin Distribution:</strong> Leads will be evenly balanced across all 5 active counselors: Arun Kumar, Sneha Rao, Vikram Singh, Neha Gupta, and Rahul Mehta.
+            <!-- Priority -->
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label" style="font-weight: 700;">Default Priority</label>
+              <select class="form-select" id="import-priority">
+                <option value="High">High Priority</option>
+                <option value="Medium" selected>Medium Priority</option>
+                <option value="Low">Low Priority</option>
+              </select>
             </div>
           </div>
 
-          <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
-            <button type="button" class="btn-outline-sm" onclick="goToStep(3)">Back</button>
-            <button type="button" class="btn-primary-purple" onclick="executeFinalImport()">
-              🚀 Commit &amp; Import Valid Leads
+          <!-- Lead Assignment & Distribution Strategy Container -->
+          <div style="background: var(--slate-50); border: 1.5px solid var(--border-light); border-radius: var(--radius-xl); padding: 1.25rem; margin-bottom: 1rem;">
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-users-viewfinder" style="color: var(--primary-600); font-size: 1.1rem;"></i>
+                <label style="font-weight: 800; font-size: 0.95rem; color: var(--slate-900); margin: 0;">
+                  Lead Assignment & Distribution Strategy <span class="required">*</span>
+                </label>
+              </div>
+              <div id="assignment-strategy-badge" style="font-size: 0.78rem; font-weight: 600; background: var(--primary-100); color: var(--primary-700); padding: 0.25rem 0.65rem; border-radius: 9999px;">
+                🔄 Split Between All Employees
+              </div>
+            </div>
+
+            <!-- 4 Strategy Cards -->
+            <div class="dist-strategy-grid">
+              <label class="dist-strategy-card selected" id="card-strat-all">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="dist_strategy" value="split_all" checked style="accent-color: var(--primary-600);">
+                  <span style="font-weight: 700; font-size: 0.88rem; color: var(--slate-900);">👥 Split Between ALL Employees</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500); padding-left: 1.35rem;">
+                  Evenly distributes imported leads in round-robin across all active counselors.
+                </span>
+              </label>
+
+              <label class="dist-strategy-card" id="card-strat-selected">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="dist_strategy" value="split_selected" style="accent-color: var(--primary-600);">
+                  <span style="font-weight: 700; font-size: 0.88rem; color: var(--slate-900);">🎯 Split Between SELECTED Employees</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500); padding-left: 1.35rem;">
+                  Pick 2, 3, or more specific people. Leads rotate strictly among chosen employees.
+                </span>
+              </label>
+
+              <label class="dist-strategy-card" id="card-strat-single">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="dist_strategy" value="single_person" style="accent-color: var(--primary-600);">
+                  <span style="font-weight: 700; font-size: 0.88rem; color: var(--slate-900);">👤 Share to ONLY 1 Person</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500); padding-left: 1.35rem;">
+                  Assign all imported leads directly to a single employee or counselor.
+                </span>
+              </label>
+
+              <label class="dist-strategy-card" id="card-strat-unassigned">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                  <input type="radio" name="dist_strategy" value="unassigned" style="accent-color: var(--primary-600);">
+                  <span style="font-weight: 700; font-size: 0.88rem; color: var(--slate-900);">⏳ Unassigned Pool</span>
+                </div>
+                <span style="font-size: 0.75rem; color: var(--slate-500); padding-left: 1.35rem;">
+                  Keep in general unallocated pool for manual assignment later.
+                </span>
+              </label>
+            </div>
+
+            <!-- Dynamic Sub-Containers based on selected strategy -->
+            <!-- 1. All Employees preview chip container -->
+            <div id="sub-panel-all" style="background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.85rem 1rem;">
+              <div style="font-size: 0.8rem; font-weight: 600; color: var(--slate-700); margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                <span id="all-employees-summary-text">Active Team Members included in Round-Robin</span>
+                <span class="badge badge-stage-enrolled" id="all-employees-share-badge">Equal Share</span>
+              </div>
+              <div id="all-employees-chips" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+            </div>
+
+            <!-- 2. Selected Employees Checklist -->
+            <div id="sub-panel-selected" style="display: none; background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+                <div style="font-size: 0.85rem; font-weight: 700; color: var(--slate-900);">
+                  Check employees to include in round-robin distribution:
+                </div>
+                <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-pick-2-reps" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
+                    Quick 2 People
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-pick-3-reps" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
+                    Quick 3 People
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-select-all-reps" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
+                    Select All
+                  </button>
+                  <button type="button" class="btn btn-secondary btn-sm" id="btn-clear-all-reps" style="font-size: 0.75rem; padding: 0.2rem 0.5rem;">
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Checkboxes Grid -->
+              <div id="selected-employees-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.65rem; margin-bottom: 0.75rem; max-height: 240px; overflow-y: auto;"></div>
+
+              <div id="selected-distribution-alert" style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 0.65rem 0.85rem; font-size: 0.825rem; color: #166534; display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-circle-check"></i>
+                <span id="selected-distribution-text">Select at least 1 employee to proceed.</span>
+              </div>
+            </div>
+
+            <!-- 3. Single Person Dropdown -->
+            <div id="sub-panel-single" style="display: none; background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 1rem;">
+              <label class="form-label" style="font-weight: 700; font-size: 0.85rem; margin-bottom: 0.35rem;">
+                Select the Single Employee to Receive 100% of Leads:
+              </label>
+              <select class="form-select" id="import-single-rep" style="font-weight: 600; max-width: 450px;"></select>
+              <div style="font-size: 0.75rem; color: var(--slate-500); margin-top: 0.35rem;" id="single-rep-scope-helper"></div>
+            </div>
+
+            <!-- 4. Unassigned notice -->
+            <div id="sub-panel-unassigned" style="display: none; background: white; border: 1px solid var(--border-light); border-radius: var(--radius-lg); padding: 0.85rem 1rem; color: var(--slate-600); font-size: 0.825rem;">
+              <i class="fa-solid fa-circle-info" style="color: var(--warning-solid);"></i> All imported leads will be saved without an assigned counselor into the <strong>Unassigned Queue</strong>.
+            </div>
+          </div>
+
+          <!-- Batch Notes / Label -->
+          <div>
+            <label class="form-label" style="font-size: 0.8rem; font-weight: 700;">Batch Note / Campaign Tag (Optional)</label>
+            <input type="text" class="form-control" id="import-batch-note" placeholder="e.g. Pune University 2025 CS Batch - Uncalled Campus Drive Raw Data" style="font-size: 0.85rem;">
+          </div>
+        </div>
+
+        <!-- 2. Upload Zone Card -->
+        <div class="card" style="margin-bottom: 1.5rem; padding: 1.5rem;">
+          <div class="config-pill-title" style="margin-bottom: 0.75rem;">
+            <i class="fa-solid fa-file-arrow-up"></i>
+            <span>Step 2: Upload Excel Sheet (.xlsx / .xls) or CSV (.csv) File</span>
+          </div>
+
+          <div class="upload-zone" id="drop-area">
+            <input type="file" id="file-input" accept=".xlsx, .xls, .csv" style="display: none;">
+            <div class="upload-zone-icon">
+              <i class="fa-solid fa-cloud-arrow-up"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.35rem;">
+              Click to select or drag & drop lead Excel or CSV file
+            </h3>
+            <p style="color: var(--slate-500); font-size: 0.85rem; max-width: 600px; margin: 0 auto 0.75rem;">
+              Works with standard Excel sheets (<strong>.xlsx, .xls</strong>) and <strong>.csv</strong> files.
+            </p>
+            <p style="color: var(--slate-400); font-size: 0.78rem; max-width: 680px; margin: 0 auto 1.25rem;">
+              Auto-maps columns: <code>Name</code>, <code>Mobile</code>, <code>Email</code>, <code>Qualification</code>, <code>College</code>, <code>PassingYear</code>, <code>Skills</code>, <code>TargetRole</code>, <code>Experience</code>, <code>City</code>, <code>State</code>, <code>ExpectedCTC</code>.
+            </p>
+            <button type="button" class="btn btn-primary" id="btn-browse-file">
+              <i class="fa-solid fa-folder-open"></i> Browse Files (.xlsx, .xls, .csv)
             </button>
+            <div id="selected-file-pill" style="display: none;"></div>
           </div>
         </div>
 
-        <!-- Step 5: Summary Report (Hidden Initially) -->
-        <div class="enterprise-card" id="step-5-card" style="display: none; text-align: center; padding: 40px 24px;">
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: #ecfdf5; color: #10b981; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 36px; height: 36px;"><polyline points="20 6 9 17 4 12"/></svg>
+        <!-- 3. Import Results Summary & Preview (Shown after file is read) -->
+        <div id="import-summary-card" class="card" style="display: none; margin-bottom: 1.5rem;">
+          <div class="card-header" style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+            <h3 class="card-title"><i class="fa-solid fa-square-poll-vertical"></i> Step 3: Validation & Preview Breakdown</h3>
+            <div id="assignment-preview-pill" style="font-size: 0.825rem; font-weight: 600; color: var(--primary-700); background: var(--primary-50); padding: 0.35rem 0.75rem; border-radius: 9999px; border: 1px solid var(--primary-200);"></div>
           </div>
-          <h2 style="font-size: 20px; font-weight: 700; color: var(--navy-900); margin-bottom: 6px;">Batch Import Completed Successfully!</h2>
-          <p style="font-size: 14px; color: var(--slate-600); margin-bottom: 24px;" id="import-summary-text">
-            Imported 10 new student candidates. Duplicates were safely skipped.
-          </p>
+          <div class="card-body">
+            <!-- 4 Metric Badges -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 1.5rem;">
+              <div style="padding: 1rem; border-radius: var(--radius-md); background: var(--slate-100); border: 1px solid var(--border-light);">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--slate-500); text-transform: uppercase;">Total Rows Found</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--slate-900);" id="stat-total-rows">0</div>
+              </div>
+              <div style="padding: 1rem; border-radius: var(--radius-md); background: var(--success-bg); border: 1px solid var(--success-border);">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--success-text); text-transform: uppercase;">Ready to Import</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--success-solid);" id="stat-valid-rows">0</div>
+              </div>
+              <div style="padding: 1rem; border-radius: var(--radius-md); background: var(--warning-bg); border: 1px solid var(--warning-border);">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--warning-text); text-transform: uppercase;">Duplicate Mobiles</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--warning-solid);" id="stat-duplicate-rows">0</div>
+              </div>
+              <div style="padding: 1rem; border-radius: var(--radius-md); background: var(--danger-bg); border: 1px solid var(--danger-border);">
+                <div style="font-size: 0.75rem; font-weight: 700; color: var(--danger-text); text-transform: uppercase;">Invalid Rows</div>
+                <div style="font-size: 1.75rem; font-weight: 800; color: var(--danger-solid);" id="stat-invalid-rows">0</div>
+              </div>
+            </div>
 
-          <div class="kpi-four-grid" style="max-width: 700px; margin: 0 auto 24px auto; text-align: left;">
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">IMPORTED LEADS</div>
-              <div class="kpi-subcard-value val-green" id="final-imported-count">0</div>
+            <!-- Duplicate Handling Option -->
+            <div style="margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; background: var(--slate-50); padding: 0.75rem 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-light); flex-wrap: wrap; gap: 0.5rem;">
+              <label style="font-size: 0.85rem; font-weight: 600; color: var(--slate-800); display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                <input type="checkbox" id="chk-skip-duplicates" checked>
+                <span>Skip duplicate mobile numbers (Recommended to protect existing leads)</span>
+              </label>
+              <div style="font-size: 0.78rem; color: var(--slate-500);">
+                Mobiles must be 10 digits to be valid.
+              </div>
             </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">DUPLICATES SKIPPED</div>
-              <div class="kpi-subcard-value val-amber" id="final-skipped-count">0</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">NEW PIPELINE VALUE</div>
-              <div class="kpi-subcard-value val-purple" id="final-pipeline-val">₹0</div>
-            </div>
-            <div class="kpi-subcard">
-              <div class="kpi-subcard-label">ASSIGNED TO</div>
-              <div class="kpi-subcard-value" style="font-size: 15px;" id="final-assigned-summary">3 Counselors</div>
-            </div>
-          </div>
 
-          <div style="display: flex; justify-content: center; gap: 12px;">
-            <a href="customers.html" class="btn-primary-purple">View Students in Directory</a>
-            <a href="pipeline.html" class="btn-outline-sm" style="text-decoration: none; padding: 10px 16px;">Open Pipeline</a>
-            <button type="button" class="btn-outline-sm" onclick="resetImportWorkflow()">Import Another File</button>
+            <!-- Preview Table -->
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.5rem;">
+              <div style="font-weight: 700; font-size: 0.95rem; color: var(--slate-900);">
+                Data Preview (First 50 Rows)
+              </div>
+              <div style="font-size: 0.8rem; color: var(--slate-500);">
+                Showing validation and detected candidate fields
+              </div>
+            </div>
+
+            <div class="table-responsive" style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border-light); border-radius: var(--radius-md);">
+              <table class="table table-preview-fixed">
+                <thead>
+                  <tr>
+                    <th>Row #</th>
+                    <th>Lead Name</th>
+                    <th>Mobile</th>
+                    <th>Degree / Qualification</th>
+                    <th>College / University</th>
+                    <th>YOP</th>
+                    <th>Key Skills</th>
+                    <th>Target Role</th>
+                    <th>Location</th>
+                    <th>Assigned To</th>
+                    <th>Target Stage</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="import-preview-tbody"></tbody>
+              </table>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; align-items: center; gap: 1rem; flex-wrap: wrap;">
+              <button class="btn btn-secondary" id="btn-cancel-import">
+                <i class="fa-solid fa-xmark"></i> Cancel
+              </button>
+              <button class="btn btn-primary" id="btn-confirm-import">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Confirm & Import Valid Leads
+              </button>
+            </div>
           </div>
         </div>
-
       </main>
     </div>
   </div>
 
-  <!-- Scripts -->
+  <!-- Application Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
+  <script src="../js/leads.js"></script>
   <script src="../js/pipeline.js"></script>
-  <script src="../js/payments.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/targets.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    let rawFileRows = [];
-    let fileHeaders = [];
-    let columnMapping = {};
-    let validatedLeads = [];
-    let duplicateLeads = [];
-    let invalidLeads = [];
+    let rawParsedRows = [];
+    let validRowsToImport = [];
+    let duplicateRowsList = [];
+    let currentUser = null;
 
-    const REQUIRED_FIELDS = [
-      { key: 'name', label: 'Student Name *', match: ['name', 'student', 'candidate', 'fullname'] },
-      { key: 'mobile', label: 'Mobile Number *', match: ['mobile', 'phone', 'contact', 'cell'] },
-      { key: 'email', label: 'Email Address', match: ['email', 'mail'] },
-      { key: 'college', label: 'College / Institute', match: ['college', 'university', 'campus', 'institute'] },
-      { key: 'degree', label: 'Degree / Branch', match: ['degree', 'branch', 'qualification', 'course'] },
-      { key: 'passingYear', label: 'Passing Year', match: ['year', 'batch', 'passout'] },
-      { key: 'skills', label: 'Skills / Tech Stack', match: ['skill', 'skills', 'technologies'] },
-      { key: 'targetRole', label: 'Target Job Role', match: ['role', 'job', 'position', 'target'] },
-      { key: 'placementFee', label: 'Placement Fee (₹)', match: ['fee', 'amount', 'fees'] }
-    ];
+    document.addEventListener('DOMContentLoaded', () => {
+      currentUser = Auth.requireAuth(['admin', 'manager']);
+      if (!currentUser) {
+        currentUser = Auth.getCurrentUser();
+      }
+      App.initCommon(currentUser, 'import');
 
-    function handleFileSelected(event) {
-      const file = event.target.files[0];
-      if (!file) return;
+      // Explicitly set target stage default to Cold Calling
+      const targetStageSelect = document.getElementById('import-target-stage');
+      if (targetStageSelect) {
+        targetStageSelect.value = 'Cold Calling';
+      }
 
-      const reader = new FileReader();
+      populateAssignmentDropdown();
+      setupUploadZone();
+      setupButtons();
+    });
+
+    let activeDistributionStrategy = 'split_all';
+
+    /**
+     * Get list of currently checked employee IDs for split_selected strategy
+     */
+    function getCheckedEmployeeIds() {
+      const checkedBoxes = document.querySelectorAll('.chk-employee-select:checked');
+      return Array.from(checkedBoxes).map(cb => cb.value);
+    }
+
+    /**
+     * Get readable summary of current distribution strategy
+     */
+    function getDistributionStrategyDescription() {
+      const user = currentUser || Auth.getCurrentUser();
+      const isMgr = user && user.role === 'manager';
+      const allCounselors = isMgr ? Users.getTeamMembers(user.id) : Users.getSalespeople();
+
+      if (activeDistributionStrategy === 'unassigned') {
+        return 'Unassigned Queue';
+      }
+
+      if (activeDistributionStrategy === 'single_person') {
+        const singleSelect = document.getElementById('import-single-rep');
+        const selectedOption = singleSelect ? singleSelect.selectedOptions[0] : null;
+        return selectedOption ? `Assigned to: ${selectedOption.text}` : 'Selected Employee';
+      }
+
+      if (activeDistributionStrategy === 'split_selected') {
+        const checkedIds = getCheckedEmployeeIds();
+        if (checkedIds.length === 0) return 'No Employees Selected (Needs selection)';
+        const names = checkedIds.map(id => Users.getById(id)?.name || id);
+        return `Split evenly across ${checkedIds.length} selected employees (${names.join(', ')})`;
+      }
+
+      // Default: split_all
+      return `Split evenly across ALL ${allCounselors.length} team members (Round-Robin)`;
+    }
+
+    /**
+     * Update distribution summary text and badges
+     */
+    function updateSelectedDistributionSummary() {
+      const checkedIds = getCheckedEmployeeIds();
+      const alertBox = document.getElementById('selected-distribution-alert');
+      const alertText = document.getElementById('selected-distribution-text');
+      const badge = document.getElementById('assignment-strategy-badge');
+
+      if (badge) {
+        if (activeDistributionStrategy === 'split_all') {
+          badge.textContent = '🔄 Split Between ALL Employees';
+        } else if (activeDistributionStrategy === 'split_selected') {
+          badge.textContent = `🎯 Split Between ${checkedIds.length} Selected Employees`;
+        } else if (activeDistributionStrategy === 'single_person') {
+          badge.textContent = '👤 Share to ONLY 1 Person';
+        } else {
+          badge.textContent = '⏳ Unassigned Pool';
+        }
+      }
+
+      if (alertText) {
+        if (checkedIds.length === 0) {
+          alertText.innerHTML = '<span style="color: var(--danger-solid); font-weight: 700;"><i class="fa-solid fa-triangle-exclamation"></i> No employees checked! Please select at least 1 person.</span>';
+          if (alertBox) {
+            alertBox.style.background = '#fef2f2';
+            alertBox.style.borderColor = '#fecaca';
+            alertBox.style.color = '#991b1b';
+          }
+        } else if (checkedIds.length === 1) {
+          const emp = Users.getById(checkedIds[0]);
+          alertText.innerHTML = `<strong>1 Employee selected:</strong> ${Utils.escapeHtml(emp ? emp.name : checkedIds[0])}. 100% of imported leads will go to this person.`;
+          if (alertBox) {
+            alertBox.style.background = '#eff6ff';
+            alertBox.style.borderColor = '#bfdbfe';
+            alertBox.style.color = '#1e40af';
+          }
+        } else {
+          const names = checkedIds.map(id => Utils.escapeHtml(Users.getById(id)?.name || id)).join(', ');
+          const share = (100 / checkedIds.length).toFixed(1);
+          alertText.innerHTML = `<strong>${checkedIds.length} Employees selected (${names}):</strong> Leads will be distributed evenly (each receives approx. <strong>~${share}%</strong>).`;
+          if (alertBox) {
+            alertBox.style.background = '#f0fdf4';
+            alertBox.style.borderColor = '#bbf7d0';
+            alertBox.style.color = '#166534';
+          }
+        }
+      }
+
+      // Update preview if file is loaded
+      if (rawParsedRows.length > 0) {
+        evaluateImportRows(rawParsedRows);
+      }
+    }
+
+    /**
+     * Populate Team Member Assignment options and Strategy Listeners
+     */
+    function populateAssignmentDropdown() {
+      const user = currentUser || Auth.getCurrentUser();
+      if (!user) return;
+      currentUser = user;
+      const isMgr = user.role === 'manager';
+
+      const eligibleCounselors = isMgr ? Users.getTeamMembers(user.id) : Users.getSalespeople();
+      const allManagers = Users.getManagers();
+
+      // 1. Populate All Employees Chips
+      const allChipsContainer = document.getElementById('all-employees-chips');
+      const allSummaryText = document.getElementById('all-employees-summary-text');
+      const allShareBadge = document.getElementById('all-employees-share-badge');
+
+      if (allSummaryText) {
+        allSummaryText.textContent = `${isMgr ? 'My Team Counselors' : 'Active Organization Counselors'} (${eligibleCounselors.length} members) included:`;
+      }
+      if (allShareBadge) {
+        allShareBadge.textContent = `Equal Share ~${(100 / (eligibleCounselors.length || 1)).toFixed(1)}% each`;
+      }
+      if (allChipsContainer) {
+        allChipsContainer.innerHTML = eligibleCounselors.map(rep => `
+          <div style="display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.65rem; background: var(--slate-100); border: 1px solid var(--border-light); border-radius: 9999px; font-size: 0.78rem; font-weight: 600; color: var(--slate-800);">
+            <div style="width: 20px; height: 20px; border-radius: 50%; background: var(--primary-600); color: white; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; font-weight: 700;">
+              ${rep.name.charAt(0)}
+            </div>
+            <span>${Utils.escapeHtml(rep.name)}</span>
+          </div>
+        `).join('');
+      }
+
+      // 2. Populate Selected Employees Checklist
+      const selectedGrid = document.getElementById('selected-employees-grid');
+      if (selectedGrid) {
+        selectedGrid.innerHTML = eligibleCounselors.map((rep, idx) => `
+          <label class="employee-check-card checked" id="lbl-rep-${rep.id}">
+            <input type="checkbox" class="chk-employee-select" value="${rep.id}" checked style="width: 16px; height: 16px; accent-color: var(--primary-600); cursor: pointer;">
+            <div style="width: 28px; height: 28px; border-radius: 50%; background: #4f46e5; color: white; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; flex-shrink: 0;">
+              ${rep.name.charAt(0)}
+            </div>
+            <div style="min-width: 0; flex: 1;">
+              <div style="font-size: 0.825rem; font-weight: 700; color: var(--slate-900); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                ${Utils.escapeHtml(rep.name)}
+              </div>
+              <div style="font-size: 0.7rem; color: var(--slate-500);">
+                ${rep.role.toUpperCase()} ${rep.managerName ? `• Mgr: ${Utils.escapeHtml(rep.managerName)}` : ''}
+              </div>
+            </div>
+          </label>
+        `).join('');
+
+        // Add event listeners on checkboxes
+        document.querySelectorAll('.chk-employee-select').forEach(cb => {
+          cb.addEventListener('change', (e) => {
+            const card = document.getElementById(`lbl-rep-${cb.value}`);
+            if (card) {
+              if (cb.checked) card.classList.add('checked');
+              else card.classList.remove('checked');
+            }
+            updateSelectedDistributionSummary();
+          });
+        });
+      }
+
+      // Quick selection buttons
+      document.getElementById('btn-select-all-reps')?.addEventListener('click', () => {
+        document.querySelectorAll('.chk-employee-select').forEach(cb => {
+          cb.checked = true;
+          document.getElementById(`lbl-rep-${cb.value}`)?.classList.add('checked');
+        });
+        updateSelectedDistributionSummary();
+      });
+
+      document.getElementById('btn-clear-all-reps')?.addEventListener('click', () => {
+        document.querySelectorAll('.chk-employee-select').forEach(cb => {
+          cb.checked = false;
+          document.getElementById(`lbl-rep-${cb.value}`)?.classList.remove('checked');
+        });
+        updateSelectedDistributionSummary();
+      });
+
+      document.getElementById('btn-pick-2-reps')?.addEventListener('click', () => {
+        document.querySelectorAll('.chk-employee-select').forEach((cb, i) => {
+          cb.checked = (i < 2);
+          const card = document.getElementById(`lbl-rep-${cb.value}`);
+          if (i < 2) card?.classList.add('checked');
+          else card?.classList.remove('checked');
+        });
+        updateSelectedDistributionSummary();
+      });
+
+      document.getElementById('btn-pick-3-reps')?.addEventListener('click', () => {
+        document.querySelectorAll('.chk-employee-select').forEach((cb, i) => {
+          cb.checked = (i < 3);
+          const card = document.getElementById(`lbl-rep-${cb.value}`);
+          if (i < 3) card?.classList.add('checked');
+          else card?.classList.remove('checked');
+        });
+        updateSelectedDistributionSummary();
+      });
+
+      // 3. Populate Single Person dropdown
+      const singleSelect = document.getElementById('import-single-rep');
+      const singleHelper = document.getElementById('single-rep-scope-helper');
+      if (singleSelect) {
+        let singleOptions = '';
+        if (isMgr) {
+          singleOptions += `<option value="${user.id}">👤 Assign to Me (${Utils.escapeHtml(user.name)} - Manager)</option>`;
+          if (eligibleCounselors.length > 0) {
+            singleOptions += `<optgroup label="My Direct Counselors">`;
+            eligibleCounselors.forEach(r => {
+              singleOptions += `<option value="${r.id}">${Utils.escapeHtml(r.name)} (${r.id})</option>`;
+            });
+            singleOptions += `</optgroup>`;
+          }
+        } else {
+          // Admin
+          singleOptions += `<optgroup label="Counselors / Sales Representatives">`;
+          eligibleCounselors.forEach(r => {
+            singleOptions += `<option value="${r.id}">${Utils.escapeHtml(r.name)} (${r.id}) - ${r.managerName ? `Team ${Utils.escapeHtml(r.managerName)}` : 'Direct'}</option>`;
+          });
+          singleOptions += `</optgroup>`;
+
+          singleOptions += `<optgroup label="Sales Managers">`;
+          allManagers.forEach(m => {
+            singleOptions += `<option value="${m.id}">${Utils.escapeHtml(m.name)} (Manager)</option>`;
+          });
+          singleOptions += `</optgroup>`;
+        }
+        singleSelect.innerHTML = singleOptions;
+
+        singleSelect.addEventListener('change', () => {
+          if (rawParsedRows.length > 0) evaluateImportRows(rawParsedRows);
+        });
+
+        if (singleHelper) {
+          singleHelper.innerHTML = `<i class="fa-solid fa-circle-info"></i> All leads in this file will be exclusively assigned to the selected person.`;
+        }
+      }
+
+      // 4. Setup Strategy Card Click Listeners
+      const strategyCards = [
+        { card: 'card-strat-all', val: 'split_all', panel: 'sub-panel-all' },
+        { card: 'card-strat-selected', val: 'split_selected', panel: 'sub-panel-selected' },
+        { card: 'card-strat-single', val: 'single_person', panel: 'sub-panel-single' },
+        { card: 'card-strat-unassigned', val: 'unassigned', panel: 'sub-panel-unassigned' }
+      ];
+
+      strategyCards.forEach(item => {
+        const cardEl = document.getElementById(item.card);
+        if (!cardEl) return;
+        cardEl.addEventListener('click', (e) => {
+          const radio = cardEl.querySelector('input[type="radio"]');
+          if (radio) radio.checked = true;
+
+          strategyCards.forEach(s => {
+            document.getElementById(s.card)?.classList.remove('selected');
+            const p = document.getElementById(s.panel);
+            if (p) p.style.display = 'none';
+          });
+
+          cardEl.classList.add('selected');
+          const activeP = document.getElementById(item.panel);
+          if (activeP) activeP.style.display = 'block';
+
+          activeDistributionStrategy = item.val;
+          updateSelectedDistributionSummary();
+        });
+      });
+
+      document.getElementById('import-target-stage')?.addEventListener('change', () => {
+        if (rawParsedRows.length) evaluateImportRows(rawParsedRows);
+      });
+
+      updateSelectedDistributionSummary();
+    }
+
+    /**
+     * Resolve assignment target for a row given active strategy and row index
+     */
+    function resolveRowAssignment(rowIndex) {
+      const user = currentUser || Auth.getCurrentUser();
+      const isMgr = user && user.role === 'manager';
+      const defaultMgrId = isMgr ? user.id : null;
+      const defaultMgrName = isMgr ? user.name : null;
+
+      if (activeDistributionStrategy === 'unassigned') {
+        return {
+          salespersonId: null,
+          salespersonName: null,
+          managerId: defaultMgrId,
+          managerName: defaultMgrName,
+          label: 'Unassigned Queue'
+        };
+      }
+
+      if (activeDistributionStrategy === 'single_person') {
+        const singleSelect = document.getElementById('import-single-rep');
+        const targetId = singleSelect ? singleSelect.value : null;
+        if (!targetId) {
+          return { salespersonId: null, salespersonName: null, managerId: defaultMgrId, managerName: defaultMgrName, label: 'Unassigned' };
+        }
+
+        const rep = Users.getById(targetId);
+        if (rep) {
+          const isManagerUser = rep.role === 'manager';
+          return {
+            salespersonId: isManagerUser ? null : rep.id,
+            salespersonName: isManagerUser ? null : rep.name,
+            managerId: isManagerUser ? rep.id : (rep.managerId || defaultMgrId),
+            managerName: isManagerUser ? rep.name : (rep.managerName || defaultMgrName),
+            label: `${rep.name} (${rep.role.toUpperCase()})`
+          };
+        }
+        return { salespersonId: null, salespersonName: null, managerId: defaultMgrId, managerName: defaultMgrName, label: 'Single Assigned' };
+      }
+
+      if (activeDistributionStrategy === 'split_selected') {
+        const checkedIds = getCheckedEmployeeIds();
+        if (checkedIds.length === 0) {
+          // Fallback to first salesperson if none selected
+          const allReps = isMgr ? Users.getTeamMembers(user.id) : Users.getSalespeople();
+          const fallback = allReps[0] || user;
+          return {
+            salespersonId: fallback.id,
+            salespersonName: fallback.name,
+            managerId: fallback.managerId || defaultMgrId,
+            managerName: fallback.managerName || defaultMgrName,
+            label: `${fallback.name} (Fallback)`
+          };
+        }
+
+        const assignedId = checkedIds[rowIndex % checkedIds.length];
+        const assignedRep = Users.getById(assignedId);
+        if (assignedRep) {
+          return {
+            salespersonId: assignedRep.id,
+            salespersonName: assignedRep.name,
+            managerId: assignedRep.managerId || defaultMgrId,
+            managerName: assignedRep.managerName || defaultMgrName,
+            label: `${assignedRep.name} (Selected ${rowIndex % checkedIds.length + 1}/${checkedIds.length})`
+          };
+        }
+      }
+
+      // Default: split_all
+      const allReps = isMgr ? Users.getTeamMembers(user.id) : Users.getSalespeople();
+      if (!allReps.length) {
+        return { salespersonId: null, salespersonName: null, managerId: defaultMgrId, managerName: defaultMgrName, label: 'Unassigned' };
+      }
+
+      const assignedRep = allReps[rowIndex % allReps.length];
+      return {
+        salespersonId: assignedRep.id,
+        salespersonName: assignedRep.name,
+        managerId: assignedRep.managerId || defaultMgrId,
+        managerName: assignedRep.managerName || defaultMgrName,
+        label: `${assignedRep.name} (Round-Robin ${rowIndex % allReps.length + 1}/${allReps.length})`
+      };
+    }
+
+    /**
+     * Setup Template Download and Import Execution buttons
+     */
+    function setupButtons() {
+      // 1. Download sample Excel (.xlsx) using SheetJS
+      document.getElementById('btn-download-sample-xlsx').addEventListener('click', () => {
+        downloadSampleExcel();
+      });
+
+      // 2. Download sample CSV
+      document.getElementById('btn-download-sample-csv').addEventListener('click', () => {
+        downloadSampleCsv();
+      });
+
+      // 3. Quick Load Sample Raw Data (instant test button)
+      document.getElementById('btn-quick-sample-load').addEventListener('click', () => {
+        loadQuickSampleData();
+      });
+
+      // 4. Confirm Import
+      document.getElementById('btn-confirm-import').addEventListener('click', () => {
+        executeImport();
+      });
+
+      // 5. Cancel Import
+      document.getElementById('btn-cancel-import').addEventListener('click', () => {
+        document.getElementById('import-summary-card').style.display = 'none';
+        document.getElementById('file-input').value = '';
+        document.getElementById('selected-file-pill').style.display = 'none';
+        rawParsedRows = [];
+        validRowsToImport = [];
+        duplicateRowsList = [];
+      });
+
+      // 6. Toggle Skip Duplicates
+      document.getElementById('chk-skip-duplicates').addEventListener('change', () => {
+        if (rawParsedRows.length) {
+          evaluateImportRows(rawParsedRows);
+        }
+      });
+    }
+
+    /**
+     * Instant test with sample lead dataset
+     */
+    function loadQuickSampleData() {
+      const sample = [
+        {
+          'Lead Name': 'Kunal Joshi',
+          'Mobile': '9821888001',
+          'Email': 'kunal.j@gmail.com',
+          'Qualification': 'B.Tech (CSE)',
+          'College': 'VJTI Mumbai',
+          'Passing Year': '2025',
+          'Key Skills': 'Java, Spring Boot, MySQL',
+          'Target Role': 'Software Engineer',
+          'Experience': 'Fresher',
+          'City': 'Mumbai',
+          'State': 'Maharashtra',
+          'Expected CTC': '5.5 LPA',
+          'Notes': 'Raw candidate uncalled. VJTI 2025 CS Batch.'
+        },
+        {
+          'Lead Name': 'Aishwarya Patil',
+          'Mobile': '9821888002',
+          'Email': 'aishwarya.p@gmail.com',
+          'Qualification': 'BCA',
+          'College': 'Christ University',
+          'Passing Year': '2025',
+          'Key Skills': 'Python, Django, PostgreSQL',
+          'Target Role': 'Full Stack Developer',
+          'Experience': 'Fresher',
+          'City': 'Bengaluru',
+          'State': 'Karnataka',
+          'Expected CTC': '4.8 LPA',
+          'Notes': 'Needs counseling call.'
+        },
+        {
+          'Lead Name': 'Rohit Kulkarni',
+          'Mobile': '9821888003',
+          'Email': 'rohit.k@gmail.com',
+          'Qualification': 'MCA',
+          'College': 'Pune University',
+          'Passing Year': '2024',
+          'Key Skills': 'Data Analysis, SQL, Tableau, Python',
+          'Target Role': 'Data Analyst',
+          'Experience': '0-1 yr',
+          'City': 'Pune',
+          'State': 'Maharashtra',
+          'Expected CTC': '6.0 LPA',
+          'Notes': 'Uncontacted raw database lead.'
+        },
+        {
+          'Lead Name': 'Sneha Nair',
+          'Mobile': '9821888004',
+          'Email': 'sneha.nair@outlook.com',
+          'Qualification': 'B.E (Information Tech)',
+          'College': 'Anna University',
+          'Passing Year': '2025',
+          'Key Skills': 'React, JavaScript, CSS3, Redux',
+          'Target Role': 'Frontend Engineer',
+          'Experience': 'Fresher',
+          'City': 'Chennai',
+          'State': 'Tamil Nadu',
+          'Expected CTC': '5.0 LPA',
+          'Notes': 'Uncalled raw lead from college placement list.'
+        },
+        {
+          'Lead Name': 'Deepak Verma',
+          'Mobile': '9821888005',
+          'Email': 'deepak.v@gmail.com',
+          'Qualification': 'B.Tech (ECE)',
+          'College': 'DTU Delhi',
+          'Passing Year': '2025',
+          'Key Skills': 'C++, Embedded Systems, IoT, Linux',
+          'Target Role': 'Embedded Software Engineer',
+          'Experience': 'Fresher',
+          'City': 'Delhi',
+          'State': 'Delhi',
+          'Expected CTC': '6.5 LPA',
+          'Notes': 'Campus drive raw list.'
+        }
+      ];
+
+      // Update badge pill
+      const pill = document.getElementById('selected-file-pill');
+      pill.style.display = 'inline-flex';
+      pill.className = 'file-badge-pill';
+      pill.innerHTML = `<i class="fa-solid fa-bolt" style="color: #eab308;"></i> <span>Loaded 5 Sample Candidates (Quick Ingestion)</span>`;
+
+      processParsedData(sample);
+      Toast.info('Sample raw lead candidate list loaded into preview.');
+    }
+
+    /**
+     * Generate and download sample Excel workbook
+     */
+    function downloadSampleExcel() {
+      const sampleData = [
+        {
+          'Lead Name': 'Kunal Joshi',
+          'Mobile': '9821888001',
+          'Email': 'kunal.j@gmail.com',
+          'Qualification': 'B.Tech (CSE)',
+          'College': 'VJTI Mumbai',
+          'Passing Year': '2025',
+          'Key Skills': 'Java, Spring Boot, MySQL',
+          'Target Role': 'Software Engineer',
+          'Experience': 'Fresher',
+          'City': 'Mumbai',
+          'State': 'Maharashtra',
+          'Expected CTC': '5.5 LPA',
+          'Notes': 'Raw candidate uncontacted. College list placement drive.'
+        },
+        {
+          'Lead Name': 'Aishwarya Patil',
+          'Mobile': '9821888002',
+          'Email': 'aishwarya.p@gmail.com',
+          'Qualification': 'BCA',
+          'College': 'Christ University',
+          'Passing Year': '2025',
+          'Key Skills': 'Python, Django, PostgreSQL',
+          'Target Role': 'Full Stack Developer',
+          'Experience': 'Fresher',
+          'City': 'Bengaluru',
+          'State': 'Karnataka',
+          'Expected CTC': '4.8 LPA',
+          'Notes': 'Needs counseling on Python backend track.'
+        },
+        {
+          'Lead Name': 'Rohit Kulkarni',
+          'Mobile': '9821888003',
+          'Email': 'rohit.k@gmail.com',
+          'Qualification': 'MCA',
+          'College': 'Pune University',
+          'Passing Year': '2024',
+          'Key Skills': 'Data Analysis, SQL, Tableau, Python',
+          'Target Role': 'Data Analyst',
+          'Experience': '0-1 yr',
+          'City': 'Pune',
+          'State': 'Maharashtra',
+          'Expected CTC': '6.0 LPA',
+          'Notes': 'Interested in immediate job placement support.'
+        },
+        {
+          'Lead Name': 'Sneha Nair',
+          'Mobile': '9821888004',
+          'Email': 'sneha.nair@outlook.com',
+          'Qualification': 'B.E (Information Tech)',
+          'College': 'Anna University',
+          'Passing Year': '2025',
+          'Key Skills': 'React, JavaScript, CSS3, Redux',
+          'Target Role': 'Frontend Engineer',
+          'Experience': 'Fresher',
+          'City': 'Chennai',
+          'State': 'Tamil Nadu',
+          'Expected CTC': '5.0 LPA',
+          'Notes': 'Raw cold database candidate.'
+        }
+      ];
+
+      try {
+        if (typeof XLSX !== 'undefined') {
+          const ws = XLSX.utils.json_to_sheet(sampleData);
+          const wb = XLSX.utils.book_new();
+          XLSX.utils.book_append_sheet(wb, ws, 'Lead Raw Data');
+          XLSX.writeFile(wb, 'Lead_ColdCalling_Sample_Template.xlsx');
+          Toast.success('Downloaded sample Excel (.xlsx) template.');
+          return;
+        }
+      } catch (err) {
+        console.warn('XLSX.writeFile fallback to CSV:', err);
+      }
+      Utils.exportToCsv('Lead_ColdCalling_Sample_Template.csv', sampleData);
+      Toast.info('Downloaded sample template (CSV format).');
+    }
+
+    /**
+     * Download sample CSV
+     */
+    function downloadSampleCsv() {
+      const sampleData = [
+        {
+          'Lead Name': 'Kunal Joshi',
+          'Mobile': '9821888001',
+          'Email': 'kunal.j@gmail.com',
+          'Qualification': 'B.Tech (CSE)',
+          'College': 'VJTI Mumbai',
+          'Passing Year': '2025',
+          'Key Skills': 'Java, Spring Boot, MySQL',
+          'Target Role': 'Software Engineer',
+          'Experience': 'Fresher',
+          'City': 'Mumbai',
+          'State': 'Maharashtra',
+          'Expected CTC': '5.5 LPA',
+          'Notes': 'Raw candidate uncalled'
+        },
+        {
+          'Lead Name': 'Aishwarya Patil',
+          'Mobile': '9821888002',
+          'Email': 'aishwarya.p@gmail.com',
+          'Qualification': 'BCA',
+          'College': 'Christ University',
+          'Passing Year': '2025',
+          'Key Skills': 'Python, Django, PostgreSQL',
+          'Target Role': 'Full Stack Developer',
+          'Experience': 'Fresher',
+          'City': 'Bengaluru',
+          'State': 'Karnataka',
+          'Expected CTC': '4.8 LPA',
+          'Notes': 'Needs counseling call'
+        },
+        {
+          'Lead Name': 'Rohit Kulkarni',
+          'Mobile': '9821888003',
+          'Email': 'rohit.k@gmail.com',
+          'Qualification': 'MCA',
+          'College': 'Pune University',
+          'Passing Year': '2024',
+          'Key Skills': 'Data Analysis, SQL, Tableau',
+          'Target Role': 'Data Analyst',
+          'Experience': '0-1 yr',
+          'City': 'Pune',
+          'State': 'Maharashtra',
+          'Expected CTC': '6.0 LPA',
+          'Notes': 'Raw lead'
+        }
+      ];
+      Utils.exportToCsv('Lead_ColdCalling_Sample_Template.csv', sampleData);
+      Toast.info('Downloaded sample lead CSV template.');
+    }
+
+    /**
+     * Setup drag and drop / file input zone
+     */
+    function setupUploadZone() {
+      const dropArea = document.getElementById('drop-area');
+      const fileInput = document.getElementById('file-input');
+      const browseBtn = document.getElementById('btn-browse-file');
+
+      // Clicking anywhere on dropArea triggers fileInput
+      dropArea.addEventListener('click', (e) => {
+        if (e.target !== fileInput) {
+          fileInput.click();
+        }
+      });
+
+      browseBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        fileInput.click();
+      });
+
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropArea.classList.add('dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropArea.classList.remove('dragover');
+        });
+      });
+
+      dropArea.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length) handleIncomingFile(files[0]);
+      });
+
+      fileInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length) handleIncomingFile(e.target.files[0]);
+      });
+    }
+
+    /**
+     * Handle Excel or CSV file
+     */
+    function handleIncomingFile(file) {
       const fileName = file.name.toLowerCase();
+      const isExcel = fileName.endsWith('.xlsx') || fileName.endsWith('.xls');
+      const isCsv = fileName.endsWith('.csv');
 
-      reader.onload = function(e) {
-        try {
-          if (fileName.endsWith('.csv')) {
-            parseCSVText(e.target.result);
-          } else {
-            // Excel using SheetJS
+      if (!isExcel && !isCsv) {
+        Toast.error('Unsupported file format. Please upload an Excel (.xlsx, .xls) or CSV (.csv) file.');
+        return;
+      }
+
+      // Update badge pill in upload zone
+      const pill = document.getElementById('selected-file-pill');
+      pill.style.display = 'inline-flex';
+      pill.className = 'file-badge-pill';
+      pill.innerHTML = `
+        <i class="fa-solid ${isExcel ? 'fa-file-excel' : 'fa-file-csv'}"></i>
+        <span>${Utils.escapeHtml(file.name)} (${(file.size / 1024).toFixed(1)} KB)</span>
+      `;
+
+      if (isExcel && typeof XLSX !== 'undefined') {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
             const data = new Uint8Array(e.target.result);
             const workbook = XLSX.read(data, { type: 'array' });
             const firstSheetName = workbook.SheetNames[0];
             const worksheet = workbook.Sheets[firstSheetName];
-            const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-            processRawGrid(jsonRows);
+            const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '', raw: false });
+            processParsedData(jsonRows);
+          } catch (err) {
+            console.error('Error parsing Excel file:', err);
+            Toast.error('Could not parse Excel workbook. Please verify the file format.');
           }
-        } catch (err) {
-          alert('Error parsing spreadsheet: ' + err.message);
-        }
-      };
-
-      if (fileName.endsWith('.csv')) {
-        reader.readAsText(file);
+        };
+        reader.readAsArrayBuffer(file);
       } else {
+        // Read as text or array for CSV
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          if (typeof XLSX !== 'undefined') {
+            try {
+              const data = new Uint8Array(e.target.result);
+              const workbook = XLSX.read(data, { type: 'array' });
+              const firstSheetName = workbook.SheetNames[0];
+              const worksheet = workbook.Sheets[firstSheetName];
+              const jsonRows = XLSX.utils.sheet_to_json(worksheet, { defval: '', raw: false });
+              if (jsonRows && jsonRows.length) {
+                processParsedData(jsonRows);
+                return;
+              }
+            } catch (err) {
+              // fallback to text parser
+            }
+          }
+          // Read text fallback
+          const textReader = new FileReader();
+          textReader.onload = (ev) => parseCsvTextRobust(ev.target.result);
+          textReader.readAsText(file);
+        };
         reader.readAsArrayBuffer(file);
       }
     }
 
-    function parseCSVText(text) {
-      const lines = text.split(/\r\n|\n/).filter(line => line.trim().length > 0);
-      const grid = lines.map(line => {
-        // Simple CSV splitter
-        return line.split(',').map(cell => cell.replace(/^"(.*)"$/, '$1').trim());
-      });
-      processRawGrid(grid);
-    }
-
-    function processRawGrid(grid) {
-      if (!grid || grid.length < 2) {
-        alert('File must contain at least a header row and 1 data row.');
+    /**
+     * Intelligent CSV line parser supporting quoted commas and multi-line fields
+     */
+    function parseCsvTextRobust(csvText) {
+      if (!csvText || !csvText.trim()) {
+        Toast.error('CSV file appears empty.');
         return;
       }
-      fileHeaders = grid[0].map(h => String(h || '').trim());
-      rawFileRows = grid.slice(1).filter(r => r.some(c => String(c || '').trim().length > 0));
 
-      setupColumnMapping();
-      goToStep(2);
-    }
-
-    function setupColumnMapping() {
-      const gridContainer = document.getElementById('mapping-fields-grid');
-      document.getElementById('detected-columns-count').textContent = fileHeaders.length + ' Columns Detected';
-
-      gridContainer.innerHTML = REQUIRED_FIELDS.map(f => {
-        // Auto-match
-        let matchedHeader = '';
-        for (const h of fileHeaders) {
-          const lowerH = h.toLowerCase().replace(/[^a-z0-9]/g, '');
-          if (f.match.some(m => lowerH.includes(m))) {
-            matchedHeader = h;
-            break;
+      // Regex split for CSV row with quotes
+      const parseRow = (line) => {
+        const result = [];
+        let cur = '';
+        let inQuotes = false;
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            if (inQuotes && line[i + 1] === '"') {
+              cur += '"';
+              i++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (char === ',' && !inQuotes) {
+            result.push(cur.trim());
+            cur = '';
+          } else {
+            cur += char;
           }
         }
-
-        const optionsHtml = fileHeaders.map(h => `
-          <option value="${Utils.escapeHtml(h)}" ${h === matchedHeader ? 'selected' : ''}>${Utils.escapeHtml(h)}</option>
-        `).join('');
-
-        return `
-          <div class="form-group" style="margin-bottom: 0;">
-            <label class="form-label">${f.label}</label>
-            <select class="filter-select" style="width: 100%;" id="map-${f.key}" data-key="${f.key}">
-              <option value="">-- Do Not Import --</option>
-              ${optionsHtml}
-            </select>
-          </div>
-        `;
-      }).join('');
-    }
-
-    function processValidation() {
-      // Collect mapping
-      columnMapping = {};
-      REQUIRED_FIELDS.forEach(f => {
-        const val = document.getElementById(`map-${f.key}`)?.value;
-        if (val) columnMapping[f.key] = val;
-      });
-
-      if (!columnMapping.name || !columnMapping.mobile) {
-        alert('Please map at least Student Name and Mobile Number.');
-        return;
-      }
-
-      // Existing mobile numbers in CRM
-      const existingStudents = Customers.getAll();
-      const existingMobiles = new Set();
-      existingStudents.forEach(s => {
-        if (s.mobile) existingMobiles.add(Utils.cleanPhone(s.mobile));
-        if (s.alternateMobile) existingMobiles.add(Utils.cleanPhone(s.alternateMobile));
-      });
-
-      const fileMobilesSeen = new Set();
-      validatedLeads = [];
-      duplicateLeads = [];
-      invalidLeads = [];
-
-      rawFileRows.forEach((row, index) => {
-        const leadObj = {};
-        REQUIRED_FIELDS.forEach(f => {
-          const headerName = columnMapping[f.key];
-          if (headerName) {
-            const colIndex = fileHeaders.indexOf(headerName);
-            leadObj[f.key] = (colIndex !== -1 && row[colIndex] !== undefined) ? String(row[colIndex]).trim() : '';
-          }
-        });
-
-        // Validation Checks
-        const cleanMobile = Utils.cleanPhone(leadObj.mobile || '');
-        if (!leadObj.name || cleanMobile.length < 10) {
-          invalidLeads.push({ ...leadObj, rowIndex: index + 2, reason: 'Missing name or valid 10-digit mobile' });
-          return;
-        }
-
-        // Duplicate checks
-        if (existingMobiles.has(cleanMobile)) {
-          duplicateLeads.push({ ...leadObj, rowIndex: index + 2, reason: 'Mobile already exists in CRM' });
-          return;
-        }
-        if (fileMobilesSeen.has(cleanMobile)) {
-          duplicateLeads.push({ ...leadObj, rowIndex: index + 2, reason: 'Duplicate mobile within imported file' });
-          return;
-        }
-
-        fileMobilesSeen.add(cleanMobile);
-        validatedLeads.push(leadObj);
-      });
-
-      // Update counters
-      document.getElementById('val-total-rows').textContent = rawFileRows.length;
-      document.getElementById('val-valid-rows').textContent = validatedLeads.length;
-      document.getElementById('val-duplicate-rows').textContent = duplicateLeads.length;
-      document.getElementById('val-invalid-rows').textContent = invalidLeads.length;
-
-      // Populate preview table
-      const previewTbody = document.getElementById('validation-preview-tbody');
-      const previewList = [...validatedLeads.slice(0, 7).map(l => ({ ...l, status: 'Valid', note: 'Ready to import' })),
-                           ...duplicateLeads.slice(0, 3).map(l => ({ ...l, status: 'Duplicate', note: l.reason }))];
-
-      if (previewList.length === 0) {
-        previewTbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--slate-400); padding: 20px;">No rows could be previewed.</td></tr>`;
-      } else {
-        previewTbody.innerHTML = previewList.map(item => `
-          <tr>
-            <td>
-              <span class="badge ${item.status === 'Valid' ? 'badge-converted' : 'badge-lost'}">${item.status}</span>
-            </td>
-            <td style="font-weight: 600;">${Utils.escapeHtml(item.name || '-')}</td>
-            <td>${Utils.escapeHtml(item.mobile || '-')}</td>
-            <td>${Utils.escapeHtml(item.email || '-')}</td>
-            <td>${Utils.escapeHtml(item.college || '-')} (${Utils.escapeHtml(item.degree || '-')})</td>
-            <td>${Utils.escapeHtml(item.targetRole || 'Not Specified')}</td>
-            <td style="font-size: 12px; color: ${item.status === 'Valid' ? 'var(--green)' : 'var(--red)'};">${Utils.escapeHtml(item.note)}</td>
-          </tr>
-        `).join('');
-      }
-
-      goToStep(3);
-    }
-
-    function toggleAssignStrategy(strategy) {
-      const manualBox = document.getElementById('manual-counselor-select-box');
-      const roundRobinBox = document.getElementById('round-robin-info-box');
-      if (strategy === 'manual') {
-        manualBox.style.display = 'block';
-        roundRobinBox.style.display = 'none';
-      } else {
-        manualBox.style.display = 'none';
-        roundRobinBox.style.display = 'block';
-      }
-    }
-
-    function executeFinalImport() {
-      if (validatedLeads.length === 0) {
-        alert('There are no valid leads to import.');
-        return;
-      }
-
-      const strategy = document.querySelector('input[name="assign-strategy"]:checked')?.value || 'round-robin';
-      const manualCounselor = document.getElementById('import-target-counselor')?.value || 'Arun Kumar';
-      const counselors = ['Arun Kumar', 'Sneha Rao', 'Vikram Singh', 'Neha Gupta', 'Rahul Mehta'];
-      const counselorManagerMap = {
-        'Arun Kumar': 'Rajesh Sharma',
-        'Sneha Rao': 'Rajesh Sharma',
-        'Vikram Singh': 'Priya Patel',
-        'Neha Gupta': 'Priya Patel',
-        'Rahul Mehta': 'Amit Verma'
+        result.push(cur.trim());
+        return result;
       };
 
-      let importedCount = 0;
-      let totalPipelineValue = 0;
+      const lines = csvText.split(/\r\n|\n/).filter(l => l.trim() !== '');
+      if (lines.length < 2) {
+        Toast.error('CSV file appears empty or missing header row.');
+        return;
+      }
 
-      validatedLeads.forEach((lead, i) => {
-        let assignedCounselor = (strategy === 'manual')
-          ? manualCounselor
-          : counselors[i % counselors.length];
+      const headers = parseRow(lines[0]);
+      const rows = [];
 
-        const fee = Number(lead.placementFee) > 0 ? Number(lead.placementFee) : 45000;
-        totalPipelineValue += fee;
-
-        Customers.create({
-          name: lead.name,
-          mobile: lead.mobile,
-          phone: lead.mobile,
-          email: lead.email || '',
-          college: lead.college || '',
-          degree: lead.degree || '',
-          passingYear: lead.passingYear || '2025',
-          skills: lead.skills || '',
-          targetRole: lead.targetRole || 'Career Track',
-          preferredLocation: 'Any',
-          leadSource: 'Excel Bulk Import',
-          priority: 'Medium',
-          manager: counselorManagerMap[assignedCounselor] || 'Rajesh Sharma',
-          counselor: assignedCounselor,
-          placementFee: fee,
-          installmentPlan: '2 Installments'
+      for (let i = 1; i < lines.length; i++) {
+        const values = parseRow(lines[i]);
+        const rowObj = {};
+        headers.forEach((h, idx) => {
+          rowObj[h] = values[idx] || '';
         });
+        rows.push(rowObj);
+      }
 
-        importedCount++;
-      });
-
-      // Show summary step
-      document.getElementById('final-imported-count').textContent = importedCount;
-      document.getElementById('final-skipped-count').textContent = duplicateLeads.length + invalidLeads.length;
-      document.getElementById('final-pipeline-val').textContent = Utils.formatINR(totalPipelineValue);
-      document.getElementById('final-assigned-summary').textContent = strategy === 'manual' ? manualCounselor : 'Round-Robin (5)';
-      document.getElementById('import-summary-text').textContent = `Successfully imported ${importedCount} student leads into the CRM. ${duplicateLeads.length} duplicates were prevented from entering the pipeline.`;
-
-      goToStep(5);
-      Utils.showToast(`Imported ${importedCount} leads successfully!`, 'success');
+      processParsedData(rows);
     }
 
-    function goToStep(step) {
-      for (let s = 1; s <= 5; s++) {
-        const card = document.getElementById(`step-${s}-card`);
-        const nav = document.getElementById(`step-nav-${s}`);
-        if (card) card.style.display = (s === step) ? 'block' : 'none';
-        if (nav) {
-          const badge = nav.querySelector('.badge');
-          if (s === step) {
-            badge.style.background = 'var(--primary)';
-            badge.style.color = '#fff';
-          } else if (s < step) {
-            badge.style.background = 'var(--green)';
-            badge.style.color = '#fff';
-          } else {
-            badge.style.background = '#e2e8f0';
-            badge.style.color = '#64748b';
+    /**
+     * Clean and normalize raw rows
+     */
+    function processParsedData(rawRows) {
+      if (!rawRows || !rawRows.length) {
+        Toast.error('The selected file does not contain any data rows.');
+        return;
+      }
+
+      // Filter out completely empty objects where all values are blank
+      const cleanRows = rawRows.filter(row => {
+        return Object.values(row).some(v => String(v !== undefined && v !== null ? v : '').trim() !== '');
+      });
+
+      if (!cleanRows.length) {
+        Toast.error('The file contains only empty rows.');
+        return;
+      }
+
+      rawParsedRows = cleanRows;
+      evaluateImportRows(rawParsedRows);
+    }
+
+    /**
+     * Smart column key resolver with exact and fuzzy matching
+     */
+    function findColumnValue(row, possibleNames) {
+      const keys = Object.keys(row);
+
+      // 1. Exact match pass
+      for (const name of possibleNames) {
+        const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        for (const k of keys) {
+          const cleanK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cleanK === cleanName) {
+            return String(row[k] !== undefined && row[k] !== null ? row[k] : '').trim();
           }
         }
       }
+
+      // 2. Fuzzy / substring match pass
+      for (const name of possibleNames) {
+        const cleanName = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+        for (const k of keys) {
+          const cleanK = k.toLowerCase().replace(/[^a-z0-9]/g, '');
+          if (cleanK.includes(cleanName) || cleanName.includes(cleanK)) {
+            return String(row[k] !== undefined && row[k] !== null ? row[k] : '').trim();
+          }
+        }
+      }
+
+      return '';
     }
 
-    function resetImportWorkflow() {
-      rawFileRows = [];
-      fileHeaders = [];
-      columnMapping = {};
-      validatedLeads = [];
-      duplicateLeads = [];
-      invalidLeads = [];
-      document.getElementById('file-input').value = '';
-      goToStep(1);
+    /**
+     * Clean phone number string avoiding scientific notation
+     */
+    function cleanMobileString(val) {
+      if (!val) return '';
+      if (typeof val === 'number') {
+        val = val.toLocaleString('fullwide', { useGrouping: false });
+      }
+      let str = String(val).trim();
+      if (str.toLowerCase().includes('e+')) {
+        str = Number(str).toLocaleString('fullwide', { useGrouping: false });
+      }
+      return str.replace(/[^0-9]/g, '');
     }
 
-    function downloadSampleTemplate() {
-      const csvContent = "data:text/csv;charset=utf-8," + 
-        "Student Name,Mobile Number,Email Address,College,Degree,Passing Year,Skills,Target Role,Placement Fee\n" +
-        "Rohan Gupta,9823456789,rohan.g@example.com,VIT Vellore,B.Tech CSE,2025,\"React, Node.js, Python\",Full Stack Developer,50000\n" +
-        "Ananya Sharma,9876541230,ananya.s@example.com,SRM University,B.Tech IT,2024,\"Java, Spring Boot, MySQL\",Backend Engineer,45000\n" +
-        "Aditya Sen,9911223344,aditya.sen@example.com,BITS Pilani,B.E. Mechanical,2024,\"Python, SQL, Power BI\",Data Analyst,45000\n" +
-        "Meera Nair,9898981212,meera.nair@example.com,Amity University,MCA,2025,\"HTML, CSS, UI/UX, Figma\",Product Designer,40000";
+    /**
+     * Validate and map data rows
+     */
+    function evaluateImportRows(rows) {
+      const targetStage = document.getElementById('import-target-stage').value;
+      const skipDuplicates = document.getElementById('chk-skip-duplicates').checked;
+      const sourceTag = document.getElementById('import-source').value;
+      const priorityTag = document.getElementById('import-priority').value;
+      const batchNote = document.getElementById('import-batch-note').value.trim();
 
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "CareerApex_Sample_Leads_Template.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      let validCount = 0;
+      let duplicateCount = 0;
+      let invalidCount = 0;
+
+      validRowsToImport = [];
+      duplicateRowsList = [];
+      const seenMobilesInFile = new Set();
+
+      const evaluatedRows = rows.map((rawRow, idx) => {
+        const rowNum = idx + 1;
+
+        // Extract normalized fields
+        const name = findColumnValue(rawRow, ['leadname', 'studentname', 'name', 'candidatename', 'fullname', 'lead', 'student']);
+        const rawMobile = findColumnValue(rawRow, ['mobile', 'phone', 'mobilenumber', 'contact', 'contactnumber', 'contactno', 'phonenumber', 'phoneno', 'cell', 'whatsapp', 'mobile1', 'phone1']);
+        const mobile = cleanMobileString(rawMobile);
+        const email = findColumnValue(rawRow, ['email', 'emailid', 'emailaddress', 'leademail', 'studentemail', 'mail']);
+        const qualification = findColumnValue(rawRow, ['qualification', 'degree', 'course', 'stream', 'branch', 'education', 'highestqualification']) || 'B.Tech (CSE)';
+        const college = findColumnValue(rawRow, ['college', 'university', 'institute', 'collegename', 'institution']) || 'College / University';
+        const passingYear = findColumnValue(rawRow, ['passingyear', 'yearofpassing', 'yop', 'batch', 'gradyear', 'graduationyear']) || '2025';
+        const skills = findColumnValue(rawRow, ['skills', 'keyskills', 'technicalskills', 'techstack', 'technologies', 'skillset']) || 'Java, SQL, Python';
+        const targetRole = findColumnValue(rawRow, ['targetrole', 'jobrole', 'desiredrole', 'role', 'position', 'profile']) || 'Software Engineer';
+        const experienceLevel = findColumnValue(rawRow, ['experience', 'experiencelevel', 'exp', 'yrsofexp', 'yearsofexperience']) || 'Fresher';
+        const city = findColumnValue(rawRow, ['city', 'location', 'currentcity', 'town']) || 'Mumbai';
+        const state = findColumnValue(rawRow, ['state', 'region', 'province']) || 'Maharashtra';
+        const expectedCtc = findColumnValue(rawRow, ['expectedctc', 'ctc', 'salary', 'package']);
+        const notes = findColumnValue(rawRow, ['notes', 'remarks', 'comments', 'counselingnotes']);
+
+        // Assignment calculation
+        const assignment = resolveRowAssignment(validCount);
+
+        let status = 'Valid';
+        let statusBadge = '<span class="badge badge-status-converted">Ready</span>';
+        let isRowValid = false;
+
+        if (!name) {
+          status = 'Missing Name';
+          statusBadge = '<span class="badge badge-priority-high">Missing Name</span>';
+          invalidCount++;
+        } else if (!mobile || !Validation.isValidMobile(mobile)) {
+          status = 'Invalid Mobile (10 Digits Required)';
+          statusBadge = `<span class="badge badge-priority-high" title="Mobile was: ${rawMobile}">Invalid Phone</span>`;
+          invalidCount++;
+        } else if (seenMobilesInFile.has(mobile)) {
+          status = 'Duplicate in File';
+          statusBadge = '<span class="badge badge-priority-medium">File Duplicate</span>';
+          duplicateCount++;
+          if (!skipDuplicates) {
+            isRowValid = true;
+          }
+        } else {
+          seenMobilesInFile.add(mobile);
+          // Check localStorage duplicate
+          const existing = Validation.checkDuplicateMobile(mobile);
+          if (existing.exists) {
+            status = `Duplicate (${existing.customer.id})`;
+            statusBadge = `<span class="badge badge-priority-medium" title="Already registered as ${existing.customer.name}">Duplicate (${existing.customer.id})</span>`;
+            duplicateCount++;
+            if (!skipDuplicates) {
+              isRowValid = true;
+            }
+          } else {
+            isRowValid = true;
+          }
+        }
+
+        if (isRowValid) {
+          validCount++;
+          validRowsToImport.push({
+            name,
+            mobile,
+            email,
+            qualification,
+            college,
+            passingYear,
+            skills,
+            targetRole,
+            experienceLevel,
+            city,
+            state,
+            expectedCtc,
+            notes: [notes, batchNote].filter(Boolean).join(' | '),
+            source: sourceTag,
+            priority: priorityTag,
+            stage: targetStage,
+            salespersonId: assignment.salespersonId,
+            salespersonName: assignment.salespersonName,
+            managerId: assignment.managerId,
+            managerName: assignment.managerName
+          });
+        }
+
+        return {
+          rowNum,
+          name,
+          mobile,
+          qualification,
+          college,
+          passingYear,
+          skills,
+          targetRole,
+          city,
+          assignedTo: assignment.label,
+          targetStage,
+          statusBadge
+        };
+      });
+
+      // Update stat cards
+      document.getElementById('stat-total-rows').textContent = rows.length;
+      document.getElementById('stat-valid-rows').textContent = validCount;
+      document.getElementById('stat-duplicate-rows').textContent = duplicateCount;
+      document.getElementById('stat-invalid-rows').textContent = invalidCount;
+
+      // Update assignment summary pill
+      const targetRepText = getDistributionStrategyDescription();
+      document.getElementById('assignment-preview-pill').innerHTML = `
+        <i class="fa-solid fa-arrow-right-to-bracket"></i> Destination: <strong>${targetStage}</strong> | <strong>${Utils.escapeHtml(targetRepText)}</strong>
+      `;
+
+      // Render Preview Table (first 50)
+      const tbody = document.getElementById('import-preview-tbody');
+      const previewRows = evaluatedRows.slice(0, 50);
+
+      tbody.innerHTML = previewRows.map(row => `
+        <tr>
+          <td style="font-weight: 700; color: var(--slate-500);">#${row.rowNum}</td>
+          <td><strong>${Utils.escapeHtml(row.name || '—')}</strong></td>
+          <td style="font-family: monospace; font-weight: 600;">${row.mobile || '—'}</td>
+          <td>${Utils.escapeHtml(row.qualification || '—')}</td>
+          <td>${Utils.escapeHtml(row.college || '—')}</td>
+          <td style="text-align: center;"><span class="badge" style="background:#f1f5f9; color:#475569;">${row.passingYear}</span></td>
+          <td><span style="font-size: 0.75rem; color: var(--primary-700);">${Utils.escapeHtml(row.skills)}</span></td>
+          <td><strong>${Utils.escapeHtml(row.targetRole)}</strong></td>
+          <td>${Utils.escapeHtml(row.city)}</td>
+          <td><span style="font-weight: 600; color: var(--slate-800);">${Utils.escapeHtml(row.assignedTo)}</span></td>
+          <td>${Utils.getStageBadge(row.targetStage)}</td>
+          <td>${row.statusBadge}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('btn-confirm-import').disabled = validCount === 0;
+      document.getElementById('import-summary-card').style.display = 'block';
+
+      // Scroll smoothly down to the summary card
+      document.getElementById('import-summary-card').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
 
-    function loadDemoDataset() {
-      const demoCSV = 
-        "Student Name,Mobile Number,Email Address,College,Degree,Passing Year,Skills,Target Role,Placement Fee\n" +
-        "Kunal Verma,9811002233,kunal.v@example.com,Delhi University,B.Sc CS,2025,\"Python, Django, AWS\",Cloud Engineer,45000\n" +
-        "Deepika Roy,9811003344,deepika.r@example.com,Manipal University,B.Tech ECE,2024,\"Embedded C, IoT\",Hardware Engineer,40000\n" +
-        "Sameer Khan,9811004455,sameer.k@example.com,Anna University,B.Tech CSE,2025,\"React, TypeScript, Redux\",Frontend Developer,45000\n" +
-        "Tanvi Joshi,9811005566,tanvi.j@example.com,Pune University,B.Com + Tech,2024,\"Excel, SQL, Tableau\",Business Analyst,42000\n" +
-        "Vikram Patel,9811006677,vikram.p@example.com,Gujarat Tech University,MCA,2025,\"Java, Spring, Microservices\",Java Developer,48000";
+    /**
+     * Execute the bulk import into localStorage
+     */
+    function executeImport() {
+      if (!validRowsToImport.length) {
+        Toast.error('No valid rows available to import.');
+        return;
+      }
 
-      parseCSVText(demoCSV);
+      const confirmBtn = document.getElementById('btn-confirm-import');
+      confirmBtn.disabled = true;
+      confirmBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Ingesting Leads...';
+
+      let successCount = 0;
+      let failedCount = 0;
+
+      validRowsToImport.forEach(item => {
+        const res = Customers.create({
+          name: item.name,
+          mobile: item.mobile,
+          email: item.email,
+          qualification: item.qualification,
+          college: item.college,
+          passingYear: item.passingYear,
+          skills: item.skills,
+          targetRole: item.targetRole,
+          experienceLevel: item.experienceLevel,
+          city: item.city,
+          state: item.state,
+          expectedCtc: item.expectedCtc,
+          notes: item.notes,
+          source: item.source,
+          priority: item.priority,
+          stage: item.stage,
+          salespersonId: item.salespersonId,
+          salespersonName: item.salespersonName,
+          managerId: item.managerId,
+          managerName: item.managerName
+        });
+
+        if (res.success) {
+          successCount++;
+        } else {
+          failedCount++;
+        }
+      });
+
+      const targetStage = document.getElementById('import-target-stage').value;
+      const targetRepText = getDistributionStrategyDescription();
+
+      const u = currentUser || Auth.getCurrentUser();
+      const userName = u ? u.name : 'Alexander Wright';
+      const userRole = u ? u.role : 'admin';
+
+      Activities.log({
+        action: 'Bulk Candidates Ingested',
+        description: `${userName} (${userRole}) imported ${successCount} candidates into "${targetStage}" stage. Distribution: "${targetRepText}".`
+      });
+
+      Toast.success(`Successfully imported ${successCount} leads into ${targetStage}! Distributed: ${targetRepText}`);
+
+      setTimeout(() => {
+        // Redirect directly to the pipeline filtered to this stage so the user immediately sees the imported records!
+        window.location.href = `pipeline.html?stage=${encodeURIComponent(targetStage)}`;
+      }, 900);
     }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      UI.init('pipeline');
-      goToStep(1);
-    });
   </script>
 </body>
 </html>

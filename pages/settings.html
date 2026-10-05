@@ -3,338 +3,350 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>System Settings &amp; Demo Configuration — Career Apex CRM</title>
-  <link rel="stylesheet" href="../css/style.css">
+  <title>System Settings & Diagnostics — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/forms.css">
+  <link rel="stylesheet" href="../css/tables.css">
   <link rel="stylesheet" href="../css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
+  <div class="crm-app-container">
+    <aside class="crm-sidebar" id="crm-sidebar"></aside>
 
-  <div class="app-container">
-    <div id="sidebar-container"></div>
+    <div class="crm-main-content">
+      <header class="crm-top-header" id="crm-header"></header>
 
-    <div class="main-wrapper">
-      <div id="header-container"></div>
-
-      <main class="content-area">
-        <!-- Page Header -->
-        <div class="page-top-bar">
-          <div class="page-title-box">
-            <h1 class="page-title">System Settings &amp; Demo Configuration</h1>
-            <p class="page-subtitle">Platform governance, placement fee blueprints, installment milestones, and demo benchmark data reset.</p>
+      <main class="crm-page-body" style="padding: 1.5rem; overflow-y: auto;">
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h1 style="font-size: 1.5rem; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em;">System Settings & Data Governance</h1>
+            <p style="color: var(--slate-500); font-size: 0.875rem;">Prototype storage engine diagnostics, pipeline stage configuration, and data backup controls.</p>
           </div>
-          <div class="page-actions-group">
-            <span class="badge" style="background: #fef2f2; color: #dc2626; font-weight: 600; padding: 6px 12px; border: 1px solid #fca5a5;">
-              🔒 Admin Access Only
-            </span>
+          <div>
+            <button class="btn btn-secondary btn-sm" id="btn-reset-demo" style="color: var(--danger-solid); border-color: var(--danger-border); background-color: var(--danger-bg);">
+              <i class="fa-solid fa-arrows-rotate"></i> Reset Demo Data
+            </button>
           </div>
         </div>
 
-        <!-- Role Guard Warning for Non-Admins -->
-        <div id="settings-role-notice" style="display: none; margin-bottom: 24px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px;">
-          <div style="display: flex; gap: 12px; align-items: center;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <!-- Storage & Diagnostic Summary Cards -->
+        <div class="kpi-grid">
+          <div class="kpi-card kpi-primary">
+            <div class="kpi-info">
+              <span class="kpi-label">Registered Leads</span>
+              <span class="kpi-value" id="diag-cust-count">0</span>
+              <span class="kpi-subtext" style="color: var(--slate-500); font-size: 0.75rem;">Candidates in system</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-users"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-purple">
+            <div class="kpi-info">
+              <span class="kpi-label">Audit Events</span>
+              <span class="kpi-value" id="diag-act-count">0</span>
+              <span class="kpi-subtext" style="color: #9333ea; font-size: 0.75rem;">Logged transactions</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-info">
+            <div class="kpi-info">
+              <span class="kpi-label">Follow-ups & Calls</span>
+              <span class="kpi-value" id="diag-flw-call-count">0</span>
+              <span class="kpi-subtext" style="color: var(--info-solid); font-size: 0.75rem;">Scheduled & recorded</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-phone-volume"></i></div>
+          </div>
+
+          <div class="kpi-card kpi-warning">
+            <div class="kpi-info">
+              <span class="kpi-label">Storage Footprint</span>
+              <span class="kpi-value" id="diag-storage-size">0 KB</span>
+              <span class="kpi-subtext" style="color: var(--warning-solid); font-size: 0.75rem;">Browser localStorage</span>
+            </div>
+            <div class="kpi-icon"><i class="fa-solid fa-hard-drive"></i></div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <!-- Pipeline Stages Configuration -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-chart-kanban" style="color: var(--primary-600);"></i> Pipeline Stages</h3>
+              <span style="font-size: 0.75rem; color: var(--slate-500);">9 Stages Defined</span>
+            </div>
+            <div class="card-body">
+              <div id="stages-list-container" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
+            </div>
+          </div>
+
+          <!-- JSON Backup & Restore -->
+          <div class="card">
+            <div class="card-header">
+              <h3 class="card-title"><i class="fa-solid fa-database" style="color: var(--success-solid);"></i> Backup & Migration</h3>
+              <span style="font-size: 0.75rem; color: var(--slate-500);">JSON Snapshot</span>
+            </div>
+            <div class="card-body">
+              <p style="font-size: 0.85rem; color: var(--slate-600); line-height: 1.5; margin-bottom: 1.25rem;">
+                Export an exact replica of the browser database to a JSON file, or restore a previous snapshot for testing and backup purposes.
+              </p>
+
+              <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+                <button class="btn btn-secondary" id="btn-export-json-backup">
+                  <i class="fa-solid fa-download"></i> Export JSON Backup
+                </button>
+                <button class="btn btn-secondary" onclick="document.getElementById('json-backup-input').click()">
+                  <i class="fa-solid fa-upload"></i> Restore JSON Backup
+                </button>
+                <input type="file" id="json-backup-input" accept=".json" style="display: none;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Communication Templates Governance Card -->
+        <div class="card" style="margin-bottom: 1.5rem; border: 1px solid var(--border-light); background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem;">
             <div>
-              <div style="font-weight: 600; color: #92400e;">Restricted Configuration Mode</div>
-              <div style="font-size: 13px; color: #b45309; margin-top: 2px;">
-                You are currently viewing settings as a non-admin role. Settings modifications are read-only. Switch to <strong>Admin</strong> from the top header dropdown to modify organization settings.
-              </div>
+              <h3 class="card-title" style="display: flex; align-items: center; gap: 0.5rem;">
+                <i class="fa-solid fa-envelope-open-text" style="color: var(--primary-600);"></i>
+                Communication Templates Governance
+              </h3>
+              <p style="font-size: 0.8rem; color: var(--slate-500); margin: 0.2rem 0 0 0;">
+                Admin & Sales Manager controlled templates for 1-click candidate engagement (Email & WhatsApp with/without attachments)
+              </p>
             </div>
-          </div>
-        </div>
-
-        <div style="display: flex; flex-direction: column; gap: 24px;">
-          <!-- Section 1: Organization Profile -->
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-icon-square">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
-                  </svg>
-                </div>
-                <div class="card-title-text">
-                  <div class="card-heading">Organization Profile &amp; Branding</div>
-                  <div class="card-subheading">Primary brand identity, corporate contact details, and currency display</div>
-                </div>
-              </div>
-              <button type="button" class="btn-primary-purple" onclick="saveOrgSettings()">Save Changes</button>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-              <div class="form-group">
-                <label class="form-label">Brand Name</label>
-                <input type="text" id="cfg-org-name" class="filter-input" style="width: 100%;" value="Career Apex">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Subtitle / CRM Tagline</label>
-                <input type="text" id="cfg-org-subtitle" class="filter-input" style="width: 100%;" value="Student Placement & Career Counseling CRM">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Support Email Address</label>
-                <input type="email" id="cfg-org-email" class="filter-input" style="width: 100%;" value="admissions@careerapex.com">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Counseling Helpline Phone</label>
-                <input type="text" id="cfg-org-phone" class="filter-input" style="width: 100%;" value="+91 98765 00000">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Headquarters Location</label>
-                <input type="text" id="cfg-org-location" class="filter-input" style="width: 100%;" value="Bangalore Tech Corridor, Karnataka, India">
-              </div>
-
-              <div class="form-group">
-                <label class="form-label">Default Currency</label>
-                <select id="cfg-org-currency" class="filter-select" style="width: 100%;">
-                  <option value="INR" selected>Indian Rupee (₹ INR)</option>
-                  <option value="USD">US Dollar ($ USD)</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 2: Default Placement Fee Blueprints -->
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-icon-square" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M6 3h12M6 8h12M6 13l7 8M6 13h4a4 4 0 000-8H6"/>
-                  </svg>
-                </div>
-                <div class="card-title-text">
-                  <div class="card-heading">Default Placement Fee Blueprints</div>
-                  <div class="card-subheading">Standard pricing blueprints applied automatically when onboarding candidates</div>
-                </div>
-              </div>
-              <button type="button" class="btn-primary-purple" onclick="saveFeeSettings()">Update Fee Blueprints</button>
-            </div>
-
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Standard Placement Track</div>
-                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Core engineering &amp; software development batch</div>
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Default Contracted Fee (₹)</label>
-                  <input type="number" id="fee-standard" class="filter-input" style="width: 100%;" value="45000">
-                </div>
-              </div>
-
-              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Premium Placement Track</div>
-                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Full Stack &amp; AI Product Engineering with mentor track</div>
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Default Contracted Fee (₹)</label>
-                  <input type="number" id="fee-premium" class="filter-input" style="width: 100%;" value="60000">
-                </div>
-              </div>
-
-              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
-                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Executive Career Switch</div>
-                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Experienced candidates switching domain with 1:1 counsel</div>
-                <div class="form-group" style="margin-bottom: 0;">
-                  <label class="form-label">Default Contracted Fee (₹)</label>
-                  <input type="number" id="fee-executive" class="filter-input" style="width: 100%;" value="85000">
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 3: Storage & System Statistics -->
-          <div class="enterprise-card">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-icon-square" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
-                  </svg>
-                </div>
-                <div class="card-title-text">
-                  <div class="card-heading">Frontend Data Layer &amp; Storage Statistics</div>
-                  <div class="card-subheading">Local client-side database persistence records and storage volume</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="kpi-four-grid">
-              <div class="kpi-subcard">
-                <div class="kpi-subcard-label">STUDENTS STORED</div>
-                <div class="kpi-subcard-value" id="stat-stored-students">0</div>
-                <div class="kpi-subcard-footer">crm_students key</div>
-              </div>
-              <div class="kpi-subcard">
-                <div class="kpi-subcard-label">PAYMENT TRANSACTIONS</div>
-                <div class="kpi-subcard-value val-green" id="stat-stored-payments">0</div>
-                <div class="kpi-subcard-footer">crm_payments key</div>
-              </div>
-              <div class="kpi-subcard">
-                <div class="kpi-subcard-label">SCHEDULED FOLLOW-UPS</div>
-                <div class="kpi-subcard-value val-purple" id="stat-stored-followups">0</div>
-                <div class="kpi-subcard-footer">crm_followups key</div>
-              </div>
-              <div class="kpi-subcard">
-                <div class="kpi-subcard-label">STORAGE CONSUMPTION</div>
-                <div class="kpi-subcard-value" style="font-size: 18px;" id="stat-stored-bytes">0 KB</div>
-                <div class="kpi-subcard-footer">HTML5 LocalStorage</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Section 4: Demo Data Management (Danger Zone) -->
-          <div class="enterprise-card" style="border: 1px solid #fecaca; background: #fff5f5;">
-            <div class="card-header-bar">
-              <div class="card-title-group">
-                <div class="card-icon-square" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
-                  </svg>
-                </div>
-                <div class="card-title-text">
-                  <div class="card-heading" style="color: #991b1b;">Danger Zone: Reset Demo CRM Data</div>
-                  <div class="card-subheading" style="color: #b91c1c;">Re-seed demo data to clean benchmark values (₹16,00,000 booked fee, 36 students, 3 overdue milestones).</div>
-                </div>
-              </div>
-              <button type="button" class="btn-primary-purple" style="background: #dc2626; border-color: #dc2626;" onclick="openResetConfirmationModal()">
-                ⚠️ Reset to Benchmark Demo Data
+            <div style="display: flex; gap: 0.5rem;">
+              <button class="btn btn-secondary btn-sm" id="btn-create-template-direct">
+                <i class="fa-solid fa-plus"></i> Create Template
+              </button>
+              <button class="btn btn-primary btn-sm" id="btn-manage-templates-direct" style="background: var(--primary-600); font-weight: 700;">
+                <i class="fa-solid fa-sliders"></i> Manage All Templates
               </button>
             </div>
-            <p style="font-size: 13px; color: #7f1d1d; margin-top: 10px; line-height: 1.5;">
-              Resetting will clear all current candidate profiles, newly logged payments, custom follow-ups, and audit trails, restoring the exact pristine state matching the screenshot visual reference.
-            </p>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+              <div style="background: #eff6ff; border: 1px solid #bfdbfe; border-radius: var(--radius-md); padding: 0.85rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: #1d4ed8; text-transform: uppercase;">Email Templates</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #1e3a8a;" id="diag-email-templates-count">0</div>
+                <div style="font-size: 0.72rem; color: #3b82f6;">Pre-formatted subject, body & tags</div>
+              </div>
+              <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: var(--radius-md); padding: 0.85rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: #047857; text-transform: uppercase;">WhatsApp Templates</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #064e3b;" id="diag-wa-templates-count">0</div>
+                <div style="font-size: 0.72rem; color: #10b981;">1-click wa.me chat dispatch</div>
+              </div>
+              <div style="background: #fef2f2; border: 1px solid #fecaca; border-radius: var(--radius-md); padding: 0.85rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: #b91c1c; text-transform: uppercase;">With Attachment</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #7f1d1d;" id="diag-att-templates-count">0</div>
+                <div style="font-size: 0.72rem; color: #ef4444;">Brochures, Agreements & JDs</div>
+              </div>
+              <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 0.85rem;">
+                <div style="font-size: 0.75rem; font-weight: 700; color: #475569; text-transform: uppercase;">Team Permission</div>
+                <div style="font-size: 0.95rem; font-weight: 700; color: #0f172a; margin-top: 0.4rem;">Admin & Manager</div>
+                <div style="font-size: 0.72rem; color: #64748b;">Full CRUD & Team Deployment</div>
+              </div>
+            </div>
+
+            <!-- Quick Template List Preview -->
+            <div id="settings-templates-preview-list" style="display: flex; flex-direction: column; gap: 0.5rem;"></div>
           </div>
         </div>
 
-      </main>
-    </div>
-  </div>
-
-  <!-- Reset Confirmation Modal -->
-  <div class="modal-backdrop" id="reset-confirm-modal" style="display: none;">
-    <div class="modal-dialog" style="max-width: 480px;">
-      <div class="modal-header">
-        <h3 class="modal-title" style="color: #dc2626;">Confirm Demo Data Reset</h3>
-        <button type="button" class="btn-close" onclick="closeResetModal()">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p style="font-size: 14px; color: var(--navy-900); margin-bottom: 12px; line-height: 1.5;">
-          This action will restore the CRM to its authoritative benchmark dataset:
-        </p>
-        <ul style="font-size: 13px; color: var(--slate-600); margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
-          <li>36 Students with ₹16,00,000 contracted fee</li>
-          <li>₹6,03,500 collected cash &amp; ₹9,96,500 pending dues</li>
-          <li>3 Overdue Milestones</li>
-          <li>Clean counselor performance and audit activity log</li>
-        </ul>
-        <div class="form-group">
-          <label class="form-label" style="color: #dc2626; font-weight: 600;">Type "RESET" to confirm:</label>
-          <input type="text" id="reset-confirm-input" class="filter-input" style="width: 100%; border-color: #fca5a5;" placeholder="RESET">
+        <!-- System Architecture Information -->
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title"><i class="fa-solid fa-circle-info" style="color: var(--primary-600);"></i> Architectural & Storage Details</h3>
+          </div>
+          <div class="card-body">
+            <table class="table" style="font-size: 0.85rem;">
+              <tbody>
+                <tr><td style="width: 30%; font-weight: 600;">Client Architecture</td><td>Decoupled Vanilla JavaScript Layer (UI → Business Logic → StorageService)</td></tr>
+                <tr><td style="font-weight: 600;">Data Persistence Mode</td><td>Browser LocalStorage (Keys: crm_customers, crm_users, crm_activities, crm_followups, crm_calls, crm_stage_history, crm_notes)</td></tr>
+                <tr><td style="font-weight: 600;">Backend Migration Readiness</td><td>Zero UI redesign required. API Service replacement ready.</td></tr>
+                <tr><td style="font-weight: 600;">RBAC Enforcement</td><td>Admin, Sales Manager, Sales Representative</td></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn-outline-sm" onclick="closeResetModal()">Cancel</button>
-        <button type="button" class="btn-primary-purple" style="background: #dc2626; border-color: #dc2626;" onclick="confirmResetExecution()">
-          Confirm &amp; Re-seed Data
-        </button>
-      </div>
+      </main>
     </div>
   </div>
 
   <!-- Scripts -->
   <script src="../js/storage.js"></script>
-  <script src="../js/seed.js"></script>
   <script src="../js/utils.js"></script>
-  <script src="../js/auth.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/validation.js"></script>
+  <script src="../js/seed-data.js"></script>
+  <script src="../js/users.js"></script>
   <script src="../js/activities.js"></script>
   <script src="../js/customers.js"></script>
+  <script src="../js/leads.js"></script>
   <script src="../js/pipeline.js"></script>
-  <script src="../js/payments.js"></script>
   <script src="../js/followups.js"></script>
+  <script src="../js/templates.js"></script>
   <script src="../js/communication.js"></script>
-  <script src="../js/team.js"></script>
   <script src="../js/reports.js"></script>
-  <script src="../js/ui.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/app.js"></script>
 
   <script>
-    function refreshStats() {
-      const stats = StorageService.getStats();
-      const students = Customers.getAll();
-      const payments = Payments.getAll();
-      const followups = Followups.getAll();
-
-      document.getElementById('stat-stored-students').textContent = students.length;
-      document.getElementById('stat-stored-payments').textContent = payments.length;
-      document.getElementById('stat-stored-followups').textContent = followups.length;
-      document.getElementById('stat-stored-bytes').textContent = (stats.totalBytes / 1024).toFixed(1) + ' KB';
-
-      // Check role
-      if (!Auth.isAdmin()) {
-        const notice = document.getElementById('settings-role-notice');
-        if (notice) notice.style.display = 'block';
-      }
-    }
-
-    function saveOrgSettings() {
-      if (!Auth.isAdmin()) {
-        alert('Only an Admin user has permission to save organization settings.');
-        return;
-      }
-      const settings = {
-        name: document.getElementById('cfg-org-name').value,
-        subtitle: document.getElementById('cfg-org-subtitle').value,
-        email: document.getElementById('cfg-org-email').value,
-        phone: document.getElementById('cfg-org-phone').value,
-        location: document.getElementById('cfg-org-location').value,
-        currency: document.getElementById('cfg-org-currency').value
-      };
-      StorageService.set(CRM_KEYS.SETTINGS, settings);
-      Activities.log('Settings Updated', null, null, 'Updated Organization profile & branding');
-      Utils.showToast('Organization settings saved successfully!', 'success');
-    }
-
-    function saveFeeSettings() {
-      if (!Auth.isAdmin()) {
-        alert('Only an Admin user has permission to update fee blueprints.');
-        return;
-      }
-      Activities.log('Settings Updated', null, null, 'Updated default placement fee blueprints');
-      Utils.showToast('Placement fee blueprints updated!', 'success');
-    }
-
-    function openResetConfirmationModal() {
-      if (!Auth.isAdmin()) {
-        alert('Only an Admin user has permission to reset CRM demo data.');
-        return;
-      }
-      document.getElementById('reset-confirm-input').value = '';
-      document.getElementById('reset-confirm-modal').style.display = 'flex';
-    }
-
-    function closeResetModal() {
-      document.getElementById('reset-confirm-modal').style.display = 'none';
-    }
-
-    function confirmResetExecution() {
-      const input = document.getElementById('reset-confirm-input').value.trim();
-      if (input !== 'RESET') {
-        alert('Please type "RESET" to confirm.');
-        return;
-      }
-
-      closeResetModal();
-      SeedData.reset();
-      Utils.showToast('Demo data successfully re-seeded to benchmark state!', 'success');
-      setTimeout(() => {
-        window.location.href = 'admin-dashboard.html';
-      }, 700);
-    }
-
     document.addEventListener('DOMContentLoaded', () => {
-      UI.init('settings');
-      refreshStats();
+      if (!Auth.requireAuth(['admin', 'manager'])) return;
+      App.init('settings');
+
+      renderDiagnostics();
+      renderStages();
+      renderTemplateDiagnostics();
+      setupHandlers();
     });
+
+    function renderDiagnostics() {
+      const customers = StorageService.getData(CRM_STORAGE_KEYS.CUSTOMERS, []);
+      const activities = StorageService.getData(CRM_STORAGE_KEYS.ACTIVITIES, []);
+      const followups = StorageService.getData(CRM_STORAGE_KEYS.FOLLOWUPS, []);
+      const calls = StorageService.getData(CRM_STORAGE_KEYS.CALLS, []);
+
+      document.getElementById('diag-cust-count').textContent = customers.length;
+      document.getElementById('diag-act-count').textContent = activities.length;
+      document.getElementById('diag-flw-call-count').textContent = followups.length + calls.length;
+
+      // Estimate storage in KB
+      let totalBytes = 0;
+      Object.values(CRM_STORAGE_KEYS).forEach(k => {
+        const item = localStorage.getItem(k);
+        if (item) totalBytes += item.length * 2; // Approximate utf-16
+      });
+      document.getElementById('diag-storage-size').textContent = `${(totalBytes / 1024).toFixed(1)} KB`;
+    }
+
+    function renderStages() {
+      const stages = Pipeline.getStages();
+      const container = document.getElementById('stages-list-container');
+      container.innerHTML = stages.map((st, i) => `
+        <div style="padding: 0.65rem 0.85rem; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: #fff; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <span style="font-size: 0.75rem; font-weight: 700; color: var(--slate-400); width: 20px;">#${i + 1}</span>
+            <span style="font-weight: 600; color: var(--slate-800);">${st}</span>
+          </div>
+          <div>${Utils.getStageBadge(st)}</div>
+        </div>
+      `).join('');
+    }
+
+    function setupHandlers() {
+      // Reset demo data
+      document.getElementById('btn-reset-demo').addEventListener('click', () => {
+        ConfirmModal.show({
+          title: 'Reset Demo Database',
+          message: 'Are you sure you want to reset all CRM leads, activities, follow-ups and calls to factory demo data?',
+          confirmText: 'Reset Now',
+          confirmVariant: 'danger',
+          onConfirm: () => {
+            SeedData.resetDemoData();
+            Toast.success('Database restored to default demo state.');
+            setTimeout(() => window.location.reload(), 600);
+          }
+        });
+      });
+
+      // Export JSON
+      document.getElementById('btn-export-json-backup').addEventListener('click', () => {
+        const fullBackup = {};
+        Object.values(CRM_STORAGE_KEYS).forEach(k => {
+          fullBackup[k] = StorageService.getData(k, null);
+        });
+
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(fullBackup, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute('href', dataStr);
+        downloadAnchor.setAttribute('download', `SkillMoveCRM_FullBackup_${new Date().toISOString().slice(0, 10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+        Toast.success('JSON database backup exported.');
+      });
+
+      // Import JSON
+      document.getElementById('json-backup-input').addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            Object.entries(data).forEach(([key, val]) => {
+              if (val !== null && val !== undefined) {
+                StorageService.saveData(key, val);
+              }
+            });
+            Toast.success('JSON backup restored successfully.');
+            setTimeout(() => window.location.reload(), 600);
+          } catch (err) {
+            Toast.error('Invalid JSON backup file.');
+          }
+        };
+        reader.readAsText(file);
+      });
+      // Template direct buttons
+      document.getElementById('btn-manage-templates-direct')?.addEventListener('click', () => {
+        if (window.Templates && typeof Templates.openTemplateManagerModal === 'function') {
+          Templates.openTemplateManagerModal();
+        }
+      });
+      document.getElementById('btn-create-template-direct')?.addEventListener('click', () => {
+        if (window.Templates && typeof Templates.openTemplateManagerModal === 'function') {
+          Templates.openTemplateManagerModal();
+        }
+      });
+    }
+
+    function renderTemplateDiagnostics() {
+      const emailTemplates = (window.Templates && typeof Templates.getAll === 'function') ? Templates.getAll('email') : [];
+      const waTemplates = (window.Templates && typeof Templates.getAll === 'function') ? Templates.getAll('whatsapp') : [];
+      const allTemplates = (window.Templates && typeof Templates.getAll === 'function') ? Templates.getAll() : [];
+      const attTemplates = allTemplates.filter(t => t.hasAttachment);
+
+      const emEl = document.getElementById('diag-email-templates-count');
+      const waEl = document.getElementById('diag-wa-templates-count');
+      const attEl = document.getElementById('diag-att-templates-count');
+      if (emEl) emEl.textContent = emailTemplates.length;
+      if (waEl) waEl.textContent = waTemplates.length;
+      if (attEl) attEl.textContent = attTemplates.length;
+
+      const previewList = document.getElementById('settings-templates-preview-list');
+      if (previewList) {
+        previewList.innerHTML = allTemplates.slice(0, 6).map(t => {
+          const isEm = t.type === 'email';
+          return `
+            <div style="padding: 0.65rem 0.85rem; border: 1px solid var(--border-light); border-radius: var(--radius-md); background: #fff; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+              <div style="display: flex; align-items: center; gap: 0.65rem;">
+                <span class="badge" style="${isEm ? 'background:#eff6ff; color:#1d4ed8;' : 'background:#ecfdf5; color:#047857;'} font-size: 0.72rem;">
+                  <i class="fa-solid ${isEm ? 'fa-envelope' : 'fa-brands fa-whatsapp'}"></i> ${isEm ? 'Email' : 'WhatsApp'}
+                </span>
+                <div>
+                  <strong style="font-size: 0.85rem; color: var(--slate-900);">${Utils.escapeHtml(t.name)}</strong>
+                  <span style="font-size: 0.72rem; color: var(--slate-400); margin-left: 0.35rem;">(${t.category || 'General'})</span>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 0.5rem;">
+                ${t.hasAttachment ? `<span class="badge" style="background:#fef2f2; color:#b91c1c; font-size:0.7rem;"><i class="fa-solid fa-paperclip"></i> ${Utils.escapeHtml(t.attachmentName || 'PDF')}</span>` : '<span style="font-size:0.7rem; color:var(--slate-400);">Without attachment</span>'}
+                <button class="btn btn-secondary btn-sm" onclick="Templates.openTemplateManagerModal('${t.type}')" style="font-size: 0.72rem; padding: 0.2rem 0.5rem;">
+                  <i class="fa-solid fa-pen"></i> Edit
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+    }
   </script>
 </body>
 </html>

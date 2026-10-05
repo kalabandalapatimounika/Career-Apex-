@@ -1,0 +1,479 @@
+/* ==========================================================================
+   SALES CRM - LAYOUT CSS
+   App Shell, Sidebar, Header, Breadcrumbs & Core Grid
+   ========================================================================== */
+
+.crm-app-container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-app);
+}
+
+/* Sidebar */
+.crm-sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  background: var(--bg-sidebar);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  transition: transform var(--transition-normal);
+  z-index: 50;
+  position: sticky;
+  top: 0;
+  left: 0;
+  flex-shrink: 0;
+}
+
+.crm-sidebar-brand {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.crm-brand-logo {
+  width: 38px;
+  height: 38px;
+  background: var(--primary-gradient);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1.2rem;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.crm-brand-info h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+
+.crm-brand-info span {
+  font-size: 0.7rem;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+
+/* Navigation List */
+.crm-nav-wrapper {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 0.75rem;
+}
+
+.crm-nav-section-title {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--slate-500);
+  padding: 0.75rem 0.75rem 0.35rem;
+  font-weight: 700;
+}
+
+.crm-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  color: var(--slate-400);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.2rem;
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.crm-nav-item i {
+  font-size: 1rem;
+  width: 20px;
+  text-align: center;
+  transition: transform var(--transition-fast);
+}
+
+.crm-nav-item:hover {
+  background-color: var(--bg-sidebar-hover);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.crm-nav-item.active {
+  background: var(--primary-gradient);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 4px 12px var(--primary-glow);
+}
+
+.crm-nav-item .badge-count {
+  margin-left: auto;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 0.7rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+}
+
+.crm-nav-item.active .badge-count {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* Sidebar Submenu Styling for Pipeline Stages */
+.crm-nav-item-wrapper {
+  margin-bottom: 0.2rem;
+}
+
+.crm-nav-submenu {
+  padding-left: 1.25rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  max-height: 500px;
+  overflow: hidden;
+  transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease, margin 0.25s ease;
+  opacity: 1;
+}
+
+.crm-nav-submenu.collapsed {
+  max-height: 0;
+  opacity: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.crm-submenu-toggle-icon {
+  font-size: 0.7rem;
+  color: var(--slate-400);
+  transition: transform 0.25s ease;
+  margin-left: 0.4rem;
+}
+
+.crm-nav-item-wrapper.collapsed .crm-submenu-toggle-icon {
+  transform: rotate(-90deg);
+}
+
+.crm-nav-subitem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.42rem 0.75rem;
+  border-radius: var(--radius-sm);
+  color: var(--slate-400);
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all var(--transition-fast);
+}
+
+.crm-nav-subitem:hover {
+  background-color: var(--bg-sidebar-hover);
+  color: #fff;
+  transform: translateX(2px);
+}
+
+.crm-nav-subitem.active {
+  background-color: rgba(99, 102, 241, 0.25);
+  color: #a5b4fc;
+  font-weight: 600;
+}
+
+.crm-nav-subitem .subitem-pill {
+  font-size: 0.68rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--slate-300);
+  padding: 0.05rem 0.4rem;
+  border-radius: var(--radius-full);
+}
+
+.crm-nav-subitem.active .subitem-pill {
+  background-color: rgba(99, 102, 241, 0.4);
+  color: #fff;
+}
+
+/* Sidebar Footer & User Profile */
+.crm-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.crm-user-profile-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crm-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #38bdf8, #818cf8);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.crm-user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.crm-user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.crm-user-role-badge {
+  font-size: 0.68rem;
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-sm);
+  display: inline-block;
+  margin-top: 0.1rem;
+}
+
+.crm-btn-logout {
+  background: transparent;
+  border: none;
+  color: var(--slate-400);
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.crm-btn-logout:hover {
+  color: var(--danger-solid);
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+/* Main Content Area */
+.crm-main,
+.crm-main-content {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Header */
+.crm-header,
+.crm-top-header {
+  height: 64px;
+  min-height: 64px;
+  max-height: 64px;
+  background-color: #fff;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.75rem;
+  z-index: 30;
+  box-shadow: var(--shadow-xs);
+  flex-shrink: 0;
+}
+
+.crm-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.crm-sidebar-toggle {
+  display: none;
+  background: transparent;
+  border: none;
+  color: var(--slate-700);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: var(--radius-md);
+}
+
+.crm-search-wrapper {
+  position: relative;
+  width: 320px;
+}
+
+.crm-search-wrapper i {
+  position: absolute;
+  left: 0.85rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--slate-400);
+  font-size: 0.875rem;
+}
+
+.crm-global-search {
+  width: 100%;
+  padding: 0.5rem 0.85rem 0.5rem 2.4rem;
+  font-size: 0.85rem;
+  background-color: var(--slate-100);
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  transition: all var(--transition-fast);
+  color: var(--slate-800);
+}
+
+.crm-global-search:focus {
+  outline: none;
+  background-color: #fff;
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-glow);
+}
+
+.crm-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Role Demo Switcher (Crucial for testing/demoing all 3 roles!) */
+.crm-demo-switcher {
+  display: flex;
+  align-items: center;
+  background-color: var(--slate-100);
+  padding: 0.25rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--slate-200);
+}
+
+.crm-demo-switch-btn {
+  background: transparent;
+  border: none;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.crm-demo-switch-btn.active {
+  background-color: #fff;
+  color: var(--primary-600);
+  box-shadow: var(--shadow-xs);
+}
+
+.crm-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Page Content View */
+.crm-content,
+.crm-page-body {
+  flex: 1 1 0%;
+  overflow-y: auto !important;
+  overflow-x: auto;
+  padding: 1.75rem;
+  background-color: var(--bg-app);
+  height: calc(100vh - 64px);
+  max-height: calc(100vh - 64px);
+  min-height: 0;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Custom Scrollbar for Smooth UX */
+.crm-content::-webkit-scrollbar,
+.crm-page-body::-webkit-scrollbar,
+.crm-nav-wrapper::-webkit-scrollbar,
+.kanban-cards-wrapper::-webkit-scrollbar,
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.crm-content::-webkit-scrollbar-track,
+.crm-page-body::-webkit-scrollbar-track,
+.crm-nav-wrapper::-webkit-scrollbar-track,
+.kanban-cards-wrapper::-webkit-scrollbar-track,
+.table-responsive::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.crm-content::-webkit-scrollbar-thumb,
+.crm-page-body::-webkit-scrollbar-thumb,
+.crm-nav-wrapper::-webkit-scrollbar-thumb,
+.kanban-cards-wrapper::-webkit-scrollbar-thumb,
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color: var(--slate-300);
+  border-radius: var(--radius-full);
+}
+
+.crm-content::-webkit-scrollbar-thumb:hover,
+.crm-page-body::-webkit-scrollbar-thumb:hover {
+  background-color: var(--slate-400);
+}
+
+/* Page Header & Breadcrumbs */
+.crm-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.crm-page-title-group h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--slate-900);
+}
+
+.crm-breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--slate-500);
+  margin-top: 0.25rem;
+}
+
+.crm-breadcrumbs a {
+  color: var(--slate-500);
+}
+
+.crm-breadcrumbs a:hover {
+  color: var(--primary-600);
+}
+
+.crm-breadcrumbs span {
+  color: var(--slate-400);
+}
+
+.crm-page-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
