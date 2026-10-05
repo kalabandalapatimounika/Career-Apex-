@@ -2,37 +2,18 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Career Apex CRM — Enterprise Sales Operations</title>
-  <link rel="stylesheet" href="css/global.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Career Apex CRM — Student Placement & Career Counseling Sales CRM built in modern React">
+  <title>Career Apex CRM — Enterprise Sales & Placement Operations</title>
+  
+  <!-- Typography & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body style="display: flex; align-items: center; justify-content: center; height: 100vh; background-color: var(--bg-app);">
-  <div style="text-align: center;">
-    <div style="width: 56px; height: 56px; margin: 0 auto 1.5rem; background: var(--primary-gradient); border-radius: var(--radius-lg); display: flex; align-items: center; justify-content: center; color: #fff; font-size: 1.75rem; box-shadow: 0 8px 24px var(--primary-glow);">
-      <i class="fa-solid fa-arrow-trend-up"></i>
-    </div>
-    <h2 style="font-size: 1.5rem; font-weight: 700; color: var(--slate-900); margin-bottom: 0.5rem;">Career Apex CRM</h2>
-    <p style="color: var(--slate-500); font-size: 0.95rem;">Loading enterprise sales workspace...</p>
-  </div>
-
-  <script src="js/storage.js"></script>
-  <script src="js/utils.js"></script>
-  <script src="js/notifications.js"></script>
-  <script src="js/validation.js"></script>
-  <script src="js/seed-data.js"></script>
-  <script src="js/users.js"></script>
-  <script src="js/activities.js"></script>
-  <script src="js/auth.js"></script>
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      if (Auth.isAuthenticated()) {
-        const user = Auth.getCurrentUser();
-        window.location.replace(Auth.getDashboardUrl(user.role));
-      } else {
-        window.location.replace('pages/login.html');
-      }
-    });
-  </script>
+<body>
+  <div id="root"></div>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>

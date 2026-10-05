@@ -1,13 +1,30 @@
 {
   "name": "career-apex-crm",
   "version": "1.0.0",
-  "description": "Career Apex CRM - Student Placement & Career Counseling Sales CRM",
-  "main": "server.js",
+  "type": "module",
+  "description": "Career Apex CRM - Student Placement & Career Counseling Sales CRM built in React",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "start": "vite",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": ["crm", "placement", "counseling", "career-apex"],
+  "dependencies": {
+    "lucide-react": "^1.16.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite": "^6.2.0"
+  },
+  "keywords": [
+    "crm",
+    "react",
+    "placement",
+    "counseling",
+    "career-apex"
+  ],
   "author": "Career Apex",
   "license": "ISC"
 }
