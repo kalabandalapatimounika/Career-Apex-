@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Career Counselor Daily Workspace — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">Career Counselor Daily Workspace</h1>
+            <p class="page-subtitle">Candidate call queue, daily counseling touchpoints, stage progressions, and student enrollment quotas.</p>
+          </div>
+          <div class="page-actions-group">
+            <button type="button" class="btn-header-action" onclick="Followups.openScheduleModal(null, refreshPageData)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              + Schedule Follow-up
+            </button>
+            <button type="button" class="btn-primary-purple" onclick="UI.openAddLeadModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              + Add Lead
+            </button>
+          </div>
+        </div>
+
+        <!-- Counselor Metrics Strip -->
+        <div class="candidate-kpi-grid">
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #eff6ff; color: #3b82f6;">Assigned</div>
+            <div class="stat-card-num" id="counselor-stat-leads">12</div>
+            <div class="stat-card-title">My Total Leads</div>
+            <div class="stat-card-subtitle">Active student portfolio</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #fffbeb; color: #b45309;">Urgent</div>
+            <div class="stat-card-num" id="counselor-stat-today">3</div>
+            <div class="stat-card-title">Today's Tasks</div>
+            <div class="stat-card-subtitle">Calls &amp; counseling sessions</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #fef2f2; color: #dc2626;">Action Required</div>
+            <div class="stat-card-num" id="counselor-stat-overdue">1</div>
+            <div class="stat-card-title">Overdue Follow-ups</div>
+            <div class="stat-card-subtitle">Needs immediate resolution</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #f5f3ff; color: #7c3aed;">High Intent</div>
+            <div class="stat-card-num" id="counselor-stat-interested">2</div>
+            <div class="stat-card-title">Interested Candidates</div>
+            <div class="stat-card-subtitle">Counseling scheduled</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #fef3c7; color: #d97706;">Hot</div>
+            <div class="stat-card-num" id="counselor-stat-prospects">2</div>
+            <div class="stat-card-title">Active Prospects</div>
+            <div class="stat-card-subtitle">Fee proposal pending</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Success</div>
+            <div class="stat-card-num" id="counselor-stat-converted">2</div>
+            <div class="stat-card-title">Enrolled / Converted</div>
+            <div class="stat-card-subtitle">Verified placements</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Realized</div>
+            <div class="stat-card-num val-green" id="counselor-stat-collections">₹2,10,000</div>
+            <div class="stat-card-title">Collected Fees</div>
+            <div class="stat-card-subtitle">Paid installment amount</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-card-badge" style="background: #eef2ff; color: #6366f1;">Quota</div>
+            <div class="stat-card-num val-purple" id="counselor-stat-quota">52.5%</div>
+            <div class="stat-card-title">Monthly Quota Pace</div>
+            <div class="stat-card-subtitle">Target ₹4,00,000</div>
+          </div>
+        </div>
+
+        <!-- Priority Outreach Action Queue (Today & Overdue) -->
+        <div class="enterprise-card" style="margin-top: 24px;">
+          <div class="card-header-bar">
+            <div class="card-title-group">
+              <div class="card-icon-square" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                </svg>
+              </div>
+              <div class="card-title-text">
+                <div class="card-heading">Today's Candidate Outreach Tasks</div>
+                <div class="card-subheading">1-Click actions to Call, WhatsApp, Email, or Complete task with counseling outcome notes</div>
+              </div>
+            </div>
+            <a href="followups.html" class="btn-header-action">Full Agenda →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Student Candidate</th>
+                  <th>Target Role</th>
+                  <th>Time / Due</th>
+                  <th>Priority</th>
+                  <th>Purpose / Agenda</th>
+                  <th>Quick Action Hub</th>
+                </tr>
+              </thead>
+              <tbody id="counselor-tasks-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Counselor's Active Leads Pipeline -->
+        <div class="enterprise-card" style="margin-top: 24px;">
+          <div class="card-header-bar">
+            <div class="card-title-group">
+              <div class="card-icon-square">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              </div>
+              <div class="card-title-text">
+                <div class="card-heading">My Assigned Candidates &amp; Placement Pipeline</div>
+                <div class="card-subheading">Real-time stage transitions, payment balances, and immediate actions</div>
+              </div>
+            </div>
+            <a href="pipeline.html" class="btn-header-action">Open Pipeline →</a>
+          </div>
+
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Student Name</th>
+                  <th>Mobile</th>
+                  <th>College &amp; Degree</th>
+                  <th>Stage</th>
+                  <th>Fee Status</th>
+                  <th>Next Follow-up</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="counselor-leads-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/communication.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    function refreshPageData() {
+      const user = Auth.getCurrentUser();
+      const allStudents = Customers.getAll();
+      const allFollowups = Followups.getAll();
+      const allPayments = Payments.getAll();
+
+      // Determine active counselor name: if logged in as counselor, use user's name, otherwise default to Arun Kumar
+      const isCounselor = user && (user.role === 'COUNSELOR' || user.role === 'counselor');
+      const counselorName = isCounselor ? user.name : 'Arun Kumar';
+
+      const myStudents = allStudents.filter(s => s.counselor === counselorName);
+      const myStudentIds = myStudents.map(s => s.id);
+
+      const myFollowups = allFollowups.filter(f => f.counselor === counselorName || myStudentIds.includes(f.studentId));
+      const myPayments = allPayments.filter(p => myStudentIds.includes(p.studentId));
+
+      // Financials
+      const myBooked = myStudents.reduce((sum, s) => sum + (s.placementFee || 0), 0);
+      const myCollected = myStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
+      const myTarget = 400000; // Monthly benchmark quota
+      const quotaPct = ((myCollected / myTarget) * 100).toFixed(1);
+
+      // Counts
+      const counts = Pipeline.getStageCounts(myStudents);
+      document.getElementById('counselor-stat-leads').textContent = myStudents.length;
+      document.getElementById('counselor-stat-interested').textContent = counts['Interested'] || 0;
+      document.getElementById('counselor-stat-prospects').textContent = counts['Prospect'] || 0;
+      document.getElementById('counselor-stat-converted').textContent = counts['Converted'] || 0;
+      document.getElementById('counselor-stat-collections').textContent = Utils.formatINR(myCollected);
+      document.getElementById('counselor-stat-quota').textContent = quotaPct + '%';
+
+      // Tasks: today & overdue
+      const todayStr = new Date().toISOString().split('T')[0];
+      const pendingTasks = myFollowups.filter(f => f.status === 'Pending');
+      const todayTasks = pendingTasks.filter(f => f.scheduledDate === todayStr);
+      const overdueTasks = pendingTasks.filter(f => f.scheduledDate < todayStr);
+
+      document.getElementById('counselor-stat-today').textContent = todayTasks.length;
+      document.getElementById('counselor-stat-overdue').textContent = overdueTasks.length;
+
+      // Populate Action Queue
+      const taskTbody = document.getElementById('counselor-tasks-tbody');
+      const activeQueue = pendingTasks.slice(0, 8);
+
+      if (activeQueue.length === 0) {
+        taskTbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 30px;">Great job! No pending outreach tasks remaining.</td></tr>`;
+      } else {
+        taskTbody.innerHTML = activeQueue.map(f => {
+          const student = myStudents.find(s => s.id === f.studentId) || { mobile: '9876543210', targetRole: 'Software Engineer' };
+          const isOverdue = f.scheduledDate < todayStr;
+          return `
+            <tr>
+              <td>
+                <div style="font-weight: 600;">
+                  <a href="customer-details.html?id=${f.studentId}" style="color: var(--primary); text-decoration: none;">
+                    ${Utils.escapeHtml(f.studentName)}
+                  </a>
+                </div>
+                <div style="font-size: 11px; color: var(--slate-500);">${f.studentId} • ${student.mobile || ''}</div>
+              </td>
+              <td><span style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(student.targetRole || 'Developer')}</span></td>
+              <td>
+                <div style="font-weight: 500; font-size: 12px; color: ${isOverdue ? 'var(--red)' : 'var(--navy-900)'};">
+                  ${f.scheduledDate} ${f.scheduledTime || ''}
+                </div>
+                ${isOverdue ? '<span class="badge badge-lost" style="font-size: 10px; padding: 2px 6px;">Overdue</span>' : ''}
+              </td>
+              <td><span class="badge ${f.priority === 'High' ? 'badge-interested' : 'badge-new'}">${f.priority || 'Normal'}</span></td>
+              <td style="font-size: 13px; color: var(--slate-700); max-width: 220px;">${Utils.escapeHtml(f.purpose)}</td>
+              <td>
+                <div class="row-actions">
+                  <button class="btn-icon" onclick="Communication.logCall('${f.studentId}', refreshPageData)" title="Call Student">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Communication.sendWhatsApp('${f.studentId}', 'followup')" title="WhatsApp Message">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Communication.sendEmail('${f.studentId}')" title="Email Student">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Followups.openCompleteModal('${f.id}', refreshPageData)" title="Complete Task">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Populate Counselor Leads Table
+      const leadsTbody = document.getElementById('counselor-leads-tbody');
+      if (myStudents.length === 0) {
+        leadsTbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--slate-400); padding: 30px;">No assigned students yet. Click "+ Add Lead" to enroll.</td></tr>`;
+      } else {
+        leadsTbody.innerHTML = myStudents.map(s => {
+          const stageBadge = Utils.getStageBadge(s.stage);
+          const paymentBadge = Utils.getPaymentBadge(s.paymentStatus);
+          return `
+            <tr>
+              <td><span style="font-family: monospace; font-size: 11px; color: var(--slate-500);">${s.id}</span></td>
+              <td>
+                <a href="customer-details.html?id=${s.id}" style="font-weight: 600; color: var(--navy-900); text-decoration: none;">
+                  ${Utils.escapeHtml(s.name)}
+                </a>
+              </td>
+              <td><span style="font-size: 13px; color: var(--slate-600);">${Utils.escapeHtml(s.mobile)}</span></td>
+              <td>
+                <div style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(s.college || '-')}</div>
+                <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(s.degree || '')} (${s.passingYear || ''})</div>
+              </td>
+              <td>${stageBadge}</td>
+              <td>
+                <div>${paymentBadge}</div>
+                <div style="font-size: 11px; color: var(--slate-500); margin-top: 2px;">
+                  Paid: ${Utils.formatINR(s.paidAmount || 0)} / ${Utils.formatINR(s.placementFee || 0)}
+                </div>
+              </td>
+              <td><span style="font-size: 12px; color: var(--slate-600);">${s.nextFollowup || 'Not scheduled'}</span></td>
+              <td>
+                <div class="row-actions">
+                  <a href="customer-details.html?id=${s.id}" class="btn-icon" title="View Profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </a>
+                  <button class="btn-icon" onclick="Pipeline.openStageChangeModal('${s.id}', refreshPageData)" title="Update Stage">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Payments.openRecordModal('${s.id}', refreshPageData)" title="Record Payment">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('dashboard');
+      refreshPageData();
+    });
+  </script>
+</body>
+</html>

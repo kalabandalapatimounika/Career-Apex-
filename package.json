@@ -1,0 +1,13 @@
+{
+  "name": "career-apex-crm",
+  "version": "1.0.0",
+  "description": "Career Apex CRM - Student Placement & Career Counseling Sales CRM",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": ["crm", "placement", "counseling", "career-apex"],
+  "author": "Career Apex",
+  "license": "ISC"
+}

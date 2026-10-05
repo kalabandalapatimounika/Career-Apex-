@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>System Settings &amp; Demo Configuration — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">System Settings &amp; Demo Configuration</h1>
+            <p class="page-subtitle">Platform governance, placement fee blueprints, installment milestones, and demo benchmark data reset.</p>
+          </div>
+          <div class="page-actions-group">
+            <span class="badge" style="background: #fef2f2; color: #dc2626; font-weight: 600; padding: 6px 12px; border: 1px solid #fca5a5;">
+              🔒 Admin Access Only
+            </span>
+          </div>
+        </div>
+
+        <!-- Role Guard Warning for Non-Admins -->
+        <div id="settings-role-notice" style="display: none; margin-bottom: 24px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 16px;">
+          <div style="display: flex; gap: 12px; align-items: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" style="width: 24px; height: 24px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <div>
+              <div style="font-weight: 600; color: #92400e;">Restricted Configuration Mode</div>
+              <div style="font-size: 13px; color: #b45309; margin-top: 2px;">
+                You are currently viewing settings as a non-admin role. Settings modifications are read-only. Switch to <strong>Admin</strong> from the top header dropdown to modify organization settings.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display: flex; flex-direction: column; gap: 24px;">
+          <!-- Section 1: Organization Profile -->
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-icon-square">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                  </svg>
+                </div>
+                <div class="card-title-text">
+                  <div class="card-heading">Organization Profile &amp; Branding</div>
+                  <div class="card-subheading">Primary brand identity, corporate contact details, and currency display</div>
+                </div>
+              </div>
+              <button type="button" class="btn-primary-purple" onclick="saveOrgSettings()">Save Changes</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <div class="form-group">
+                <label class="form-label">Brand Name</label>
+                <input type="text" id="cfg-org-name" class="filter-input" style="width: 100%;" value="Career Apex">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Subtitle / CRM Tagline</label>
+                <input type="text" id="cfg-org-subtitle" class="filter-input" style="width: 100%;" value="Student Placement & Career Counseling CRM">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Support Email Address</label>
+                <input type="email" id="cfg-org-email" class="filter-input" style="width: 100%;" value="admissions@careerapex.com">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Counseling Helpline Phone</label>
+                <input type="text" id="cfg-org-phone" class="filter-input" style="width: 100%;" value="+91 98765 00000">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Headquarters Location</label>
+                <input type="text" id="cfg-org-location" class="filter-input" style="width: 100%;" value="Bangalore Tech Corridor, Karnataka, India">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Default Currency</label>
+                <select id="cfg-org-currency" class="filter-select" style="width: 100%;">
+                  <option value="INR" selected>Indian Rupee (₹ INR)</option>
+                  <option value="USD">US Dollar ($ USD)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Default Placement Fee Blueprints -->
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-icon-square" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M6 3h12M6 8h12M6 13l7 8M6 13h4a4 4 0 000-8H6"/>
+                  </svg>
+                </div>
+                <div class="card-title-text">
+                  <div class="card-heading">Default Placement Fee Blueprints</div>
+                  <div class="card-subheading">Standard pricing blueprints applied automatically when onboarding candidates</div>
+                </div>
+              </div>
+              <button type="button" class="btn-primary-purple" onclick="saveFeeSettings()">Update Fee Blueprints</button>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
+                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Standard Placement Track</div>
+                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Core engineering &amp; software development batch</div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Default Contracted Fee (₹)</label>
+                  <input type="number" id="fee-standard" class="filter-input" style="width: 100%;" value="45000">
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
+                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Premium Placement Track</div>
+                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Full Stack &amp; AI Product Engineering with mentor track</div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Default Contracted Fee (₹)</label>
+                  <input type="number" id="fee-premium" class="filter-input" style="width: 100%;" value="60000">
+                </div>
+              </div>
+
+              <div style="background: #f8fafc; border: 1px solid var(--slate-200); border-radius: 10px; padding: 16px;">
+                <div style="font-weight: 600; color: var(--navy-900); margin-bottom: 4px;">Executive Career Switch</div>
+                <div style="font-size: 12px; color: var(--slate-500); margin-bottom: 12px;">Experienced candidates switching domain with 1:1 counsel</div>
+                <div class="form-group" style="margin-bottom: 0;">
+                  <label class="form-label">Default Contracted Fee (₹)</label>
+                  <input type="number" id="fee-executive" class="filter-input" style="width: 100%;" value="85000">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Storage & System Statistics -->
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-icon-square" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+                  </svg>
+                </div>
+                <div class="card-title-text">
+                  <div class="card-heading">Frontend Data Layer &amp; Storage Statistics</div>
+                  <div class="card-subheading">Local client-side database persistence records and storage volume</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="kpi-four-grid">
+              <div class="kpi-subcard">
+                <div class="kpi-subcard-label">STUDENTS STORED</div>
+                <div class="kpi-subcard-value" id="stat-stored-students">0</div>
+                <div class="kpi-subcard-footer">crm_students key</div>
+              </div>
+              <div class="kpi-subcard">
+                <div class="kpi-subcard-label">PAYMENT TRANSACTIONS</div>
+                <div class="kpi-subcard-value val-green" id="stat-stored-payments">0</div>
+                <div class="kpi-subcard-footer">crm_payments key</div>
+              </div>
+              <div class="kpi-subcard">
+                <div class="kpi-subcard-label">SCHEDULED FOLLOW-UPS</div>
+                <div class="kpi-subcard-value val-purple" id="stat-stored-followups">0</div>
+                <div class="kpi-subcard-footer">crm_followups key</div>
+              </div>
+              <div class="kpi-subcard">
+                <div class="kpi-subcard-label">STORAGE CONSUMPTION</div>
+                <div class="kpi-subcard-value" style="font-size: 18px;" id="stat-stored-bytes">0 KB</div>
+                <div class="kpi-subcard-footer">HTML5 LocalStorage</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Demo Data Management (Danger Zone) -->
+          <div class="enterprise-card" style="border: 1px solid #fecaca; background: #fff5f5;">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-icon-square" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>
+                  </svg>
+                </div>
+                <div class="card-title-text">
+                  <div class="card-heading" style="color: #991b1b;">Danger Zone: Reset Demo CRM Data</div>
+                  <div class="card-subheading" style="color: #b91c1c;">Re-seed demo data to clean benchmark values (₹16,00,000 booked fee, 36 students, 3 overdue milestones).</div>
+                </div>
+              </div>
+              <button type="button" class="btn-primary-purple" style="background: #dc2626; border-color: #dc2626;" onclick="openResetConfirmationModal()">
+                ⚠️ Reset to Benchmark Demo Data
+              </button>
+            </div>
+            <p style="font-size: 13px; color: #7f1d1d; margin-top: 10px; line-height: 1.5;">
+              Resetting will clear all current candidate profiles, newly logged payments, custom follow-ups, and audit trails, restoring the exact pristine state matching the screenshot visual reference.
+            </p>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div class="modal-backdrop" id="reset-confirm-modal" style="display: none;">
+    <div class="modal-dialog" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title" style="color: #dc2626;">Confirm Demo Data Reset</h3>
+        <button type="button" class="btn-close" onclick="closeResetModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 14px; color: var(--navy-900); margin-bottom: 12px; line-height: 1.5;">
+          This action will restore the CRM to its authoritative benchmark dataset:
+        </p>
+        <ul style="font-size: 13px; color: var(--slate-600); margin-bottom: 16px; padding-left: 20px; line-height: 1.6;">
+          <li>36 Students with ₹16,00,000 contracted fee</li>
+          <li>₹6,03,500 collected cash &amp; ₹9,96,500 pending dues</li>
+          <li>3 Overdue Milestones</li>
+          <li>Clean counselor performance and audit activity log</li>
+        </ul>
+        <div class="form-group">
+          <label class="form-label" style="color: #dc2626; font-weight: 600;">Type "RESET" to confirm:</label>
+          <input type="text" id="reset-confirm-input" class="filter-input" style="width: 100%; border-color: #fca5a5;" placeholder="RESET">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn-outline-sm" onclick="closeResetModal()">Cancel</button>
+        <button type="button" class="btn-primary-purple" style="background: #dc2626; border-color: #dc2626;" onclick="confirmResetExecution()">
+          Confirm &amp; Re-seed Data
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/communication.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    function refreshStats() {
+      const stats = StorageService.getStats();
+      const students = Customers.getAll();
+      const payments = Payments.getAll();
+      const followups = Followups.getAll();
+
+      document.getElementById('stat-stored-students').textContent = students.length;
+      document.getElementById('stat-stored-payments').textContent = payments.length;
+      document.getElementById('stat-stored-followups').textContent = followups.length;
+      document.getElementById('stat-stored-bytes').textContent = (stats.totalBytes / 1024).toFixed(1) + ' KB';
+
+      // Check role
+      if (!Auth.isAdmin()) {
+        const notice = document.getElementById('settings-role-notice');
+        if (notice) notice.style.display = 'block';
+      }
+    }
+
+    function saveOrgSettings() {
+      if (!Auth.isAdmin()) {
+        alert('Only an Admin user has permission to save organization settings.');
+        return;
+      }
+      const settings = {
+        name: document.getElementById('cfg-org-name').value,
+        subtitle: document.getElementById('cfg-org-subtitle').value,
+        email: document.getElementById('cfg-org-email').value,
+        phone: document.getElementById('cfg-org-phone').value,
+        location: document.getElementById('cfg-org-location').value,
+        currency: document.getElementById('cfg-org-currency').value
+      };
+      StorageService.set(CRM_KEYS.SETTINGS, settings);
+      Activities.log('Settings Updated', null, null, 'Updated Organization profile & branding');
+      Utils.showToast('Organization settings saved successfully!', 'success');
+    }
+
+    function saveFeeSettings() {
+      if (!Auth.isAdmin()) {
+        alert('Only an Admin user has permission to update fee blueprints.');
+        return;
+      }
+      Activities.log('Settings Updated', null, null, 'Updated default placement fee blueprints');
+      Utils.showToast('Placement fee blueprints updated!', 'success');
+    }
+
+    function openResetConfirmationModal() {
+      if (!Auth.isAdmin()) {
+        alert('Only an Admin user has permission to reset CRM demo data.');
+        return;
+      }
+      document.getElementById('reset-confirm-input').value = '';
+      document.getElementById('reset-confirm-modal').style.display = 'flex';
+    }
+
+    function closeResetModal() {
+      document.getElementById('reset-confirm-modal').style.display = 'none';
+    }
+
+    function confirmResetExecution() {
+      const input = document.getElementById('reset-confirm-input').value.trim();
+      if (input !== 'RESET') {
+        alert('Please type "RESET" to confirm.');
+        return;
+      }
+
+      closeResetModal();
+      SeedData.reset();
+      Utils.showToast('Demo data successfully re-seeded to benchmark state!', 'success');
+      setTimeout(() => {
+        window.location.href = 'admin-dashboard.html';
+      }, 700);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('settings');
+      refreshStats();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sales Manager Command Center — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">Sales Manager Command Center</h1>
+            <p class="page-subtitle">Team performance, pipeline velocity, counselor conversion quotas, and critical candidate follow-ups.</p>
+          </div>
+          <div class="page-actions-group">
+            <button type="button" class="btn-header-action" onclick="Team.openReassignModal(refreshPageData)" title="Reassign Leads">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+              Reassign Leads
+            </button>
+            <a href="pipeline.html" class="btn-primary-purple" title="Open Spreadsheet Pipeline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              Team Pipeline
+            </a>
+          </div>
+        </div>
+
+        <!-- Manager Revenue & Fee Overview Card -->
+        <div class="enterprise-card">
+          <div class="card-header-bar">
+            <div class="card-title-group">
+              <div class="card-icon-square">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 3h12M6 8h12M6 13l7 8M6 13h4a4 4 0 000-8H6"/>
+                </svg>
+              </div>
+              <div class="card-title-text">
+                <div class="card-heading">Team Revenue &amp; Fee Realization</div>
+                <div class="card-subheading">Supervised counselor pipeline, collected fees, and overdue installments</div>
+              </div>
+            </div>
+            <a href="reports.html" class="btn-header-action" style="color: var(--primary);">
+              Team Analytics →
+            </a>
+          </div>
+
+          <div class="kpi-four-grid">
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">TEAM BOOKED FEE</div>
+              <div class="kpi-subcard-value" id="mgr-booked-fee">₹16,00,000</div>
+              <div class="kpi-subcard-footer">All supervised student contracts</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">TEAM CASH COLLECTED</div>
+              <div class="kpi-subcard-value val-green" id="mgr-collected-fee">₹6,03,500</div>
+              <div class="kpi-subcard-footer">Bank &amp; UPI collections</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">TEAM PENDING DUES</div>
+              <div class="kpi-subcard-value val-amber" id="mgr-pending-fee">₹9,96,500</div>
+              <div class="kpi-subcard-footer has-overdue" id="mgr-overdue-milestones">3 Overdue Milestones</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">COLLECTION RATE</div>
+              <div class="kpi-subcard-value val-purple" id="mgr-realization-rate">37.7%</div>
+              <div class="kpi-progress-bar-track">
+                <div class="kpi-progress-bar-fill" id="mgr-realization-bar" style="width: 37.7%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 8 Candidate Pipeline KPI Cards -->
+        <div class="candidate-kpi-grid">
+          <a href="customers.html" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #eff6ff; color: #3b82f6;">Team Total</div>
+            <div class="stat-card-num" id="stat-total">36</div>
+            <div class="stat-card-title">Supervised Students</div>
+            <div class="stat-card-subtitle">Active pool across all counselors</div>
+          </a>
+
+          <a href="pipeline.html?stage=New+Lead" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #e0f2fe; color: #0284c7;">Fresh</div>
+            <div class="stat-card-num" id="stat-new">4</div>
+            <div class="stat-card-title">New Inquiries</div>
+            <div class="stat-card-subtitle">Needs assignment / 1st call</div>
+          </a>
+
+          <a href="pipeline.html?stage=Contacted" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #f1f5f9; color: #475569;">Engaged</div>
+            <div class="stat-card-num" id="stat-contacted">4</div>
+            <div class="stat-card-title">Contacted Leads</div>
+            <div class="stat-card-subtitle">Introductory call completed</div>
+          </a>
+
+          <a href="pipeline.html?stage=Interested" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #f5f3ff; color: #7c3aed;">High Intent</div>
+            <div class="stat-card-num" id="stat-interested">5</div>
+            <div class="stat-card-title">Interested Candidates</div>
+            <div class="stat-card-subtitle">Awaiting counseling session</div>
+          </a>
+
+          <a href="pipeline.html?stage=Prospect" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #fef3c7; color: #d97706;">Hot Leads</div>
+            <div class="stat-card-num" id="stat-prospect">4</div>
+            <div class="stat-card-title">Qualified Prospects</div>
+            <div class="stat-card-subtitle">Fee proposal presented</div>
+          </a>
+
+          <a href="pipeline.html?stage=Converted" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #ecfdf5; color: #059669;">Won</div>
+            <div class="stat-card-num" id="stat-converted">5</div>
+            <div class="stat-card-title">Converted Enrollments</div>
+            <div class="stat-card-subtitle">Batch placement confirmed</div>
+          </a>
+
+          <a href="pipeline.html?stage=Lost" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #fef2f2; color: #dc2626;">Churned</div>
+            <div class="stat-card-num" id="stat-lost">1</div>
+            <div class="stat-card-title">Lost Leads</div>
+            <div class="stat-card-subtitle">Archived or competitor</div>
+          </a>
+
+          <a href="followups.html?filter=today" class="stat-card" style="text-decoration: none;">
+            <div class="stat-card-badge" style="background: #fffbeb; color: #b45309;">Urgent</div>
+            <div class="stat-card-num" id="stat-followups">8</div>
+            <div class="stat-card-title">Today's Team Tasks</div>
+            <div class="stat-card-subtitle">Counselor touchpoints scheduled</div>
+          </a>
+        </div>
+
+        <!-- Manager 2-Column Grid: Counselor Leaderboard + Urgent Follow-ups -->
+        <div class="dashboard-grid-2col">
+          <!-- Counselor Performance Leaderboard -->
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-title-text">
+                  <div class="card-heading">Counselor Team Leaderboard</div>
+                  <div class="card-subheading">Live conversion rate, student bookings &amp; cash collected</div>
+                </div>
+              </div>
+              <a href="team.html" class="btn-header-action">Full Roster →</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Counselor</th>
+                    <th>Assigned</th>
+                    <th>Converted</th>
+                    <th>Conversion</th>
+                    <th>Collected (₹)</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="manager-roster-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Urgent & Overdue Follow-ups Queue -->
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-title-group">
+                <div class="card-title-text">
+                  <div class="card-heading">Urgent Team Follow-ups</div>
+                  <div class="card-subheading">Candidate calls and counseling sessions requiring immediate review</div>
+                </div>
+              </div>
+              <a href="followups.html" class="btn-header-action">View All Tasks →</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Counselor</th>
+                    <th>Purpose</th>
+                    <th>Date / Time</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="manager-followups-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts: Stage Distribution & Team Revenue Breakdown -->
+        <div class="dashboard-grid-2col" style="margin-top: 24px;">
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-heading">Team Pipeline Distribution</div>
+              <span class="card-pill-badge">Stage Share</span>
+            </div>
+            <div class="chart-container-box">
+              <canvas id="chart-mgr-pipeline"></canvas>
+            </div>
+          </div>
+
+          <div class="enterprise-card">
+            <div class="card-header-bar">
+              <div class="card-heading">Counselor Collections vs Targets</div>
+              <span class="card-pill-badge">Realization</span>
+            </div>
+            <div class="chart-container-box">
+              <canvas id="chart-mgr-collections"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Team Activity Feed -->
+        <div class="enterprise-card" style="margin-top: 24px;">
+          <div class="card-header-bar">
+            <div class="card-heading">Recent Team Activities</div>
+            <a href="activities.html" class="btn-header-action">Full Audit Log →</a>
+          </div>
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th>Timestamp</th>
+                  <th>Actor</th>
+                  <th>Action</th>
+                  <th>Student</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody id="manager-activities-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/communication.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    let charts = {};
+
+    function refreshPageData() {
+      const user = Auth.getCurrentUser();
+      const allStudents = Customers.getAll();
+      const allPayments = Payments.getAll();
+      const allFollowups = Followups.getAll();
+      const allActivities = Activities.getAll();
+      const roster = Team.getRoster();
+
+      // Scoped team data for manager
+      const teamCounselorNames = roster.map(r => r.name);
+      const isManager = user && (user.role === 'MANAGER' || user.role === 'manager');
+      const teamStudents = isManager
+        ? allStudents.filter(s => s.manager === user.name || teamCounselorNames.includes(s.counselor))
+        : allStudents;
+
+      const teamStudentIds = teamStudents.map(s => s.id);
+      const teamPayments = allPayments.filter(p => teamStudentIds.includes(p.studentId));
+
+      // Financials
+      const booked = teamStudents.reduce((sum, s) => sum + (s.placementFee || 0), 0);
+      const collected = teamStudents.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
+      const pending = Math.max(0, booked - collected);
+      const rate = booked > 0 ? ((collected / booked) * 100).toFixed(1) : '0.0';
+
+      document.getElementById('mgr-booked-fee').textContent = Utils.formatINR(booked);
+      document.getElementById('mgr-collected-fee').textContent = Utils.formatINR(collected);
+      document.getElementById('mgr-pending-fee').textContent = Utils.formatINR(pending);
+      document.getElementById('mgr-realization-rate').textContent = rate + '%';
+      document.getElementById('mgr-realization-bar').style.width = Math.min(100, Number(rate)) + '%';
+
+      // KPI Counts
+      const counts = Pipeline.getStageCounts(teamStudents);
+      document.getElementById('stat-total').textContent = teamStudents.length;
+      document.getElementById('stat-new').textContent = counts['New Lead'] || 0;
+      document.getElementById('stat-contacted').textContent = counts['Contacted'] || 0;
+      document.getElementById('stat-interested').textContent = counts['Interested'] || 0;
+      document.getElementById('stat-prospect').textContent = counts['Prospect'] || 0;
+      document.getElementById('stat-converted').textContent = counts['Converted'] || 0;
+      document.getElementById('stat-lost').textContent = counts['Lost'] || 0;
+
+      const todayTasks = allFollowups.filter(f => f.status === 'Pending');
+      document.getElementById('stat-followups').textContent = todayTasks.length;
+
+      // Counselor Leaderboard
+      const rosterTbody = document.getElementById('manager-roster-tbody');
+      rosterTbody.innerHTML = roster.map(c => `
+        <tr>
+          <td>
+            <div style="font-weight: 600; color: var(--navy-900);">${Utils.escapeHtml(c.name)}</div>
+            <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(c.email)}</div>
+          </td>
+          <td><span class="badge" style="background: #f1f5f9; color: #334155; font-weight: 600;">${c.assignedCount}</span></td>
+          <td><span class="badge badge-converted">${c.convertedCount}</span></td>
+          <td><strong style="color: var(--primary);">${c.conversionRate}%</strong></td>
+          <td style="font-weight: 600; color: var(--green);">${Utils.formatINR(c.revenue)}</td>
+          <td>
+            <div class="row-actions">
+              <a href="customers.html?counselor=${encodeURIComponent(c.name)}" class="btn-icon" title="View Leads">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </a>
+              <button class="btn-icon" onclick="Team.openReassignModal(refreshPageData)" title="Reassign">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+
+      // Urgent Followups
+      const urgentFollowups = allFollowups.filter(f => f.status === 'Pending').slice(0, 5);
+      const followTbody = document.getElementById('manager-followups-tbody');
+      if (urgentFollowups.length === 0) {
+        followTbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--slate-400); padding: 20px;">No pending urgent follow-ups</td></tr>`;
+      } else {
+        followTbody.innerHTML = urgentFollowups.map(f => `
+          <tr>
+            <td>
+              <a href="customer-details.html?id=${f.studentId}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                ${Utils.escapeHtml(f.studentName)}
+              </a>
+            </td>
+            <td><span style="font-size: 12px; color: var(--slate-600);">${Utils.escapeHtml(f.counselor)}</span></td>
+            <td><span style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(f.purpose)}</span></td>
+            <td><span style="font-size: 12px; color: var(--slate-500);">${f.scheduledDate} ${f.scheduledTime || ''}</span></td>
+            <td>
+              <div class="row-actions">
+                <button class="btn-icon" onclick="Communication.logCall('${f.studentId}', refreshPageData)" title="Call">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                </button>
+                <button class="btn-icon" onclick="Followups.openCompleteModal('${f.id}', refreshPageData)" title="Complete Task">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `).join('');
+      }
+
+      // Recent Team Activities
+      const actTbody = document.getElementById('manager-activities-tbody');
+      const recentActs = allActivities.slice(0, 6);
+      actTbody.innerHTML = recentActs.map(a => `
+        <tr>
+          <td style="font-size: 12px; color: var(--slate-500); white-space: nowrap;">${Utils.formatDate(a.timestamp)}</td>
+          <td><span style="font-weight: 600; color: var(--navy-800);">${Utils.escapeHtml(a.user || 'System')}</span></td>
+          <td><span class="badge" style="background: #eef2ff; color: #4f46e5;">${Utils.escapeHtml(a.action)}</span></td>
+          <td>
+            ${a.studentId ? `<a href="customer-details.html?id=${a.studentId}" style="color: var(--primary); text-decoration: none; font-weight: 500;">${Utils.escapeHtml(a.studentName || a.studentId)}</a>` : '<span style="color: var(--slate-400);">-</span>'}
+          </td>
+          <td style="font-size: 13px; color: var(--slate-600);">${Utils.escapeHtml(a.description)}</td>
+        </tr>
+      `).join('');
+
+      renderCharts(teamStudents, roster);
+    }
+
+    function renderCharts(students, roster) {
+      if (charts.pipeline) charts.pipeline.destroy();
+      if (charts.collections) charts.collections.destroy();
+
+      const counts = Pipeline.getStageCounts(students);
+      const stages = Object.keys(counts).filter(k => k !== 'All Leads');
+
+      const ctx1 = document.getElementById('chart-mgr-pipeline')?.getContext('2d');
+      if (ctx1) {
+        charts.pipeline = new Chart(ctx1, {
+          type: 'doughnut',
+          data: {
+            labels: stages,
+            datasets: [{
+              data: stages.map(s => counts[s]),
+              backgroundColor: ['#94a3b8', '#38bdf8', '#3b82f6', '#818cf8', '#f59e0b', '#a855f7', '#6366f1', '#10b981', '#f43f5e', '#64748b']
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+
+      const ctx2 = document.getElementById('chart-mgr-collections')?.getContext('2d');
+      if (ctx2) {
+        charts.collections = new Chart(ctx2, {
+          type: 'bar',
+          data: {
+            labels: roster.map(r => r.name),
+            datasets: [
+              { label: 'Realized Collections (₹)', data: roster.map(r => r.revenue), backgroundColor: '#10b981', borderRadius: 6 },
+              { label: 'Quota Target (₹)', data: roster.map(r => r.target), backgroundColor: '#cbd5e1', borderRadius: 6 }
+            ]
+          },
+          options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('dashboard');
+      refreshPageData();
+    });
+  </script>
+</body>
+</html>

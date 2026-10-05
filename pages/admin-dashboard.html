@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Executive Placement Dashboard — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">Executive Placement Dashboard</h1>
+            <p class="page-subtitle">Lead pipeline, placement metrics, counselor productivity, and hiring conversion velocity.</p>
+          </div>
+          <div class="page-actions-group">
+            <a href="reports.html" class="btn-header-action" title="View Detailed Analytics">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              Detailed Reports
+            </a>
+            <a href="pipeline.html" class="btn-primary-purple" title="Open Spreadsheet Pipeline">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+              Open Pipeline
+            </a>
+          </div>
+        </div>
+
+        <!-- Section 1: Placement Fee & Revenue Realization Card -->
+        <div class="enterprise-card">
+          <div class="card-header-bar">
+            <div class="card-title-group">
+              <div class="card-icon-square">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M6 3h12M6 8h12M6 13l7 8M6 13h4a4 4 0 000-8H6"/>
+                </svg>
+              </div>
+              <div class="card-title-text">
+                <div class="card-heading">Placement Fee &amp; Revenue Realization</div>
+                <div class="card-subheading">Live fee tracking, collected cash, and outstanding installment dues</div>
+              </div>
+            </div>
+            <a href="reports.html" class="btn-header-action" style="color: var(--primary);">
+              View Revenue Analytics →
+            </a>
+          </div>
+
+          <div class="kpi-four-grid">
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">TOTAL BOOKED FEE</div>
+              <div class="kpi-subcard-value" id="kpi-booked-fee">₹16,00,000</div>
+              <div class="kpi-subcard-footer">Contracted placement value</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">REALIZED / COLLECTED</div>
+              <div class="kpi-subcard-value val-green" id="kpi-collected-fee">₹6,03,500</div>
+              <div class="kpi-subcard-footer">Inflow to bank / cash</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">PENDING DUES</div>
+              <div class="kpi-subcard-value val-amber" id="kpi-pending-fee">₹9,96,500</div>
+              <div class="kpi-subcard-footer has-overdue" id="kpi-overdue-milestones">3 Overdue Milestones</div>
+            </div>
+            <div class="kpi-subcard">
+              <div class="kpi-subcard-label">REALIZATION RATE</div>
+              <div class="kpi-subcard-value val-purple" id="kpi-realization-rate">37.7%</div>
+              <div class="kpi-progress-bar-track">
+                <div class="kpi-progress-bar-fill" id="kpi-realization-bar" style="width: 37.7%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: 8 Clickable KPI Cards (Screenshot 3 Match) -->
+        <div class="kpi-cards-grid-8">
+          <!-- 1. Total Leads -->
+          <a href="customers.html" class="kpi-metric-card accent-blue" title="View All Leads">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">TOTAL LEADS</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-total">36</div>
+            <div class="kpi-card-subtext">All registered leads</div>
+          </a>
+
+          <!-- 2. New Leads -->
+          <a href="pipeline.html?stage=New%20Lead" class="kpi-metric-card accent-skyblue" title="View New Leads">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">NEW LEADS</span>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-new">8</div>
+            <div class="kpi-card-subtext" style="color: #0284c7;">Awaiting outreach</div>
+          </a>
+
+          <!-- 3. Contacted -->
+          <a href="pipeline.html?stage=Contacted" class="kpi-metric-card accent-amber" title="View Contacted Leads">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">CONTACTED</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-contacted">4</div>
+            <div class="kpi-card-subtext" style="color: #d97706;">In initial qualification</div>
+          </a>
+
+          <!-- 4. Interested / Warm -->
+          <a href="pipeline.html?stage=Interested" class="kpi-metric-card accent-purple" title="View Interested Leads">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">INTERESTED / WARM</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 3z"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-interested">6</div>
+            <div class="kpi-card-subtext" style="color: #7c3aed;">Expressed clear intent</div>
+          </a>
+
+          <!-- 5. Prospects -->
+          <a href="pipeline.html?stage=Prospect" class="kpi-metric-card accent-indigo" title="View Prospects">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">PROSPECTS</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-prospect">4</div>
+            <div class="kpi-card-subtext" style="color: #4f46e5;">Product demo &amp; budget</div>
+          </a>
+
+          <!-- 6. Enrolled -->
+          <a href="pipeline.html?stage=Enrolled" class="kpi-metric-card accent-green" title="View Enrolled Students">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">ENROLLED</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-enrolled">4</div>
+            <div class="kpi-card-subtext" style="color: #059669;" id="kpi-conversion-rate-text">11.1% conversion rate</div>
+          </a>
+
+          <!-- 7. Lost / Dropped -->
+          <a href="pipeline.html?stage=Lost" class="kpi-metric-card accent-red" title="View Lost Leads">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">LOST / DROPPED</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-lost">4</div>
+            <div class="kpi-card-subtext" style="color: #dc2626;">Lost or not interested</div>
+          </a>
+
+          <!-- 8. Today's Follow-ups -->
+          <a href="followups.html?filter=today" class="kpi-metric-card accent-orange" title="View Follow-up Tasks">
+            <div class="kpi-card-header">
+              <span class="kpi-card-label">TODAY'S FOLLOW-UPS</span>
+              <div class="kpi-card-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+            </div>
+            <div class="kpi-card-value" id="kpi-count-followups">0</div>
+            <div class="kpi-card-subtext has-danger" id="kpi-overdue-followups-text">7 overdue follow-ups</div>
+          </a>
+        </div>
+
+        <!-- Section 3: Charts (Pipeline Stage Breakdown & Pipeline Share - Screenshot 3 Match) -->
+        <div class="dashboard-grid-2col" style="grid-template-columns: 1.6fr 1fr; margin-bottom: 24px;">
+          <!-- Chart 1: Pipeline Stage Breakdown -->
+          <div class="enterprise-card" style="margin-bottom: 0;">
+            <div class="card-header-bar" style="margin-bottom: 12px;">
+              <div class="card-title-group">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" style="width: 20px; height: 20px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <div class="card-heading" style="font-size: 15px;">Pipeline Stage Breakdown</div>
+              </div>
+              <span style="font-size: 12px; color: #64748b; font-weight: 500;">Live CRM Distribution</span>
+            </div>
+            <div style="height: 280px; position: relative;">
+              <canvas id="chart-pipeline-breakdown"></canvas>
+            </div>
+          </div>
+
+          <!-- Chart 2: Pipeline Share -->
+          <div class="enterprise-card" style="margin-bottom: 0;">
+            <div class="card-header-bar" style="margin-bottom: 12px;">
+              <div class="card-title-group">
+                <svg viewBox="0 0 24 24" fill="none" stroke="var(--primary)" stroke-width="2.5" style="width: 20px; height: 20px;"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                <div class="card-heading" style="font-size: 15px;">Pipeline Share</div>
+              </div>
+              <span style="font-size: 12px; color: #64748b; font-weight: 500;">Conversion Flow</span>
+            </div>
+            <div style="display: flex; justify-content: center; gap: 16px; font-size: 11px; margin-bottom: 8px;">
+              <span style="display: inline-flex; align-items: center; gap: 5px; color: #334155;">
+                <span style="width: 10px; height: 10px; background: #6366f1; border-radius: 2px;"></span> Active Pipeline
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; color: #334155;">
+                <span style="width: 10px; height: 10px; background: #10b981; border-radius: 2px;"></span> Enrolled Leads
+              </span>
+              <span style="display: inline-flex; align-items: center; gap: 5px; color: #334155;">
+                <span style="width: 10px; height: 10px; background: #ef4444; border-radius: 2px;"></span> Lost / Inactive
+              </span>
+            </div>
+            <div style="height: 245px; position: relative;">
+              <canvas id="chart-pipeline-share"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4: Employee Targets & 4-Week Achievement Matrix (Screenshot 1 Match) -->
+        <div class="matrix-card">
+          <div class="matrix-header-bar">
+            <div class="matrix-header-title">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              EMPLOYEE TARGETS &amp; 4-WEEK ACHIEVEMENT MATRIX
+            </div>
+            <div class="matrix-header-sub">Monthly target divided across 4 weeks (Days 1–7, 8–14, 15–21, 22–End)</div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="matrix-table">
+              <thead>
+                <tr>
+                  <th>EMPLOYEE</th>
+                  <th>ROLE &amp; TEAM</th>
+                  <th>MONTHLY TARGET</th>
+                  <th>ACHIEVED</th>
+                  <th>REALIZATION %</th>
+                  <th>WEEK 1</th>
+                  <th>WEEK 2</th>
+                  <th>WEEK 3</th>
+                  <th>WEEK 4</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+              <tbody id="matrix-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Section 5: Sales Team Performance & Recent Audit Stream (Screenshot 2 Match) -->
+        <div class="dashboard-grid-2col">
+          <!-- Left: Sales Team Performance -->
+          <div class="sales-performance-card">
+            <div class="card-header-bar" style="margin-bottom: 14px;">
+              <div class="card-title-group">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.5" style="width: 20px; height: 20px;"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <div class="card-heading" style="font-size: 16px;">Sales Team Performance</div>
+              </div>
+              <a href="reports.html" style="color: var(--primary); font-size: 12.5px; font-weight: 600; text-decoration: none;">Full Report →</a>
+            </div>
+
+            <div class="table-responsive">
+              <table class="crm-table">
+                <thead>
+                  <tr>
+                    <th>SALES REP</th>
+                    <th>MANAGER</th>
+                    <th>LEADS</th>
+                    <th>CALLS</th>
+                    <th>ENROLLED</th>
+                    <th>ENROLL RATE</th>
+                  </tr>
+                </thead>
+                <tbody id="sales-team-perf-tbody">
+                  <!-- Populated dynamically -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Right: Recent Audit Stream -->
+          <div class="recent-audit-card">
+            <div class="card-header-bar" style="margin-bottom: 16px;">
+              <div class="card-title-group">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="2.5" style="width: 20px; height: 20px;"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                <div class="card-heading" style="font-size: 16px;">Recent Audit Stream</div>
+              </div>
+              <a href="activities.html" style="color: var(--primary); font-size: 12.5px; font-weight: 600; text-decoration: none;">View All →</a>
+            </div>
+
+            <div class="audit-stream-list" id="audit-stream-container">
+              <!-- Populated dynamically -->
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    let charts = {};
+
+    function refreshPageData() {
+      const students = Customers.getAll();
+      const followups = Followups.getAll();
+      const activities = Activities.getAll();
+      const employeeTargets = Team.getEmployeeTargets();
+
+      // Financials: Total Booked, Collected, Pending
+      const booked = students.reduce((sum, s) => sum + (s.placementFee || 0), 0);
+      const collected = students.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
+      const pending = Math.max(0, booked - collected);
+      const rate = booked > 0 ? ((collected / booked) * 100).toFixed(1) : '0.0';
+
+      document.getElementById('kpi-booked-fee').textContent = Utils.formatINR(booked);
+      document.getElementById('kpi-collected-fee').textContent = Utils.formatINR(collected);
+      document.getElementById('kpi-pending-fee').textContent = Utils.formatINR(pending);
+      document.getElementById('kpi-realization-rate').textContent = rate + '%';
+      document.getElementById('kpi-realization-bar').style.width = Math.min(100, Number(rate)) + '%';
+
+      // 8 KPI Card Numbers
+      const counts = Pipeline.getStageCounts(students);
+      const enrolledCount = counts['Enrolled'] || counts['Converted'] || 0;
+      const lostDroppedCount = (counts['Lost'] || 0) + (counts['Not Interested'] || 0);
+
+      document.getElementById('kpi-count-total').textContent = students.length;
+      document.getElementById('kpi-count-new').textContent = (counts['New Lead'] || 0) + (counts['Cold Calling'] || 0);
+      document.getElementById('kpi-count-contacted').textContent = counts['Contacted'] || 0;
+      document.getElementById('kpi-count-interested').textContent = counts['Interested'] || 0;
+      document.getElementById('kpi-count-prospect').textContent = counts['Prospect'] || 0;
+      document.getElementById('kpi-count-enrolled').textContent = enrolledCount;
+      const convPct = students.length > 0 ? ((enrolledCount / students.length) * 100).toFixed(1) : '0.0';
+      document.getElementById('kpi-conversion-rate-text').textContent = convPct + '% conversion rate';
+      document.getElementById('kpi-count-lost').textContent = lostDroppedCount;
+
+      // Overdue Follow-ups
+      const overdueTasks = followups.filter(f => f.status !== 'Completed' && (f.date < '2026-10-05' || f.scheduledDate < '2026-10-05')).length;
+      const todayTasks = followups.filter(f => f.status !== 'Completed' && (f.date === '2026-10-05' || f.scheduledDate === '2026-10-05')).length;
+      document.getElementById('kpi-count-followups').textContent = todayTasks;
+      document.getElementById('kpi-overdue-followups-text').textContent = `${overdueTasks} overdue follow-ups`;
+
+      // Render 4-Week Matrix (Screenshot 1)
+      renderEmployeeTargetsMatrix(employeeTargets);
+
+      // Render Sales Team Performance (Screenshot 2)
+      renderSalesTeamPerformance(employeeTargets);
+
+      // Render Recent Audit Stream (Screenshot 2)
+      renderAuditStream(activities);
+
+      // Render Charts (Screenshot 3)
+      renderCharts(counts, students);
+    }
+
+    function renderEmployeeTargetsMatrix(targets) {
+      const tbody = document.getElementById('matrix-tbody');
+      tbody.innerHTML = targets.map(emp => {
+        const initial = emp.name.charAt(0).toUpperCase();
+        return `
+          <tr>
+            <td>
+              <div class="matrix-emp-col">
+                <div class="matrix-avatar">${initial}</div>
+                <div>
+                  <div class="matrix-emp-name">${Utils.escapeHtml(emp.name)}</div>
+                  <div class="matrix-emp-sub">${emp.leads || 0} Leads • ${emp.collections || 0} Collections</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="matrix-role-title">${Utils.escapeHtml(emp.role)}</div>
+              <div class="matrix-role-team">${Utils.escapeHtml(emp.team)}</div>
+            </td>
+            <td><span class="matrix-target-val">${Utils.formatINR(emp.monthlyTarget)}</span></td>
+            <td><span class="matrix-achieved-val">${Utils.formatINR(emp.achieved)}</span></td>
+            <td>
+              <div class="matrix-progress-wrap">
+                <span style="font-weight: 700; font-size: 13px;">${emp.realizationPct}%</span>
+                <div class="matrix-progress-track">
+                  <div class="matrix-progress-fill" style="width: ${Math.min(100, emp.realizationPct)}%;"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="matrix-week-cell">
+                <div class="week-achieved">${Utils.formatINR(emp.week1Achieved || 0)}</div>
+                <div class="week-quota">/ ${Utils.formatINR(emp.week1Quota || 0)}</div>
+              </div>
+            </td>
+            <td>
+              <div class="matrix-week-cell">
+                <div class="week-achieved">${Utils.formatINR(emp.week2Achieved || 0)}</div>
+                <div class="week-quota">/ ${Utils.formatINR(emp.week2Quota || 0)}</div>
+              </div>
+            </td>
+            <td>
+              <div class="matrix-week-cell">
+                <div class="week-achieved">${Utils.formatINR(emp.week3Achieved || 0)}</div>
+                <div class="week-quota">/ ${Utils.formatINR(emp.week3Quota || 0)}</div>
+              </div>
+            </td>
+            <td>
+              <div class="matrix-week-cell">
+                <div class="week-achieved">${Utils.formatINR(emp.week4Achieved || 0)}</div>
+                <div class="week-quota">/ ${Utils.formatINR(emp.week4Quota || 0)}</div>
+              </div>
+            </td>
+            <td>
+              <button type="button" class="btn-update-matrix" onclick="Team.openEmployeeTargetModal('${emp.id}', refreshPageData)" title="Edit Monthly &amp; Weekly Quotas">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 14px; height: 14px;"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                Update
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderSalesTeamPerformance(targets) {
+      const counselors = targets.filter(t => t.role === 'Counselor');
+      const tbody = document.getElementById('sales-team-perf-tbody');
+      const avatarMap = {
+        'Arun Kumar': 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=80&auto=format&fit=crop&q=80',
+        'Sneha Rao': 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80',
+        'Vikram Singh': 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=80&auto=format&fit=crop&q=80',
+        'Neha Gupta': 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&auto=format&fit=crop&q=80',
+        'Rahul Mehta': 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=80&auto=format&fit=crop&q=80'
+      };
+      tbody.innerHTML = counselors.map(c => `
+        <tr>
+          <td>
+            <a href="customers.html?counselor=${encodeURIComponent(c.name)}" class="sales-rep-avatar-cell" style="text-decoration: none;">
+              <img src="${c.avatar || avatarMap[c.name] || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80'}" alt="${c.name}" class="sales-rep-avatar-img">
+              <span style="font-weight: 700; color: #0f172a; font-size: 13px;">${Utils.escapeHtml(c.name)}</span>
+            </a>
+          </td>
+          <td><span style="font-size: 12.5px; color: #64748b;">${Utils.escapeHtml(c.manager || 'Rajesh Sharma')}</span></td>
+          <td><strong style="color: #0f172a; font-size: 13px;">${c.leads || 0}</strong></td>
+          <td><span style="color: #64748b; font-size: 13px;">${c.calls || 0}</span></td>
+          <td><span class="enrolled-badge-green">${c.enrolled || 0}</span></td>
+          <td><span class="enroll-rate-green">${c.enrollRate || '0.0%'}</span></td>
+        </tr>
+      `).join('');
+    }
+
+    function renderAuditStream(activities) {
+      const container = document.getElementById('audit-stream-container');
+      const recent = activities.slice(0, 5);
+      container.innerHTML = recent.map(a => `
+        <div class="audit-stream-item">
+          <div class="audit-icon-circle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          </div>
+          <div class="audit-item-content">
+            <div class="audit-item-top">
+              <span class="audit-actor-name">${Utils.escapeHtml(a.user || 'System')}</span>
+              <span class="audit-time-text">${a.timeText || Utils.formatDate(a.timestamp)}</span>
+            </div>
+            <div class="audit-item-desc">${Utils.escapeHtml(a.description)}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCharts(counts, students) {
+      if (charts.breakdown) charts.breakdown.destroy();
+      if (charts.share) charts.share.destroy();
+
+      // 12 Exact Pipeline Stages (Screenshot 3 Match)
+      const stages = [
+        'Cold Calling',
+        'Not Connected',
+        'New Lead',
+        'Contacted',
+        'Interested',
+        'Prospect',
+        'Follow-up',
+        'Negotiation',
+        'Pending Closure',
+        'Enrolled',
+        'Not Interested',
+        'Lost'
+      ];
+
+      const stageColors = [
+        '#6366f1', // Cold Calling
+        '#cbd5e1', // Not Connected
+        '#8b5cf6', // New Lead
+        '#3b82f6', // Contacted
+        '#f59e0b', // Interested
+        '#ec4899', // Prospect
+        '#10b981', // Follow-up
+        '#94a3b8', // Negotiation
+        '#cbd5e1', // Pending Closure
+        '#6366f1', // Enrolled
+        '#06b6d4', // Not Interested
+        '#a855f7'  // Lost
+      ];
+
+      const ctx1 = document.getElementById('chart-pipeline-breakdown')?.getContext('2d');
+      if (ctx1) {
+        charts.breakdown = new Chart(ctx1, {
+          type: 'bar',
+          data: {
+            labels: stages,
+            datasets: [{
+              data: stages.map(s => counts[s] || (s === 'Enrolled' ? (counts['Enrolled'] || counts['Converted'] || 0) : 0)),
+              backgroundColor: stageColors,
+              borderRadius: 4,
+              borderSkipped: false
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` Candidates: ${ctx.parsed.y}`
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false },
+                ticks: {
+                  font: { size: 11, weight: '500' },
+                  color: '#64748b',
+                  maxRotation: 45,
+                  minRotation: 45
+                }
+              },
+              y: {
+                beginAtZero: true,
+                max: 7,
+                ticks: { stepSize: 1, color: '#94a3b8' },
+                grid: { color: '#f1f5f9' }
+              }
+            },
+            onClick: (e, items) => {
+              if (items.length > 0) {
+                const clickedStage = stages[items[0].index];
+                window.location.href = `pipeline.html?stage=${encodeURIComponent(clickedStage)}`;
+              }
+            }
+          }
+        });
+      }
+
+      // Chart 2: Pipeline Share (Donut Chart - Screenshot 3 Match)
+      const enrolled = counts['Enrolled'] || counts['Converted'] || 0;
+      const lost = (counts['Lost'] || 0) + (counts['Not Interested'] || 0);
+      const active = Math.max(0, students.length - enrolled - lost);
+
+      const ctx2 = document.getElementById('chart-pipeline-share')?.getContext('2d');
+      if (ctx2) {
+        charts.share = new Chart(ctx2, {
+          type: 'doughnut',
+          data: {
+            labels: ['Active Pipeline', 'Enrolled Leads', 'Lost / Inactive'],
+            datasets: [{
+              data: [active, enrolled, lost],
+              backgroundColor: ['#6366f1', '#10b981', '#ef4444'],
+              borderWidth: 0,
+              cutout: '72%'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: (ctx) => ` ${ctx.label}: ${ctx.parsed} candidates (${((ctx.parsed / students.length) * 100).toFixed(1)}%)`
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('dashboard');
+      refreshPageData();
+    });
+  </script>
+</body>
+</html>

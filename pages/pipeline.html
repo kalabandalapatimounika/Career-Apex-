@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Excel Spreadsheet Pipeline — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">Candidate Placement Pipeline</h1>
+            <p class="page-subtitle">Spreadsheet-style enterprise pipeline with stage velocity, rapid status progression, and installment realization tracking.</p>
+          </div>
+          <div class="page-actions-group">
+            <button type="button" class="btn-header-action" onclick="Customers.exportCSV()" title="Export Pipeline Data">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Spreadsheet
+            </button>
+            <button type="button" class="btn-primary-purple" onclick="UI.openAddLeadModal()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              + Add Lead
+            </button>
+          </div>
+        </div>
+
+        <!-- Stage Filter Navigation Tabs (Matches Sidebar Pipeline) -->
+        <div class="enterprise-card" style="padding: 12px 16px; margin-bottom: 20px; overflow-x: auto;">
+          <div style="display: flex; gap: 8px; align-items: center; white-space: nowrap;" id="stage-tabs-container">
+            <!-- Populated dynamically with live counts -->
+          </div>
+        </div>
+
+        <!-- Stage Metrics Ribbon -->
+        <div class="kpi-four-grid" style="margin-bottom: 20px;">
+          <div class="kpi-subcard">
+            <div class="kpi-subcard-label">STAGE CANDIDATES</div>
+            <div class="kpi-subcard-value" id="stage-ribbon-count">36</div>
+            <div class="kpi-subcard-footer">In active filter view</div>
+          </div>
+          <div class="kpi-subcard">
+            <div class="kpi-subcard-label">TOTAL STAGE PIPELINE VALUE</div>
+            <div class="kpi-subcard-value val-purple" id="stage-ribbon-value">₹16,00,000</div>
+            <div class="kpi-subcard-footer">Contracted placement potential</div>
+          </div>
+          <div class="kpi-subcard">
+            <div class="kpi-subcard-label">CASH COLLECTED IN STAGE</div>
+            <div class="kpi-subcard-value val-green" id="stage-ribbon-collected">₹6,03,500</div>
+            <div class="kpi-subcard-footer">Verified bank inflow</div>
+          </div>
+          <div class="kpi-subcard">
+            <div class="kpi-subcard-label">PENDING REVENUE DUE</div>
+            <div class="kpi-subcard-value val-amber" id="stage-ribbon-pending">₹9,96,500</div>
+            <div class="kpi-subcard-footer">Installments awaiting collection</div>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="enterprise-card" style="margin-bottom: 20px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+            <div style="flex: 1; min-width: 260px; position: relative;">
+              <input type="text" id="pipeline-search" class="filter-input" placeholder="Search candidate name, ID, college, target role, phone..." style="width: 100%; padding-left: 36px;" oninput="applyPipelineFilters()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px;">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <select id="pipeline-manager" class="filter-select" onchange="applyPipelineFilters()">
+                <option value="">All Managers</option>
+                <option value="Rajesh Sharma">Rajesh Sharma</option>
+                <option value="Priya Patel">Priya Patel</option>
+                <option value="Amit Verma">Amit Verma</option>
+              </select>
+
+              <select id="pipeline-counselor" class="filter-select" onchange="applyPipelineFilters()">
+                <option value="">All Counselors</option>
+                <option value="Arun Kumar">Arun Kumar</option>
+                <option value="Sneha Rao">Sneha Rao</option>
+                <option value="Vikram Singh">Vikram Singh</option>
+                <option value="Neha Gupta">Neha Gupta</option>
+                <option value="Rahul Mehta">Rahul Mehta</option>
+              </select>
+
+              <select id="pipeline-priority" class="filter-select" onchange="applyPipelineFilters()">
+                <option value="">All Priorities</option>
+                <option value="High">High Priority</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+
+              <select id="pipeline-payment" class="filter-select" onchange="applyPipelineFilters()">
+                <option value="">All Fee Statuses</option>
+                <option value="Paid">Fully Paid</option>
+                <option value="Partially Paid">Partially Paid</option>
+                <option value="Pending">Pending</option>
+                <option value="Overdue">Overdue</option>
+              </select>
+
+              <button type="button" class="btn-outline-sm" onclick="resetPipelineFilters()">Reset Filters</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Spreadsheet Pipeline Table -->
+        <div class="enterprise-card" style="padding: 0; overflow: hidden;">
+          <div style="padding: 14px 20px; border-bottom: 1px solid var(--slate-200); background: #fafbfc; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-size: 13px; font-weight: 600; color: var(--navy-900);">
+              Pipeline View: <span id="current-stage-title" style="color: var(--primary);">All Leads</span>
+              (<span id="pipeline-row-count">36</span> candidates)
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <span style="font-size: 12px; color: var(--slate-500);">Per page:</span>
+              <select id="pipeline-page-size" class="filter-select" style="padding: 4px 8px; font-size: 12px;" onchange="changePageSize(this.value)">
+                <option value="25" selected>25</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th style="width: 90px;">Lead ID</th>
+                  <th>Student Candidate</th>
+                  <th>Mobile</th>
+                  <th>Target Role &amp; College</th>
+                  <th style="min-width: 140px;">Stage (Click to Change)</th>
+                  <th>Priority</th>
+                  <th>Counselor</th>
+                  <th>Placement Fee</th>
+                  <th>Collected</th>
+                  <th>Pending Dues</th>
+                  <th>Next Action</th>
+                  <th style="min-width: 140px;">Quick Actions</th>
+                </tr>
+              </thead>
+              <tbody id="pipeline-tbody">
+                <!-- Dynamically populated rows -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar -->
+          <div style="padding: 12px 20px; border-top: 1px solid var(--slate-200); display: flex; justify-content: space-between; align-items: center; background: #ffffff;">
+            <div style="font-size: 12px; color: var(--slate-500);" id="pipeline-pagination-info">
+              Showing 1-25 of 36 records
+            </div>
+            <div style="display: flex; gap: 6px;" id="pipeline-pagination-controls">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/communication.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    let activeStageFilter = 'All Leads';
+    let currentPage = 1;
+    let pageSize = 25;
+    let filteredList = [];
+
+    const STAGE_ORDER = [
+      'All Leads',
+      'Cold Calling',
+      'Not Connected',
+      'New Lead',
+      'Contacted',
+      'Interested',
+      'Prospect',
+      'Follow-up',
+      'Negotiation',
+      'Pending Closure',
+      'Enrolled',
+      'Not Interested',
+      'Lost'
+    ];
+
+    function renderStageTabs() {
+      const allStudents = Customers.getAll();
+      const counts = Pipeline.getStageCounts(allStudents);
+      const container = document.getElementById('stage-tabs-container');
+
+      container.innerHTML = STAGE_ORDER.map(stg => {
+        const count = counts[stg] || 0;
+        const isActive = activeStageFilter === stg;
+        return `
+          <button type="button" class="btn-outline-sm" style="${isActive ? 'background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600;' : 'background: #ffffff; color: var(--slate-700);'}" onclick="selectStageTab('${stg}')">
+            ${stg}
+            <span class="badge" style="margin-left: 6px; ${isActive ? 'background: rgba(255,255,255,0.25); color: #ffffff;' : 'background: #f1f5f9; color: #475569;'}">${count}</span>
+          </button>
+        `;
+      }).join('');
+    }
+
+    function selectStageTab(stg) {
+      activeStageFilter = stg;
+      document.getElementById('current-stage-title').textContent = stg;
+      renderStageTabs();
+      applyPipelineFilters();
+    }
+
+    function applyPipelineFilters() {
+      const search = (document.getElementById('pipeline-search')?.value || '').toLowerCase();
+      const manager = document.getElementById('pipeline-manager')?.value || '';
+      const counselor = document.getElementById('pipeline-counselor')?.value || '';
+      const priority = document.getElementById('pipeline-priority')?.value || '';
+      const payment = document.getElementById('pipeline-payment')?.value || '';
+
+      let students = Customers.getAll();
+
+      // Counselor & Manager role scoping
+      const user = Auth.getCurrentUser();
+      if (user && (user.role === 'COUNSELOR' || user.role === 'counselor')) {
+        students = students.filter(s => s.counselor === user.name);
+      } else if (user && (user.role === 'MANAGER' || user.role === 'manager')) {
+        students = students.filter(s => s.manager === user.name);
+      }
+
+      filteredList = students.filter(s => {
+        if (activeStageFilter !== 'All Leads') {
+          if (activeStageFilter === 'Enrolled' && (s.stage === 'Enrolled' || s.stage === 'Converted')) {
+            // match
+          } else if (activeStageFilter === 'Converted' && (s.stage === 'Enrolled' || s.stage === 'Converted')) {
+            // match
+          } else if (s.stage !== activeStageFilter) {
+            return false;
+          }
+        }
+
+        if (manager && s.manager !== manager) return false;
+        if (counselor && s.counselor !== counselor) return false;
+        if (priority && s.priority !== priority) return false;
+        if (payment && s.paymentStatus !== payment) return false;
+
+        if (search) {
+          const match = (s.name || '').toLowerCase().includes(search) ||
+                        (s.id || '').toLowerCase().includes(search) ||
+                        (s.mobile || '').includes(search) ||
+                        (s.college || '').toLowerCase().includes(search) ||
+                        (s.targetRole || '').toLowerCase().includes(search);
+          if (!match) return false;
+        }
+        return true;
+      });
+
+      // Update stage ribbon metrics
+      const stageBooked = filteredList.reduce((sum, s) => sum + (s.placementFee || 0), 0);
+      const stageCollected = filteredList.reduce((sum, s) => sum + (s.paidAmount || 0), 0);
+      const stagePending = Math.max(0, stageBooked - stageCollected);
+
+      document.getElementById('stage-ribbon-count').textContent = filteredList.length;
+      document.getElementById('stage-ribbon-value').textContent = Utils.formatINR(stageBooked);
+      document.getElementById('stage-ribbon-collected').textContent = Utils.formatINR(stageCollected);
+      document.getElementById('stage-ribbon-pending').textContent = Utils.formatINR(stagePending);
+
+      currentPage = 1;
+      renderPipelineTable();
+    }
+
+    function resetPipelineFilters() {
+      if (document.getElementById('pipeline-search')) document.getElementById('pipeline-search').value = '';
+      if (document.getElementById('pipeline-manager')) document.getElementById('pipeline-manager').value = '';
+      if (document.getElementById('pipeline-counselor')) document.getElementById('pipeline-counselor').value = '';
+      if (document.getElementById('pipeline-priority')) document.getElementById('pipeline-priority').value = '';
+      if (document.getElementById('pipeline-payment')) document.getElementById('pipeline-payment').value = '';
+      activeStageFilter = 'All Leads';
+      document.getElementById('current-stage-title').textContent = 'All Leads';
+      renderStageTabs();
+      applyPipelineFilters();
+    }
+
+    function changePageSize(size) {
+      pageSize = Number(size);
+      currentPage = 1;
+      renderPipelineTable();
+    }
+
+    function goToPage(p) {
+      currentPage = p;
+      renderPipelineTable();
+    }
+
+    function renderPipelineTable() {
+      const tbody = document.getElementById('pipeline-tbody');
+      const countEl = document.getElementById('pipeline-row-count');
+      if (countEl) countEl.textContent = filteredList.length;
+
+      const total = filteredList.length;
+      const start = (currentPage - 1) * pageSize;
+      const end = Math.min(start + pageSize, total);
+      const pageItems = filteredList.slice(start, end);
+
+      if (pageItems.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="12" style="text-align: center; color: var(--slate-400); padding: 40px;">No candidates currently in this stage or filter view.</td></tr>`;
+      } else {
+        tbody.innerHTML = pageItems.map(s => {
+          return `
+            <tr>
+              <td><span style="font-family: monospace; font-size: 11px; color: var(--slate-500);">${s.id}</span></td>
+              <td>
+                <a href="customer-details.html?id=${s.id}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                  ${Utils.escapeHtml(s.name)}
+                </a>
+              </td>
+              <td><span style="font-size: 12px; color: var(--slate-600);">${Utils.escapeHtml(s.mobile)}</span></td>
+              <td>
+                <div style="font-weight: 600; font-size: 12px; color: var(--navy-900);">${Utils.escapeHtml(s.targetRole || 'Not Specified')}</div>
+                <div style="font-size: 11px; color: var(--slate-400);">${Utils.escapeHtml(s.college || '-')}</div>
+              </td>
+              <td>
+                <button type="button" class="btn-outline-sm" style="display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 6px; font-size: 11px;" onclick="Pipeline.openStageChangeModal('${s.id}', refreshPageData)" title="Click to change candidate stage">
+                  ${Utils.getStageBadge(s.stage)}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 12px; height: 12px;"><polyline points="6 9 12 15 18 9"/></svg>
+                </button>
+              </td>
+              <td><span class="badge ${s.priority === 'High' ? 'badge-interested' : 'badge-new'}">${s.priority || 'Normal'}</span></td>
+              <td><span style="font-size: 12px; color: var(--slate-700);">${Utils.escapeHtml(s.counselor || 'Unassigned')}</span></td>
+              <td style="font-weight: 500; color: var(--navy-900);">${Utils.formatINR(s.placementFee || 0)}</td>
+              <td style="font-weight: 500; color: var(--green);">${Utils.formatINR(s.paidAmount || 0)}</td>
+              <td style="font-weight: 500; color: var(--amber);">${Utils.formatINR(s.pendingAmount || 0)}</td>
+              <td><span style="font-size: 11px; color: var(--navy-800);">${s.nextFollowup || 'Follow-up pending'}</span></td>
+              <td>
+                <div class="row-actions">
+                  <a href="customer-details.html?id=${s.id}" class="btn-icon" title="View Profile">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </a>
+                  <button class="btn-icon" onclick="Communication.logCall('${s.id}', refreshPageData)" title="Call">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Communication.sendWhatsApp('${s.id}', 'counseling')" title="WhatsApp">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#25D366" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Followups.openScheduleModal('${s.id}', refreshPageData)" title="Schedule Follow-up">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </button>
+                  <button class="btn-icon" onclick="Payments.openRecordModal('${s.id}', refreshPageData)" title="Record Payment">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Pagination
+      const infoEl = document.getElementById('pipeline-pagination-info');
+      if (infoEl) infoEl.textContent = total > 0 ? `Showing ${start + 1}-${end} of ${total} records` : '0 records';
+
+      const controls = document.getElementById('pipeline-pagination-controls');
+      const totalPages = Math.ceil(total / pageSize) || 1;
+      let phtml = `<button class="btn-outline-sm" ${currentPage === 1 ? 'disabled' : ''} onclick="goToPage(${currentPage - 1})">Prev</button>`;
+      for (let p = 1; p <= totalPages; p++) {
+        phtml += `<button class="btn-outline-sm ${p === currentPage ? 'active' : ''}" style="${p === currentPage ? 'background: var(--primary); color: #fff; border-color: var(--primary);' : ''}" onclick="goToPage(${p})">${p}</button>`;
+      }
+      phtml += `<button class="btn-outline-sm" ${currentPage === totalPages ? 'disabled' : ''} onclick="goToPage(${currentPage + 1})">Next</button>`;
+      if (controls) controls.innerHTML = phtml;
+    }
+
+    function refreshPageData() {
+      renderStageTabs();
+      applyPipelineFilters();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('pipeline');
+
+      // Check query parameter for preset stage
+      const params = Utils.parseQueryParams();
+      if (params.stage) {
+        activeStageFilter = decodeURIComponent(params.stage);
+        document.getElementById('current-stage-title').textContent = activeStageFilter;
+      }
+
+      renderStageTabs();
+      applyPipelineFilters();
+    });
+  </script>
+</body>
+</html>

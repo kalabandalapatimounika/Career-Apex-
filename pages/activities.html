@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit Trail &amp; Activity Log — Career Apex CRM</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <div class="app-container">
+    <div id="sidebar-container"></div>
+
+    <div class="main-wrapper">
+      <div id="header-container"></div>
+
+      <main class="content-area">
+        <!-- Page Header -->
+        <div class="page-top-bar">
+          <div class="page-title-box">
+            <h1 class="page-title">Audit Trail &amp; Activity Log</h1>
+            <p class="page-subtitle">Immutable compliance ledger recording counselor interactions, stage movements, fee collections, and pipeline operations.</p>
+          </div>
+          <div class="page-actions-group">
+            <button type="button" class="btn-header-action" onclick="exportActivitiesCSV()" title="Export Audit Log CSV">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export Audit CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="enterprise-card" style="margin-bottom: 20px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between;">
+            <div style="flex: 1; min-width: 260px; position: relative;">
+              <input type="text" id="activity-search" class="filter-input" placeholder="Search event description, student ID, candidate name..." style="width: 100%; padding-left: 36px;" oninput="applyFilters()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" style="position: absolute; left: 10px; top: 10px; width: 16px; height: 16px;">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+              <select id="filter-action" class="filter-select" onchange="applyFilters()">
+                <option value="">All Action Types</option>
+                <option value="Lead Created">Lead Created</option>
+                <option value="Lead Updated">Lead Updated</option>
+                <option value="Lead Assigned">Lead Assigned</option>
+                <option value="Call Logged">Call Logged</option>
+                <option value="WhatsApp Initiated">WhatsApp Initiated</option>
+                <option value="Email Sent">Email Sent</option>
+                <option value="Follow-up Created">Follow-up Created</option>
+                <option value="Follow-up Completed">Follow-up Completed</option>
+                <option value="Stage Changed">Stage Changed</option>
+                <option value="Payment Recorded">Payment Recorded</option>
+                <option value="Receipt Generated">Receipt Generated</option>
+              </select>
+
+              <select id="filter-user" class="filter-select" onchange="applyFilters()">
+                <option value="">All Users</option>
+                <option value="Alexander Wright">Alexander Wright (Admin)</option>
+                <option value="Rajesh Sharma">Rajesh Sharma (Manager)</option>
+                <option value="Priya Patel">Priya Patel (Manager)</option>
+                <option value="Amit Verma">Amit Verma (Manager)</option>
+                <option value="Arun Kumar">Arun Kumar (Counselor)</option>
+                <option value="Sneha Rao">Sneha Rao (Counselor)</option>
+                <option value="Vikram Singh">Vikram Singh (Counselor)</option>
+                <option value="Neha Gupta">Neha Gupta (Counselor)</option>
+                <option value="Rahul Mehta">Rahul Mehta (Counselor)</option>
+              </select>
+
+              <button type="button" class="btn-outline-sm" onclick="resetFilters()">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Activities Log Table -->
+        <div class="enterprise-card" style="padding: 0; overflow: hidden;">
+          <div style="padding: 14px 20px; border-bottom: 1px solid var(--slate-200); background: #fafbfc; display: flex; justify-content: space-between; align-items: center;">
+            <div style="font-weight: 600; font-size: 13px; color: var(--navy-900);">
+              System Audit Ledger (<span id="activities-count">0</span> logged events)
+            </div>
+            <div style="font-size: 12px; color: var(--slate-500);">
+              Real-time audit log
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="crm-table">
+              <thead>
+                <tr>
+                  <th style="width: 110px;">Date</th>
+                  <th style="width: 90px;">Time</th>
+                  <th style="width: 160px;">User</th>
+                  <th style="width: 160px;">Action</th>
+                  <th style="width: 190px;">Student</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody id="activities-tbody">
+                <!-- Populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/seed.js"></script>
+  <script src="../js/utils.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/activities.js"></script>
+  <script src="../js/customers.js"></script>
+  <script src="../js/pipeline.js"></script>
+  <script src="../js/payments.js"></script>
+  <script src="../js/followups.js"></script>
+  <script src="../js/communication.js"></script>
+  <script src="../js/team.js"></script>
+  <script src="../js/reports.js"></script>
+  <script src="../js/ui.js"></script>
+
+  <script>
+    let filteredActivities = [];
+
+    function applyFilters() {
+      const search = (document.getElementById('activity-search')?.value || '').toLowerCase();
+      const actionType = document.getElementById('filter-action')?.value || '';
+      const user = document.getElementById('filter-user')?.value || '';
+
+      const all = Activities.getAll();
+      filteredActivities = all.filter(a => {
+        if (actionType && a.action !== actionType) return false;
+        if (user && a.user !== user) return false;
+        if (search) {
+          const match = (a.description || '').toLowerCase().includes(search) ||
+                        (a.studentName || '').toLowerCase().includes(search) ||
+                        (a.studentId || '').toLowerCase().includes(search) ||
+                        (a.user || '').toLowerCase().includes(search);
+          if (!match) return false;
+        }
+        return true;
+      });
+
+      renderTable();
+    }
+
+    function resetFilters() {
+      document.getElementById('activity-search').value = '';
+      document.getElementById('filter-action').value = '';
+      document.getElementById('filter-user').value = '';
+      applyFilters();
+    }
+
+    function getActionBadgeStyle(action) {
+      if (action.includes('Payment') || action.includes('Receipt')) return 'background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0;';
+      if (action.includes('Stage')) return 'background: #eef2ff; color: #4f46e5; border: 1px solid #c7d2fe;';
+      if (action.includes('Call')) return 'background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8;';
+      if (action.includes('WhatsApp')) return 'background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0;';
+      if (action.includes('Email')) return 'background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;';
+      if (action.includes('Follow-up')) return 'background: #fffbeb; color: #d97706; border: 1px solid #fde68a;';
+      return 'background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1;';
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('activities-tbody');
+      const countEl = document.getElementById('activities-count');
+      if (countEl) countEl.textContent = filteredActivities.length;
+
+      if (filteredActivities.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--slate-400); padding: 40px;">No audit events recorded matching criteria.</td></tr>`;
+      } else {
+        tbody.innerHTML = filteredActivities.map(a => {
+          const dateObj = a.timestamp ? new Date(a.timestamp) : new Date();
+          const dateStr = a.timestamp ? a.timestamp.split('T')[0] : '2026-10-05';
+          const timeStr = dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return `
+            <tr>
+              <td style="font-size: 12px; color: var(--slate-700); font-weight: 500; white-space: nowrap;">${dateStr}</td>
+              <td style="font-size: 12px; color: var(--slate-500); white-space: nowrap;">${timeStr}</td>
+              <td>
+                <div style="font-weight: 600; color: var(--navy-900); font-size: 13px;">${Utils.escapeHtml(a.user || 'System')}</div>
+              </td>
+              <td>
+                <span class="badge" style="${getActionBadgeStyle(a.action || '')}">${Utils.escapeHtml(a.action)}</span>
+              </td>
+              <td>
+                ${a.studentId ? `
+                  <a href="customer-details.html?id=${a.studentId}" style="font-weight: 600; color: var(--primary); text-decoration: none;">
+                    ${Utils.escapeHtml(a.studentName || a.studentId)}
+                  </a>
+                  <div style="font-family: monospace; font-size: 11px; color: var(--slate-400);">${a.studentId}</div>
+                ` : '<span style="color: var(--slate-400);">-</span>'}
+              </td>
+              <td style="font-size: 13px; color: var(--navy-800);">${Utils.escapeHtml(a.description)}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+    }
+
+    function exportActivitiesCSV() {
+      const all = filteredActivities.length > 0 ? filteredActivities : Activities.getAll();
+      let csv = 'Timestamp,Actor,Action,StudentID,StudentName,Description\n';
+      all.forEach(a => {
+        csv += `"${Utils.formatDate(a.timestamp)}","${a.user || ''}","${a.action || ''}","${a.studentId || ''}","${a.studentName || ''}","${(a.description || '').replace(/"/g, '""')}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `CareerApex_AuditTrail_${new Date().toISOString().split('T')[0]}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      UI.init('activities');
+      applyFilters();
+    });
+  </script>
+</body>
+</html>
