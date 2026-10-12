@@ -1,20 +1,28 @@
 import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { USERS, INITIAL_LEADS, PIPELINE_STAGES } from '../data/seedData';
+import {
+  getCurrentSession,
+  login as authLogin,
+  register as authRegister,
+  requestPasswordReset as authResetPassword,
+  clearSession,
+  getAllAccounts
+} from '../services/authService';
 
 const CRMContext = createContext(null);
 
 export const CRMProvider = ({ children }) => {
-  // Current logged in user / persona
+  // Current authenticated user session (null when unauthenticated)
   const [currentUser, setCurrentUser] = useState(() => {
     try {
-      const saved = localStorage.getItem('ca_current_user');
-      return saved ? JSON.parse(saved) : USERS[0];
+      const session = getCurrentSession();
+      return session ? session.user : null;
     } catch {
-      return USERS[0];
+      return null;
     }
   });
 
-  // Leads list - Clean state, no mock dummy data
+  // Leads list - Clean production state, no mock dummy data
   const [leads, setLeads] = useState(() => {
     try {
       const saved = localStorage.getItem('ca_leads');
@@ -33,7 +41,7 @@ export const CRMProvider = ({ children }) => {
   });
 
   // Active navigation tab ('dashboard', 'customers', 'leads', 'pipeline', 'followups', 'team', 'activities', 'reports', 'settings')
-  const [activeTab, setActiveTab] = useState('pipeline');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   // Active stage filter within Pipeline (Excel)
   const [activePipelineStage, setActivePipelineStage] = useState('all');
@@ -65,12 +73,16 @@ export const CRMProvider = ({ children }) => {
   // Toast notifications
   const [toasts, setToasts] = useState([]);
 
-  // Persist currentUser
+  // Persist currentUser in localStorage when active
   useEffect(() => {
     try {
-      localStorage.setItem('ca_current_user', JSON.stringify(currentUser));
+      if (currentUser) {
+        localStorage.setItem('ca_current_user', JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem('ca_current_user');
+      }
     } catch (e) {
-      console.error('Error saving user to localStorage:', e);
+      console.error('Error syncing user state:', e);
     }
   }, [currentUser]);
 
@@ -105,11 +117,56 @@ export const CRMProvider = ({ children }) => {
     setToasts(prev => prev.filter(t => t.id !== id));
   };
 
-  // Switch demo persona
+  // Authentication Handlers
+  const handleLogin = async (credentials) => {
+    const result = await authLogin(credentials);
+    if (result.success && result.user) {
+      setCurrentUser(result.user);
+      setActiveTab('dashboard');
+      addToast(`Welcome back, ${result.user.name}!`, 'success');
+    }
+    return result;
+  };
+
+  const handleRegister = async (userData) => {
+    const result = await authRegister(userData);
+    if (result.success) {
+      addToast(`Staff account for ${result.user.name} created successfully!`, 'success');
+    }
+    return result;
+  };
+
+  const handleResetPassword = async (email) => {
+    const result = await authResetPassword(email);
+    if (result.success) {
+      addToast(result.message, 'info');
+    }
+    return result;
+  };
+
+  const logout = () => {
+    clearSession();
+    setCurrentUser(null);
+    addToast('You have been signed out.', 'info');
+  };
+
+  // Switch persona (for demo/preview when authenticated)
   const switchPersona = (email) => {
-    const user = USERS.find(u => u.email === email) || USERS[0];
-    setCurrentUser(user);
-    addToast(`Switched active persona to ${user.name} (${user.role.toUpperCase()})`, 'info');
+    const accounts = getAllAccounts();
+    const user = accounts.find(u => u.email === email) || USERS.find(u => u.email === email);
+    if (user) {
+      const safeUser = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+        title: user.title,
+        avatar: user.avatar
+      };
+      setCurrentUser(safeUser);
+      localStorage.setItem('ca_current_user', JSON.stringify(safeUser));
+      addToast(`Switched active profile to ${safeUser.name} (${safeUser.role.toUpperCase()})`, 'info');
+    }
   };
 
   // Reset/Clear leads database
@@ -117,14 +174,16 @@ export const CRMProvider = ({ children }) => {
     setLeads([]);
     setSelectedLeadIds([]);
     localStorage.removeItem('ca_leads');
-    addToast('Leads database cleared to clean state.', 'info');
+    addToast('CRM candidate data cleared to clean state.', 'info');
   };
 
   // Add lead
   const addLead = (newLeadData) => {
-    const counselor = USERS.find(u => u.id === newLeadData.assignedTo) || USERS[2];
+    const accounts = getAllAccounts();
+    const counselor = accounts.find(u => u.id === newLeadData.assignedTo) || USERS[2];
     const newId = `CA-${String(leads.length + 1).padStart(4, '0')}`;
     const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    const authorName = currentUser ? currentUser.name : 'System';
 
     const newLead = {
       id: newId,
@@ -150,7 +209,7 @@ export const CRMProvider = ({ children }) => {
       nextFollowup: newLeadData.nextFollowup || '',
       notes: newLeadData.notes || '',
       history: [
-        { date: timestamp, user: currentUser.name, note: `Candidate inquiry registered by ${currentUser.name}.` }
+        { date: timestamp, user: authorName, note: `Candidate inquiry registered by ${authorName}.` }
       ]
     };
 
@@ -162,6 +221,8 @@ export const CRMProvider = ({ children }) => {
   // Update lead
   const updateLead = (id, fields) => {
     const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    const authorName = currentUser ? currentUser.name : 'System';
+
     setLeads(prev => prev.map(lead => {
       if (lead.id !== id) return lead;
 
@@ -169,7 +230,7 @@ export const CRMProvider = ({ children }) => {
       if (fields.stage && fields.stage !== lead.stage) {
         updatedHistory.unshift({
           date: timestamp,
-          user: currentUser.name,
+          user: authorName,
           note: `Pipeline stage moved from "${lead.stage}" to "${fields.stage}".`
         });
         if (fields.stage === 'Enrolled') {
@@ -181,11 +242,12 @@ export const CRMProvider = ({ children }) => {
         }
       }
       if (fields.assignedTo && fields.assignedTo !== lead.assignedTo) {
-        const newCounselor = USERS.find(u => u.id === fields.assignedTo);
+        const accounts = getAllAccounts();
+        const newCounselor = accounts.find(u => u.id === fields.assignedTo) || USERS.find(u => u.id === fields.assignedTo);
         const counselorName = newCounselor ? newCounselor.name : 'Unknown';
         updatedHistory.unshift({
           date: timestamp,
-          user: currentUser.name,
+          user: authorName,
           note: `Assigned counselor changed to ${counselorName}.`
         });
         fields.counselorName = counselorName;
@@ -193,7 +255,7 @@ export const CRMProvider = ({ children }) => {
       if (fields.newNote) {
         updatedHistory.unshift({
           date: timestamp,
-          user: currentUser.name,
+          user: authorName,
           note: fields.newNote
         });
         delete fields.newNote;
@@ -233,10 +295,12 @@ export const CRMProvider = ({ children }) => {
 
   // Bulk assign leads
   const bulkAssignLeads = (leadIds, counselorId) => {
-    const counselor = USERS.find(u => u.id === counselorId);
+    const accounts = getAllAccounts();
+    const counselor = accounts.find(u => u.id === counselorId) || USERS.find(u => u.id === counselorId);
     if (!counselor) return;
 
     const timestamp = new Date().toISOString().slice(0, 16).replace('T', ' ');
+    const authorName = currentUser ? currentUser.name : 'System';
 
     setLeads(prev => prev.map(lead => {
       if (!leadIds.includes(lead.id)) return lead;
@@ -244,7 +308,7 @@ export const CRMProvider = ({ children }) => {
       const updatedHistory = [...(lead.history || [])];
       updatedHistory.unshift({
         date: timestamp,
-        user: currentUser.name,
+        user: authorName,
         note: `Bulk assigned to ${counselor.name}.`
       });
 
@@ -263,7 +327,7 @@ export const CRMProvider = ({ children }) => {
 
   // Scoped leads based on user role
   const scopedLeads = useMemo(() => {
-    if (!currentUser) return leads;
+    if (!currentUser) return [];
     if (currentUser.role === 'admin' || currentUser.role === 'manager') {
       return leads;
     }
@@ -302,8 +366,12 @@ export const CRMProvider = ({ children }) => {
 
   return (
     <CRMContext.Provider value={{
-      users: USERS,
+      users: getAllAccounts(),
       currentUser,
+      handleLogin,
+      handleRegister,
+      handleResetPassword,
+      logout,
       switchPersona,
       resetDemoData,
       leads,

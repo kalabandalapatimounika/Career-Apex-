@@ -21,7 +21,8 @@ export const Header = () => {
     setIsAddModalOpen,
     setIsMobileMenuOpen,
     leads,
-    setSelectedLead
+    setSelectedLead,
+    logout
   } = useCRM();
 
   const [isPersonaOpen, setIsPersonaOpen] = useState(false);
@@ -137,17 +138,17 @@ export const Header = () => {
           <span className="hide-mobile">+ New Lead</span>
         </button>
 
-        {/* Demo Persona Switcher */}
+        {/* Demo Persona & Role Switcher */}
         <div style={{ position: 'relative' }}>
           <button
             type="button"
             className="btn btn-secondary btn-sm"
             onClick={() => setIsPersonaOpen(prev => !prev)}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-            title="Switch Demo Role"
+            title="Switch Active Profile"
           >
             <UserCheck size={15} />
-            <span className="hide-mobile">Role: {currentUser.role.toUpperCase()}</span>
+            <span className="hide-mobile">Role: {(currentUser?.role || 'user').toUpperCase()}</span>
             <ChevronDown size={14} />
           </button>
 
@@ -168,7 +169,7 @@ export const Header = () => {
               }}
             >
               <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--slate-400)', textTransform: 'uppercase', marginBottom: '0.5rem', padding: '0.2rem 0.4rem' }}>
-                1-Click Demo Persona
+                Switch Staff Profile
               </div>
               {users.map(u => (
                 <div
@@ -184,14 +185,14 @@ export const Header = () => {
                     alignItems: 'center',
                     gap: '0.65rem',
                     cursor: 'pointer',
-                    backgroundColor: currentUser.email === u.email ? 'var(--primary-50)' : 'transparent',
+                    backgroundColor: currentUser?.email === u.email ? 'var(--primary-50)' : 'transparent',
                     marginBottom: '0.35rem'
                   }}
                   onMouseEnter={(e) => {
-                    if (currentUser.email !== u.email) e.currentTarget.style.backgroundColor = 'var(--slate-100)';
+                    if (currentUser?.email !== u.email) e.currentTarget.style.backgroundColor = 'var(--slate-100)';
                   }}
                   onMouseLeave={(e) => {
-                    if (currentUser.email !== u.email) e.currentTarget.style.backgroundColor = 'transparent';
+                    if (currentUser?.email !== u.email) e.currentTarget.style.backgroundColor = 'transparent';
                   }}
                 >
                   <img src={u.avatar} alt={u.name} style={{ width: '32px', height: '32px', borderRadius: '50%', objectFit: 'cover' }} />
@@ -203,7 +204,19 @@ export const Header = () => {
                 </div>
               ))}
 
-              <div style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.6rem', paddingTop: '0.6rem' }}>
+              <div style={{ borderTop: '1px solid var(--border-light)', marginTop: '0.6rem', paddingTop: '0.6rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <button
+                  type="button"
+                  id="header-signout-btn"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => {
+                    setIsPersonaOpen(false);
+                    logout();
+                  }}
+                  style={{ width: '100%', justifyContent: 'center', fontSize: '0.75rem', color: 'var(--slate-700)' }}
+                >
+                  <i className="fa-solid fa-arrow-right-from-bracket" style={{ marginRight: '0.35rem' }}></i> Sign Out
+                </button>
                 <button
                   type="button"
                   className="btn btn-secondary btn-sm"
@@ -213,7 +226,7 @@ export const Header = () => {
                   }}
                   style={{ width: '100%', justifyContent: 'center', fontSize: '0.75rem', color: 'var(--danger-solid)' }}
                 >
-                  <RotateCcw size={14} style={{ marginRight: '0.35rem' }} /> Reset Demo Data
+                  <RotateCcw size={14} style={{ marginRight: '0.35rem' }} /> Clear CRM Data
                 </button>
               </div>
             </div>
@@ -221,11 +234,15 @@ export const Header = () => {
         </div>
 
         {/* Current User Avatar Pill */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.2rem 0.4rem', borderRadius: 'var(--radius-full)', background: 'var(--slate-100)', border: '1px solid var(--border-light)' }}>
-          <img src={currentUser.avatar} alt={currentUser.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
+        <div
+          onClick={() => setIsPersonaOpen(prev => !prev)}
+          style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.2rem 0.4rem', borderRadius: 'var(--radius-full)', background: 'var(--slate-100)', border: '1px solid var(--border-light)', cursor: 'pointer' }}
+          title="Account Menu"
+        >
+          <img src={currentUser?.avatar} alt={currentUser?.name} style={{ width: '28px', height: '28px', borderRadius: '50%', objectFit: 'cover' }} />
           <div className="hide-mobile" style={{ lineHeight: 1.2, paddingRight: '0.3rem' }}>
-            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--slate-900)' }}>{currentUser.name}</div>
-            <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>{currentUser.role}</div>
+            <div style={{ fontSize: '0.78rem', fontWeight: 600, color: 'var(--slate-900)' }}>{currentUser?.name}</div>
+            <div style={{ fontSize: '0.65rem', color: 'var(--slate-500)', textTransform: 'uppercase', fontWeight: 700 }}>{currentUser?.role}</div>
           </div>
         </div>
       </div>

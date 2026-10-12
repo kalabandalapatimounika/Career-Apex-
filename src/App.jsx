@@ -1,5 +1,6 @@
 import React from 'react';
 import { CRMProvider, useCRM } from './context/CRMContext';
+import { LoginPage } from './components/auth/LoginPage';
 import { Sidebar } from './components/layout/Sidebar';
 import { Header } from './components/layout/Header';
 import { AdminDashboard } from './components/dashboard/AdminDashboard';
@@ -18,7 +19,17 @@ import { MessageTemplatesModal } from './components/templates/MessageTemplatesMo
 import { ToastContainer } from './components/common/Toast';
 
 const AppContent = () => {
-  const { activeTab } = useCRM();
+  const { currentUser, activeTab } = useCRM();
+
+  // Route Protection: Unauthenticated visitors must log in
+  if (!currentUser) {
+    return (
+      <div className="crm-auth-wrapper">
+        <LoginPage />
+        <ToastContainer />
+      </div>
+    );
+  }
 
   return (
     <div className="crm-app-container">
@@ -27,10 +38,10 @@ const AppContent = () => {
 
       {/* Main Content Area */}
       <div className="crm-main-content">
-        {/* Top Header */}
+        {/* Top Header with User Profile and Actions */}
         <Header />
 
-        {/* Dynamic Page Body */}
+        {/* Dynamic Page Body with Protected Views */}
         <main className="crm-page-body" style={{ padding: '1.5rem', overflowY: 'auto', flex: 1 }}>
           {activeTab === 'dashboard' && <AdminDashboard />}
           {(activeTab === 'customers' || activeTab === 'leads') && <LeadsQueue />}

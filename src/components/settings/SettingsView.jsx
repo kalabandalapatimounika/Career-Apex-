@@ -104,13 +104,13 @@ export const SettingsView = () => {
           </div>
         </form>
 
-        {/* Database Reset Card */}
+        {/* Database Clean State Card */}
         <div className="card" style={{ padding: '1.5rem', backgroundColor: '#fff', borderRadius: 'var(--radius-xl)', border: '1px solid var(--danger-border)' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--danger-solid)', margin: '0 0 0.5rem 0' }}>
-            Restore Factory Demo Data
+            Clear CRM Storage & Leads
           </h3>
           <p style={{ fontSize: '0.825rem', color: 'var(--slate-600)', margin: '0 0 1rem 0' }}>
-            Reset all 36 candidates, counseling stages, follow-up logs, and assignments back to default demo state.
+            Purge registered candidate inquiries, counselor assignment logs, and local caching to maintain a clean state.
           </p>
 
           <button
@@ -119,7 +119,7 @@ export const SettingsView = () => {
             onClick={resetDemoData}
             style={{ color: 'var(--danger-solid)', borderColor: 'var(--danger-border)', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
           >
-            <RotateCcw size={15} /> Reset All Demo Data
+            <RotateCcw size={15} /> Clear CRM Local Storage
           </button>
         </div>
       </div>

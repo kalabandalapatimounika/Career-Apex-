@@ -18,7 +18,8 @@ export const Sidebar = () => {
     setIsTemplatesModalOpen,
     setIsImportModalOpen,
     stages,
-    addToast
+    addToast,
+    logout
   } = useCRM();
 
   const handleNavClick = (tabKey) => {
@@ -300,9 +301,10 @@ export const Sidebar = () => {
 
           <button
             type="button"
+            id="sidebar-signout-btn"
             className="btn btn-secondary btn-sm"
-            onClick={() => addToast('Session locked. Click persona switcher in header to change user.', 'info')}
-            style={{ width: '100%', justifyContent: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.12)', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem' }}
+            onClick={logout}
+            style={{ width: '100%', justifyContent: 'center', backgroundColor: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.12)', color: '#fff', display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.45rem', cursor: 'pointer' }}
           >
             <i className="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
           </button>
